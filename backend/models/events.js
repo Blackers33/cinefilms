@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
+const commentsSchema = require("./comments");
 
-const commentsSchema = mongoose.Schema({
+/**
+ * CommentsSchema remplacé par le require ci dessus ^^^
+ */
+/* const commentsSchema = mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     date: Date,
     content: String,
-   });
+   }); */
 
 const eventsSchema = mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
