@@ -4,28 +4,21 @@ var router = express.Router();
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
 
+require('../models/connection');
 const User = require('../models/users');
 
 const { checkBody } = require('../modules/checkBody');
 
-const hash = bcrypt.hashSync(req.body.password, 10)
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
-router.post('/signup', (req, res) => {
+  
+  //POST new user (inscription)
+  router.post('/signup', (req, res) => {
+  const hash = bcrypt.hashSync(req.body.password, 10)
   if (!checkBody(req.body, ['username', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
-  }
-  
-  
-  //Post new user (inscription)
-  
+  }  
   // Check if the user has not already been registered
-  User.findOne({ username: req.body.username }).then(data => {
+  User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
     if (data === null) {
       const newUser = new User({
         username: req.body.username,
@@ -44,6 +37,7 @@ router.post('/signup', (req, res) => {
   });
 });
 
+
 //POST user signin (connexion)
 router.post('/signin', (req, res) => {
   if (!checkBody(req.body, ['username', 'password'])) {
@@ -51,7 +45,7 @@ router.post('/signin', (req, res) => {
     return;
   }
 
-  User.findOne({ username: req.body.username }).then(data => {
+  User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       res.json({ result: true, token : data.token });
     } else {
@@ -59,5 +53,25 @@ router.post('/signin', (req, res) => {
     }
   });
 });
+
+
+//POST création de profile
+router.put('/profil/:token', (req, res) => {
+User.findOne({ token: req.params.token }).then(data => {
+  User.updateOne ( {data},
+    {
+    avatar: req.body.avatar,
+    age: req.body.age,
+    genre: req.body.genre,
+    location: req.body.location,
+    favMovies: req.body.favMovies,
+    favGenres: req.body.favGenres,
+    biography: req.body.biography,
+  }).then(updatedData => {
+    res.json({ result: true, message: 'Profil updated', profil: updatedData})
+  })
+});
+});
+
 
 module.exports = router;

@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
     latitude: Number,
     longitude: Number,
   },
-  biographie: String,
+  biography: String,
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
   favGenres: [String],
   favMovies: [String],
