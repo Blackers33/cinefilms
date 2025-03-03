@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
   username: String,
   password: String,
+  email: String,
   token: String,
   age: Number,
   genre: String,
@@ -13,6 +14,7 @@ const userSchema = mongoose.Schema({
     latitude: Number,
     longitude: Number,
   },
+  biographie: String,
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
   favGenres: [String],
   favMovies: [String],
