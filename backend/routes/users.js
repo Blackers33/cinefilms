@@ -12,6 +12,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+//POST new user (inscription)
 
 
 module.exports = router;
