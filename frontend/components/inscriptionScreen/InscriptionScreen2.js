@@ -6,7 +6,6 @@ import {
   View,
   Image,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import TextInput from '../common/TextInput'
 
