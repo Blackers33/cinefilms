@@ -26,7 +26,8 @@ export default function InscriptionScreen() {
     >
       <SafeAreaView>
         
-      {isStep1Visible && <InscriptionScreen1 />}
+      {/* {isStep1Visible && <InscriptionScreen1 />} */}
+      <InscriptionScreen2 />
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.bouton}
@@ -34,7 +35,6 @@ export default function InscriptionScreen() {
         >
           <Text style={styles.text}>Commencer </Text>
         </TouchableOpacity>
-
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
