@@ -58,7 +58,8 @@ router.post('/signin', (req, res) => {
 //POST création de profile
 router.put('/profil/:token', (req, res) => {
 User.findOne({ token: req.params.token }).then(data => {
-  User.updateOne ( {data},
+  if (data)
+  User.updateOne ({token: req.params.token},
     {
     avatar: req.body.avatar,
     age: req.body.age,
