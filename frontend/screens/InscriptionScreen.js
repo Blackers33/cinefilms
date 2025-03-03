@@ -27,14 +27,14 @@ export default function InscriptionScreen() {
       <SafeAreaView>
         
       {isStep1Visible && <InscriptionScreen1 />}
-        <TouchableOpacity
+        {isStep1Visible&&<TouchableOpacity
           activeOpacity={0.8}
           style={styles.bouton}
           onPress={() => handlecommencerbuton()}
         >
           <Text style={styles.text}>Commencer </Text>
-        </TouchableOpacity>
-
+        </TouchableOpacity>}
+        {!isStep1Visible && <InscriptionScreen2 />}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
