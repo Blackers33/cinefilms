@@ -1,17 +1,23 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
+import TextInput from "../common/TextInput";
 
-function InscriptionScreen1() {
+function InscriptionScreen1({ handleNext}) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState(false);
+
+  const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const handlecommencebuton = () => {
+    if (EMAIL_REGEX.test(email)) {
+      
+      handleNext();
+    } else {
+      setEmailError(true);
+    }
+  };
 
   return (
     <View>
@@ -23,24 +29,16 @@ function InscriptionScreen1() {
       </Text>
       <View>
         <Text style={styles.Input}>Username</Text>
-        <LinearGradient
-          colors={["rgba(30,28,26,0.8)", "transparent"]}
-          start={{ x: 0.26, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
-          <TextInput
-            style={styles.champInput}
-            onChangeText={(value) => setUsername(value)}
-            value={username}
-            placeholder="Enter your username"
-          ></TextInput>
-        </LinearGradient>
+
+        <TextInput
+          onChangeText={(value) => setUsername(value)}
+          value={username}
+          placeholder="Enter your username"
+        ></TextInput>
       </View>
       <View>
         <Text style={styles.Input}>Email</Text>
         <TextInput
-          style={styles.champInput}
           onChangeText={(value) => setEmail(value)}
           value={email}
           placeholder="Enter your email"
@@ -49,7 +47,6 @@ function InscriptionScreen1() {
       <View>
         <Text style={styles.Input}>Email</Text>
         <TextInput
-          style={styles.champInput}
           onChangeText={(value) => setPassword(value)}
           value={password}
           placeholder="Choose your password"
@@ -58,7 +55,14 @@ function InscriptionScreen1() {
           textContentType="password"
         ></TextInput>
       </View>
-     
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.bouton}
+        onPress={()=>handlecommencebuton()}
+      >
+        <Text style={styles.text}> Start </Text>
+      </TouchableOpacity>
+      {emailError && <Text style={styles.text}>Invalid email address</Text>}
     </View>
   );
 }

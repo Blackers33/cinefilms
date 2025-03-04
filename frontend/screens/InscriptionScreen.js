@@ -1,40 +1,47 @@
 import InscriptionScreen1 from "../components/inscriptionScreen/InscriptionScreen1";
 import InscriptionScreen2 from "../components/inscriptionScreen/InscriptionScreen2";
+import InscriptionScreen3 from "../components/inscriptionScreen/InscriptionScreen3";
 import {
   StyleSheet,
   KeyboardAvoidingView,
   SafeAreaView,
   Platform,
-  TouchableOpacity,
-  Text,
+  View,
 } from "react-native";
 import { useState } from "react";
 
-
 export default function InscriptionScreen() {
-  
-  const [isStep1Visible, setIsStep1Visible] = useState(true); 
+  const [currentStep, setCurrentStep] = useState(1);
 
   const handlecommencerbuton = () => {
-    setIsStep1Visible(false);
+    setCurrentStep(2);
+  };
+
+  const handlesuivantbuton = () => {
+    setCurrentStep(3);
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "padding"}
     >
       <SafeAreaView>
-        
-      {isStep1Visible && <InscriptionScreen1 />}
-        {isStep1Visible&&<TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.bouton}
-          onPress={() => handlecommencerbuton()}
-        >
-          <Text style={styles.text}>Commencer </Text>
-        </TouchableOpacity>}
-        {!isStep1Visible && <InscriptionScreen2 />}
+        {currentStep === 1 && (
+          <View>
+            <InscriptionScreen1 handleNext={handlecommencerbuton} />
+          </View>
+        )}
+        {currentStep === 2 && (
+          <View>
+            <InscriptionScreen2 handleNext={handlesuivantbuton} />
+          </View>
+        )}
+        {currentStep === 3 && (
+          <View>
+            <InscriptionScreen3 />
+          </View>
+        )}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
