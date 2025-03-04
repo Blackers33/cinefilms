@@ -9,11 +9,7 @@ import {
 import { useState } from "react";
 import TextInput from "../common/TextInput";
 
-function InscriptionScreen2({ handleNext}) {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [city, setCity] = useState("");
-  const [genre, setGenre] = useState("");
+function InscriptionScreen2({ handleNext,name,setName, age, setAge, city, setCity, genre, setGenre,}) {
 
   return (
     <View style={styles.container}>
@@ -25,7 +21,7 @@ function InscriptionScreen2({ handleNext}) {
           <Text style={styles.Input}>Name</Text>
 
           <TextInput
-            onChangeText={(value) => setName(value)}
+            onChangeText={setName}
             value={name}
             placeholder="Enter your name"
           ></TextInput>
@@ -34,7 +30,7 @@ function InscriptionScreen2({ handleNext}) {
           <Text style={styles.Input}>Age</Text>
 
           <TextInput
-            onChangeText={(value) => setAge(value)}
+            onChangeText={setAge}
             value={age}
             placeholder="Enter your age"
           ></TextInput>
@@ -43,7 +39,7 @@ function InscriptionScreen2({ handleNext}) {
           <Text style={styles.Input}>City</Text>
 
           <TextInput
-            onChangeText={(value) => setCity(value)}
+            onChangeText={setCity}
             value={city}
             placeholder="Enter your city"
           ></TextInput>
@@ -52,7 +48,7 @@ function InscriptionScreen2({ handleNext}) {
           <Text style={styles.Input}>Genre</Text>
 
           <TextInput
-            onChangeText={(value) => setGenre(value)}
+            onChangeText={setGenre}
             value={genre}
             placeholder="Enter your genre"
           ></TextInput>
