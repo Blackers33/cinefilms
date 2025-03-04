@@ -1,6 +1,6 @@
-import InscriptionScreen1 from "../components/inscriptionScreen/InscriptionScreen1";
-import InscriptionScreen2 from "../components/inscriptionScreen/InscriptionScreen2";
-import InscriptionScreen3 from "../components/inscriptionScreen/InscriptionScreen3";
+import InscriptionScreen1 from "../components/inscriptionScreen/InscriptionComposant1";
+import InscriptionScreen2 from "../components/inscriptionScreen/InscriptionComposant2";
+import InscriptionScreen3 from "../components/inscriptionScreen/InscriptionComposant3";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -11,6 +11,17 @@ import {
 import { useState } from "react";
 
 export default function InscriptionScreen() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [city, setCity] = useState("");
+  const [genre, setGenre] = useState("");
+  const [genrefilm, setGenrefilm] = useState([]);
+  const [recherchefilm, setRecherchefilm] = useState([]);
+  const [biography, setBiography] = useState("");
+  const [filmInput, setFilmInput] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
 
   const handlecommencerbuton = () => {
@@ -21,6 +32,12 @@ export default function InscriptionScreen() {
     setCurrentStep(3);
   };
 
+  const handlefinirbuton = () => {
+    console.log("Inscription terminée");
+
+  };
+
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -29,17 +46,44 @@ export default function InscriptionScreen() {
       <SafeAreaView>
         {currentStep === 1 && (
           <View>
-            <InscriptionScreen1 handleNext={handlecommencerbuton} />
+            <InscriptionScreen1
+              handleNext={handlecommencerbuton}
+              username={username}
+              setUsername={setUsername}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+            />
           </View>
         )}
         {currentStep === 2 && (
           <View>
-            <InscriptionScreen2 handleNext={handlesuivantbuton} />
+            <InscriptionScreen2
+              handleNext={handlesuivantbuton}
+              name={name}
+              setName={setName}
+              age={age}
+              setAge={setAge}
+              city={city}
+              setCity={setCity}
+              genre={genre}
+              setGenre={setGenre}
+            />
           </View>
         )}
         {currentStep === 3 && (
           <View>
-            <InscriptionScreen3 />
+            <InscriptionScreen3
+            genrefilm={genrefilm} 
+            setGenrefilm={setGenrefilm}
+            recherchefilm={recherchefilm}
+            setRecherchefilm={setRecherchefilm}
+            biography={biography}
+            setBiography={setBiography}
+            filmInput={filmInput}
+            setFilmInput={setFilmInput}
+            handleinscriptionbuton={handlefinirbuton}/>
           </View>
         )}
       </SafeAreaView>
@@ -51,8 +95,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1E1C1A",
-    alignItems: "center",
+    flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
   },
   bouton: {
     backgroundColor: "#C94106",

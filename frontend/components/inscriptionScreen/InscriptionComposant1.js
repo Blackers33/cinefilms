@@ -2,10 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import TextInput from "../common/TextInput";
 
-function InscriptionScreen1({ handleNext}) {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function InscriptionScreen1({ handleNext,username,setUsername, email, setEmail, password, setPassword,}) {
+  
   const [emailError, setEmailError] = useState(false);
 
   const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -31,7 +29,7 @@ function InscriptionScreen1({ handleNext}) {
         <Text style={styles.Input}>Username</Text>
 
         <TextInput
-          onChangeText={(value) => setUsername(value)}
+          onChangeText={setUsername}
           value={username}
           placeholder="Enter your username"
         ></TextInput>
@@ -39,15 +37,15 @@ function InscriptionScreen1({ handleNext}) {
       <View>
         <Text style={styles.Input}>Email</Text>
         <TextInput
-          onChangeText={(value) => setEmail(value)}
+          onChangeText={setEmail}
           value={email}
           placeholder="Enter your email"
         ></TextInput>
       </View>
       <View>
-        <Text style={styles.Input}>Email</Text>
+        <Text style={styles.Input}>Password</Text>
         <TextInput
-          onChangeText={(value) => setPassword(value)}
+          onChangeText={setPassword}
           value={password}
           placeholder="Choose your password"
           secureTextEntry={true}
