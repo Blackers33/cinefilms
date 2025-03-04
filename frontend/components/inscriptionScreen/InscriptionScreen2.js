@@ -26,63 +26,43 @@ const [genre, setGenre] = useState('')
       <View style={styles.inputContainer} >
       <View>
         <Text style={styles.Input}>Name</Text>
-        <LinearGradient
-          colors={["rgba(30,28,26,0.8)", "transparent"]}
-          start={{ x: 0.26, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
+        
           <TextInput
             onChangeText={(value) => setName(value)}
             value={name}
             placeholder="Enter your name"
           ></TextInput>
-        </LinearGradient>
+        
       </View>
       <View>
         <Text style={styles.Input}>Age</Text>
-        <LinearGradient
-          colors={["rgba(30,28,26,0.8)", "transparent"]}
-          start={{ x: 0.26, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
+      
           <TextInput
             onChangeText={(value) => setAge(value)}
             value={age}
             placeholder="Enter your age"
           ></TextInput>
-        </LinearGradient>
+       
       </View>
       <View>
         <Text style={styles.Input}>City</Text>
-        <LinearGradient
-          colors={["rgba(30,28,26,0.8)", "transparent"]}
-          start={{ x: 0.26, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
+        
           <TextInput
             onChangeText={(value) => setCity(value)}
             value={city}
             placeholder="Enter your city"
           ></TextInput>
-        </LinearGradient>
+        
       </View>
       <View>
         <Text style={styles.Input}>Genre</Text>
-        <LinearGradient
-          colors={["rgba(30,28,26,0.8)", "transparent"]}
-          start={{ x: 0.26, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
+        
           <TextInput
             onChangeText={(value) => setGenre(value)}
             value={genre}
             placeholder="Enter your genre"
           ></TextInput>
-        </LinearGradient>
+        
       </View>
       </View>
     </View>
