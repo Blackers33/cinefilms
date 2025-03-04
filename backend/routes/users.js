@@ -55,7 +55,7 @@ router.post('/signin', (req, res) => {
 });
 
 
-//POST création de profile
+//PUT creation de profile
 router.put('/profil/:token', (req, res) => {
 User.findOne({ token: req.params.token }).then(data => {
   if (data)
@@ -70,7 +70,9 @@ User.findOne({ token: req.params.token }).then(data => {
     biography: req.body.biography,
   }).then(updatedData => {
     res.json({ result: true, message: 'Profil updated', profil: updatedData})
-  })
+  }); else {
+    res.json({ result: false, message: 'No corresponding profil'})
+  }
 });
 });
 
