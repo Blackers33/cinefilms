@@ -12,7 +12,7 @@ export default function TextInputStyled(props) {
 		props.variant === "light" ? ["#CCC", "#777"] : ["#B22E2E", "#333"];
 
 	return (
-		<View style={{height: 40}}>
+		<View style={ styles.buttonContainer}>
 			<LinearGradient
 				colors={colors}
 				style={styles.gradiant}
@@ -34,7 +34,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "stretch",
 	},
-	buttonContainer: {},
+	buttonContainer: {
+		height: 40,
+	},
 	buttonText: {
 		paddingLeft : 10,
 		color: "#FFF",

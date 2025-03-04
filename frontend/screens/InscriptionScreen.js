@@ -1,14 +1,17 @@
 import InscriptionScreen1 from "../components/inscriptionScreen/InscriptionComposant1";
 import InscriptionScreen2 from "../components/inscriptionScreen/InscriptionComposant2";
 import InscriptionScreen3 from "../components/inscriptionScreen/InscriptionComposant3";
+import EditComponent from "../components/EditProfilComponents/EditProfilComponent1";
 import {
   StyleSheet,
   KeyboardAvoidingView,
   SafeAreaView,
   Platform,
   View,
+  ImageBackground,
 } from "react-native";
 import { useState } from "react";
+import ConnexionScreen from "./ConnexionScreen";
 
 export default function InscriptionScreen() {
   const [username, setUsername] = useState("");

@@ -1,5 +1,6 @@
 import TextInput from "../common/TextInput";
 import {
+  ImageBackground,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -8,16 +9,24 @@ import {
   import { useState } from "react";
   import Button from "../common/Button";
 
-  function connexionScreen() {
+  function connexionScreen({ navigation }) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const handleConnexion = () => {
+    }
+
     return (
-      <View style={styles.container}>
+      
+      <View style={styles.container} >
         <Text style={styles.titrelogo}>Bienvenue sur Cinefilm !</Text>
+        <Text style={styles.titrecontenu}>
+                Retrouvez les meilleurs films, événements et échanges entre passionnés
+                de cinéma. Rejoignez la communauté et vivez votre passion à fond !{"\n"}
+              </Text>
         <View style={styles.inputContainer}>
-          <View>
+          <View style={{marginLeft: 20, marginRight: 20}}>
             <Text style={styles.Input}>Email</Text>
             <TextInput
               onChangeText={(value) => setEmail(value)}
@@ -25,18 +34,20 @@ import {
               placeholder="Enter your email"
             ></TextInput>
           </View>
-          <View>
+          <View style={{marginLeft: 20, marginRight: 20}}>
             <Text style={styles.Input}>Password</Text>
             <TextInput
               onChangeText={(value) => setPassword(value)}
               value={password}
               placeholder="Enter your password"
+              type="password"
+              secureTextEntry={true}
             ></TextInput>
           </View>
           <View style={styles.buttonContainer} >
-          <Button text="Connexion" />
+          <Button text="Connexion" onPress={() => handleConnexion()} />
           <Text style={styles.transitionText} >Pas encore inscrit ?</Text>
-          <Button text="Inscrivez-vous" />
+          <Button text="Inscrivez-vous" onPress={() => navigation.navigate('InscriptionScreen')} />
           </View>
         </View>
       </View>
@@ -47,11 +58,13 @@ import {
     inputContainer: {
         width: 380,
         marginTop: 50,
+        
       },
       Input: {
         padding: 12,
         fontSize: 16,
         color: "#C94106",
+        paddingLeft: 30,
       },
       bouton: {
         backgroundColor: "#C94106",
@@ -70,11 +83,14 @@ import {
       titrelogo: {
         color: "#c94106",
         fontSize: 35,
+        padding: 10,
+        textAlign:
+          "center",
       },
       transitionText: {
         color: "#c94106",
         fontSize: 20,
-        marginTop: 50,
+        marginTop: 80,
         textAlign: "center",
       },
       boutonInscription: {
@@ -88,15 +104,29 @@ import {
       },
       container: {
         flex: 1,
-        backgroundColor: "#1E1C1A",
+        backgroundColor: "#000000D9",
         alignItems: "center",
         justifyContent: "center",
+      
       },
       buttonContainer: {
         width: 380,
         marginTop: 10,
         alignItems: "center",
       },
+      ImageBackground: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        zIndex: -1,
+      },
+      titrecontenu: {
+        color: "#c94106",
+        paddingLeft: 10,
+        paddingRight: 10,
+        textAlign: "center",
+      },
+
   })
 
 
