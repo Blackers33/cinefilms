@@ -72,13 +72,11 @@ function InscriptionScreen2({ handleNext}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    height: "100%",
     alignItems: "center",
   },
   inputContainer: {
-    width: "380",
-    marginTop: "80",
+    width: 380,
+    marginTop: 50,
   },
   champInput: {
     borderWidth: 2,
@@ -94,18 +92,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#C94106",
   },
- 
   avatar: {
     borderColor: "pink",
     backgroundColor: "pink",
     borderWidth: 5,
     height: 120,
     width: 120,
-    marginTop: 70,
-
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 50,
   },
   avatarText: {
     fontSize: 25,
@@ -118,7 +114,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
+    marginTop: 50,
   },
   text: {
     color: "#ffffff",
