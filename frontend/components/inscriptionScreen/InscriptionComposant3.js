@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import TextInput from "../common/TextInput";
+import Button from "../common/Button";
 
 function InscriptionScreen3({
   genrefilm,
@@ -15,7 +16,6 @@ function InscriptionScreen3({
   setFilmInput,
   handleinscriptionbuton,
 }) {
-  
   const movieGenres = [
     //data des movieGenres
     { id: 1, name: "Action" },
@@ -62,9 +62,10 @@ function InscriptionScreen3({
   });
 
   const listefilms = recherchefilm.map((data, i) => {
+    //afficher les films recherché par l'utilisateur
     return (
-      <Text key={i} style={{ color: "white" }}>
-        <FontAwesome name="caret-right" size={25} color="#ec6e5b" />
+      <Text key={i} style={{ color: "white", flexDirection: 'row', alignItems: 'center' }}>
+        <FontAwesome name="caret-right" size={25} color="#ec6e5b" style={{ marginRight: 8 }} />
         {data}
       </Text>
     );
@@ -73,7 +74,9 @@ function InscriptionScreen3({
   return (
     <>
       <View style={styles.genrefilm}>
-        <Text style={styles.title}>Select your favorite movie genres.</Text>
+        <Text style={styles.title}>
+          On parle cinéma ! Quel est ton genre ?" 🎥🎭
+        </Text>
         <Dropdown
           style={styles.dropdown}
           placeholderStyle={styles.placeholderStyle}
@@ -85,45 +88,57 @@ function InscriptionScreen3({
           maxHeight={300}
           labelField="name"
           valueField="id"
-          placeholder="Select a genre"
-          searchPlaceholder="search..."
+          placeholder="choissisez votre genre de film"
+          searchPlaceholder="recherche..."
           onChange={handleSelectGenre}
           value={genrefilm}
         />
+        <View>
         {listgenrefilms}
+        </View>
       </View>
       <View style={styles.reseachfilm}>
         <Text style={styles.title}>
-          Search for your favorite movie to add your profil
+          Recherchez vos films préférés pour les ajouter à votre profil
         </Text>
-        <TextInput
-          onChangeText={(value) => setFilmInput(value)}
-          value={filmInput}
-          placeholder="Search..."
-        ></TextInput>
-        <TouchableOpacity activeOpacity={0.8} onPress={handlereseachfilm}>
-          <FontAwesome name="search" size={25} color="#ec6e5b" />
-        </TouchableOpacity>
+        <View style={styles.barfilm}>
+          <TextInput
+            onChangeText={(value) => setFilmInput(value)}
+            value={filmInput}
+            placeholder="recherche..."
+          ></TextInput>
+          <TouchableOpacity activeOpacity={0.8} onPress={handlereseachfilm}>
+            <FontAwesome
+              style={styles.iconsearch}
+              name="search"
+              size={25}
+              color="#ec6e5b"
+            />
+          </TouchableOpacity>
+        </View>
         {listefilms}
       </View>
 
       <Text style={styles.title}>
-        Write your biography for your passion for film
+        Écris ta biographie sur ta passion pour le cinéma
       </Text>
       <TextInput
         style={styles.biographyInput}
         onChangeText={(value) => setBiography(value)}
         value={biography}
-        placeholder="write..."
+        placeholder="à vous de jouer !"
         secureTextEntry={true}
         autoCorrect={false}
         textContentType="text"
         multiline={true}
         numberOfLines={5}
       ></TextInput>
-      <TouchableOpacity activeOpacity={0.8} style={styles.bouton} onPress={()=>handleinscriptionbuton()}>
-        <Text style={styles.text}>Complete your registration </Text>
-      </TouchableOpacity>
+      <View style={styles.button}>
+        <Button
+          text="Compléter l'inscription"
+          onPress={handleinscriptionbuton}
+        />
+      </View>
     </>
   );
 }
@@ -131,10 +146,12 @@ function InscriptionScreen3({
 const styles = StyleSheet.create({
   genrefilm: {
     alignSelf: "auto",
-    marginBottom: 40
+    marginBottom: 40,
   },
   title: {
     color: "#ffffff",
+    fontSize: 16,
+    marginBottom: 10,
   },
   reseachbarfilm: {
     marginBottom: 40,
@@ -163,6 +180,11 @@ const styles = StyleSheet.create({
   reseachfilm: {
     marginBottom: 70,
   },
+  iconsearch: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+  },
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
@@ -180,28 +202,32 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
   },
 
-  bouton: {
-    backgroundColor: "#C94106",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 150,
-  },
   text: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 40,
   },
   biographyInput: {
-    height: 90,
+    height: 95,
+    width: "100%",
     borderWidth: 1,
     borderColor: "#C94106",
     padding: 10,
     borderRadius: 5,
     textAlignVertical: "top",
     backgroundColor: "#f9f9f9",
+    color: "#000000",
+    marginBottom: 30,
+  },
+  button: {
+    marginTop: 100,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    bottom: 0,
+    width: "100%",
   },
 });
 

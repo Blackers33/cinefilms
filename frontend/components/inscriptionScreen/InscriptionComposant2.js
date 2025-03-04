@@ -1,29 +1,31 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-} from "react-native";
-import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import Button from "../common/Button";
 import TextInput from "../common/TextInput";
 
-function InscriptionScreen2({ handleNext,name,setName, age, setAge, city, setCity, genre, setGenre,}) {
-
+function InscriptionScreen2({
+  handleNext,
+  name,
+  setName,
+  age,
+  setAge,
+  city,
+  setCity,
+  genre,
+  setGenre,
+}) {
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>AVATAR</Text>
       </View>
       <View style={styles.inputContainer}>
         <View>
-          <Text style={styles.Input}>Name</Text>
+          <Text style={styles.Input}>Pseudo</Text>
 
           <TextInput
             onChangeText={setName}
             value={name}
-            placeholder="Enter your name"
+            placeholder="choisissez un pseudo"
           ></TextInput>
         </View>
         <View>
@@ -32,16 +34,16 @@ function InscriptionScreen2({ handleNext,name,setName, age, setAge, city, setCit
           <TextInput
             onChangeText={setAge}
             value={age}
-            placeholder="Enter your age"
+            placeholder="Entrez votre âge"
           ></TextInput>
         </View>
         <View>
-          <Text style={styles.Input}>City</Text>
+          <Text style={styles.Input}>Votre localisation </Text>
 
           <TextInput
             onChangeText={setCity}
             value={city}
-            placeholder="Enter your city"
+            placeholder="Entez où vous situez"
           ></TextInput>
         </View>
         <View>
@@ -50,29 +52,22 @@ function InscriptionScreen2({ handleNext,name,setName, age, setAge, city, setCit
           <TextInput
             onChangeText={setGenre}
             value={genre}
-            placeholder="Enter your genre"
+            placeholder="Parce qu'on aime mieux te connaître ! 😉"
           ></TextInput>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.bouton}
-          onPress={handleNext}
-        >
-          <Text style={styles.text}>Suivant </Text>
-        </TouchableOpacity>
+        <View style={styles.button}>
+          <Button text="Scène suivante🎬" onPress={handleNext} />
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-  },
   inputContainer: {
     width: 380,
     marginTop: 50,
+    marginLeft: 20,
   },
   champInput: {
     borderWidth: 2,
@@ -98,24 +93,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 50,
+    marginLeft: 150,
   },
   avatarText: {
     fontSize: 25,
     fontWeight: "bold",
   },
-  bouton: {
-    backgroundColor: "#C94106",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 50,
-  },
+
   text: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  button: {
+    marginTop: 30,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

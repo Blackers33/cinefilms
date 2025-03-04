@@ -1,6 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useState } from "react";
 import TextInput from "../common/TextInput";
+import Button from "../common/Button";
+
 
 function InscriptionScreen1({ handleNext,username,setUsername, email, setEmail, password, setPassword,}) {
   
@@ -19,90 +21,76 @@ function InscriptionScreen1({ handleNext,username,setUsername, email, setEmail, 
 
   return (
     <View>
-      <Text style={styles.titrelogo}>Bienvenue sur Cinefilm ! 🎬✨</Text>
-      <Text style={styles.titrecontenu}>
-        Retrouvez les meilleurs films, événements et échanges entre passionnés
-        de cinéma. Rejoignez la communauté et vivez votre passion à fond !{"\n"}
-        🍿 Bon divertissement !
-      </Text>
+      <Text style={styles.titrelogo}>Commencer votre inscription sur Cinefilms</Text>
+     
       <View>
-        <Text style={styles.Input}>Username</Text>
+        <Text style={styles.titreInput}>Nom d'utilisateur</Text>
 
         <TextInput
           onChangeText={setUsername}
           value={username}
-          placeholder="Enter your username"
+          placeholder="Entrez votr nom d'utilisateur"
         ></TextInput>
       </View>
       <View>
-        <Text style={styles.Input}>Email</Text>
+        <Text style={styles.titreInput}>Email</Text>
         <TextInput
           onChangeText={setEmail}
           value={email}
-          placeholder="Enter your email"
+          placeholder="Entrez votre email"
+          autoCorrect={false}
         ></TextInput>
       </View>
       <View>
-        <Text style={styles.Input}>Password</Text>
+        <Text style={styles.titreInput}>Mot de passe</Text>
         <TextInput
           onChangeText={setPassword}
           value={password}
-          placeholder="Choose your password"
+          placeholder="Créez votre mot de passe"
           secureTextEntry={true}
           autoCorrect={false}
           textContentType="password"
         ></TextInput>
       </View>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={styles.bouton}
-        onPress={()=>handlecommencebuton()}
-      >
-        <Text style={styles.text}> Start </Text>
-      </TouchableOpacity>
-      {emailError && <Text style={styles.text}>Invalid email address</Text>}
+      <View style={styles.button}>
+      <Button text="C'est parti" onPress={handlecommencebuton} />
+      {emailError && <Text style={styles.text}>Merci de saisir une adresse e-mail valide</Text>}
     </View>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   titrelogo: {
     color: "#c94106",
-    fontSize: 35,
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 85,
+    textAlign: "center",
   },
   titrecontenu: {
     color: "#c94106",
+    fontSize: 15,
+    textAlign: "center",
+    marginBottom: 20,
   },
-  champInput: {
-    borderWidth: 2,
-    borderColor: "#C94106",
-    borderRadius: 100,
-    overflow: "hidden",
-    marginBottom: 10,
-    color: "#FFFFFF",
-  },
-  Input: {
+  
+ titreInput: {
     padding: 12,
     fontSize: 16,
     color: "#C94106",
   },
-  gradient: {
-    padding: 2, // Léger padding pour bien voir le border color
-    borderRadius: 100,
-  },
-  bouton: {
-    backgroundColor: "#C94106",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
+  
   text: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  button: {
+    marginTop: 50,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

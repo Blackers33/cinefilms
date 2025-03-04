@@ -1,17 +1,15 @@
 import InscriptionScreen1 from "../components/inscriptionScreen/InscriptionComposant1";
 import InscriptionScreen2 from "../components/inscriptionScreen/InscriptionComposant2";
 import InscriptionScreen3 from "../components/inscriptionScreen/InscriptionComposant3";
-import EditComponent from "../components/EditProfilComponents/EditProfilComponent1";
 import {
   StyleSheet,
   KeyboardAvoidingView,
   SafeAreaView,
   Platform,
   View,
-  ImageBackground,
+  Text
 } from "react-native";
 import { useState } from "react";
-import ConnexionScreen from "./ConnexionScreen";
 
 export default function InscriptionScreen() {
   const [username, setUsername] = useState("");
@@ -22,21 +20,57 @@ export default function InscriptionScreen() {
   const [city, setCity] = useState("");
   const [genre, setGenre] = useState("");
   const [genrefilm, setGenrefilm] = useState([]);
-  const [recherchefilm, setRecherchefilm] = useState([]);
+  const [recherchefilm, setRecherchefilm] = useState([]);//pour afficher les films recherchés
   const [biography, setBiography] = useState("");
   const [filmInput, setFilmInput] = useState("");
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1);//pour afficher les étapes de l'inscription
+  const [bienvenue, setBienvenue] = useState(false);//pour afficher le message de bienvenue
 
-  const handlecommencerbuton = () => {
+  const handlecommencerbuton = () => {//pour passer à l'étape suivante
     setCurrentStep(2);
   };
 
-  const handlesuivantbuton = () => {
+  const handlesuivantbuton = () => {//pour passer à l'étape suivante
     setCurrentStep(3);
   };
 
-  const handlefinirbuton = () => {
-    console.log("Inscription terminée");
+  const handlefinirbuton = () => {//pour envoyer les données de l'inscription
+    fetch("http://10.9.0.150:3000/users/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+        email: email,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if(data.result){
+          fetch(`http://10.9.0.150:3000/users/profil/${data.token}`, {//pour créer le profil de l'utilisateur
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: name,
+              age: age,
+              genre: genre,
+              location: city,
+              favMovies: recherchefilm,
+              favGenres: genrefilm,
+              biography: biography,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if(data.result){
+                console.log("Profil créé");
+                setBienvenue(true);
+              }
+            });
+          
+         
+        }
+      });
 
   };
 
@@ -89,6 +123,7 @@ export default function InscriptionScreen() {
             handleinscriptionbuton={handlefinirbuton}/>
           </View>
         )}
+        {bienvenue&&<Text style={styles.text}>Your registration was successful. Welcome to Cinefilms!🎉</Text>} 
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -115,5 +150,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 10,
   },
 });
