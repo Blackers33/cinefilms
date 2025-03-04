@@ -10,7 +10,7 @@ import { RadialGradient } from "react-native-gradients";
 
 export default function GradientBackground() {
 	const colorList = [
-		{ offset: "0%", color: "#240F0F", opacity: "1" },
+		{ offset: "0%", color: "#61260d", opacity: "1" },
 		{ offset: "100%", color: "#1E1C1A", opacity: "1" },
 	];
 	return (

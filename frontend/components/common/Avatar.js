@@ -1,5 +1,5 @@
 /**
- * @author Sacha
+ * 
  * usage : import Avatar from "../components/common/Avatar";
  * <Avatar uri={user.avatar} size={64} />
  * 
