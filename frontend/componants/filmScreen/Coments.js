@@ -8,6 +8,7 @@ function Coments() {
     console.log(coments);
   };
   return (
+    
     <View>
 <TextInput>
 onChangeText={(value) => setComents(value)}
