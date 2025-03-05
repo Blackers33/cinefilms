@@ -1,4 +1,5 @@
 import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
+import EditProfilComponent from "../components/EditProfilComponents/EditProfilComponent1";
 
     import {
         StyleSheet,
@@ -38,11 +39,11 @@ const handleConnexion = () => {
     }
 
     return (
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardShouldPersistTaps="handled">
       <KeyboardAvoidingView
       
         style={styles.container}
-        behavior={Platform.OS === "padding"}
+        behavior={Platform.OS === "padding" }
       >
         <SafeAreaView >
           <ImageBackground source={require('../assets/wallpaper-cinefilm.jpg')} style={styles.backgroundImage}>
@@ -54,6 +55,7 @@ const handleConnexion = () => {
           <Button text="Inscrivez-vous" onPress={() => navigation.navigate("Inscription")} />
           </View>
           </ImageBackground>
+        
         </SafeAreaView>
       </KeyboardAvoidingView>
       </ScrollView>
@@ -63,7 +65,7 @@ const handleConnexion = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      // backgroundColor: "#1E1C1A",
+      backgroundColor: "#1E1C1A",
       alignItems: "center",
       justifyContent: "center",
     },

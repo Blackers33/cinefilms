@@ -17,7 +17,7 @@ export default function ProfilPageComponent ({
 
     const user = useSelector((state) => state.user.value);
 
-    fetch(`http://10.9.0.150:3000/users/profil${user.token}`, {
+    fetch(`http://10.9.0.148:3000/users/profil${user.token}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -35,7 +35,7 @@ export default function ProfilPageComponent ({
     
 
   return (
-    <View>
+    <View style={styles.container} >
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>AVATAR</Text>
       </View>
@@ -92,6 +92,12 @@ export default function ProfilPageComponent ({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#1E1C1A",
+    alignItems: "center",
+      justifyContent: "center",
+  },
   inputContainer: {
     width: 380,
     marginTop: 50,
