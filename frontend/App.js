@@ -10,6 +10,7 @@ import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
+import { StatusBar } from "expo-status-bar";
 
 const Stack = createNativeStackNavigator();
 
@@ -61,15 +62,18 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
-		<Provider store={store}>
-			<NavigationContainer>
-				<Stack.Navigator screenOptions={{ headerShown: false }}>
-					<Stack.Screen name='Connexion' component={ConnexionScreen} />
-					<Stack.Screen name='Inscription' component={InscriptionScreen} />
-					<Stack.Screen name='TabNavigator' component={TabNavigator} />
-				</Stack.Navigator>
-			</NavigationContainer>
-		</Provider>
+
+			<Provider store={store}>
+				<NavigationContainer>
+					<Stack.Navigator screenOptions={{ headerShown: false }}>
+						<Stack.Screen name='Connexion' component={ConnexionScreen} />
+						<Stack.Screen name='Inscription' component={InscriptionScreen} />
+						<Stack.Screen name='TabNavigator' component={TabNavigator} />
+					</Stack.Navigator>
+				</NavigationContainer>
+				<StatusBar style='light' />
+			</Provider>
+
 	);
 }
 

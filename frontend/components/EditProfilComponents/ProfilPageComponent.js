@@ -17,20 +17,20 @@ export default function ProfilPageComponent ({
 
     const user = useSelector((state) => state.user.value);
 
-    fetch(`http://10.9.0.148:3000/users/profil${user.token}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          age: age,
-          city: city,
-          genre: genre,
-          genrefilm: genrefilm,
-          recherchefilm: recherchefilm,
-          biography: biography,
-        }),
-    })
-    .then((response) => response.json())
-    .then((data) => setUserData(userData));
+    fetch(process.env.EXPO_PUBLIC_IP_ADDRESS +  '/users/profil' + user.token, {
+			method: "GET",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				age: age,
+				city: city,
+				genre: genre,
+				genrefilm: genrefilm,
+				recherchefilm: recherchefilm,
+				biography: biography,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => setUserData(userData));
     
     
 

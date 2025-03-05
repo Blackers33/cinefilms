@@ -52,54 +52,64 @@ export default function InscriptionScreen({navigation}) {
           longitude: firstCity.geometry.coordinates[0],
         };
         // Now perform user signup
-        fetch("http://10.9.0.150:3000/users/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username,
-            password: password,
-            email: email,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.result) {
-              // After successful signup, update the user profile with location
-              dispatch(//pour envoyer les données de l'utilisateur
-                updateinscriptionUser({username:username, email:email,token:data.token}));
+        fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/signup", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						username: username,
+						password: password,
+						email: email,
+					}),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						if (data.result) {
+							// After successful signup, update the user profile with location
+							dispatch(
+								//pour envoyer les données de l'utilisateur
+								updateinscriptionUser({
+									username: username,
+									email: email,
+									token: data.token,
+								})
+							);
 
-              fetch(`http://10.9.0.150:3000/users/profil/${data.token}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  age: age,
-                  genre: genre,
-                  location: locationData,
-                  favMovies: recherchefilm,
-                  favGenres: genrefilm,
-                  biography: biography,
-                }),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data.result) {
-                    dispatch(
-                      updateprofilUser({
-                        age: age,
-                        genre: genre,
-                        location: locationData,
-                        favMovies: recherchefilm,
-                        favGenres: genrefilm,
-                        biography: biography,
-                      }));
-                   
-                    setBienvenue(true); // Successfully signed up and created the profile
-                    navigation.navigate("TabNavigator");//pour naviguer vers la page d'accueil
+							fetch(
+								process.env.EXPO_PUBLIC_IP_ADDRESS +
+									"/users/profil/" +
+									data.token,
+								{
+									method: "PUT",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({
+										age: age,
+										genre: genre,
+										location: locationData,
+										favMovies: recherchefilm,
+										favGenres: genrefilm,
+										biography: biography,
+									}),
+								}
+							)
+								.then((response) => response.json())
+								.then((data) => {
+									if (data.result) {
+										dispatch(
+											updateprofilUser({
+												age: age,
+												genre: genre,
+												location: locationData,
+												favMovies: recherchefilm,
+												favGenres: genrefilm,
+												biography: biography,
+											})
+										);
 
-                  };
-                });
-            }
-          });
+										setBienvenue(true); // Successfully signed up and created the profile
+									}
+								});
+						}
+					});
       });
   };
 

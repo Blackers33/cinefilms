@@ -118,7 +118,6 @@ export default function HomeScreen({ navigation }) {
 					filters={filters}
 					setFilters={setFilters}
 				/>
-				<StatusBar style='light' />
 			</ImageBackground>
 		</SafeAreaView>
 	);

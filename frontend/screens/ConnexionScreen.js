@@ -19,8 +19,10 @@ export default function ConnexionScreen({ navigation }) {
 	const [password, setPassword] = useState("");
 
 	const handleConnexion = () => {
+ 
+
     
-		fetch("http://10.9.0.150:3000/users/signin", {
+		fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/signin", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -30,7 +32,7 @@ export default function ConnexionScreen({ navigation }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-        console.log(data)
+				console.log(data);
 				if (data.result) {
 					navigation.navigate("TabNavigator", { token: data.token });
 				} else {
