@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   Platform,
   View,
-  Text
+  Text,
 } from "react-native";
 import { useState } from "react";
 
@@ -15,65 +15,76 @@ export default function InscriptionScreen() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [city, setCity] = useState("");
   const [genre, setGenre] = useState("");
   const [genrefilm, setGenrefilm] = useState([]);
-  const [recherchefilm, setRecherchefilm] = useState([]);//pour afficher les films recherchés
+  const [recherchefilm, setRecherchefilm] = useState([]); //pour afficher les films recherchés
   const [biography, setBiography] = useState("");
   const [filmInput, setFilmInput] = useState("");
-  const [currentStep, setCurrentStep] = useState(1);//pour afficher les étapes de l'inscription
-  const [bienvenue, setBienvenue] = useState(false);//pour afficher le message de bienvenue
+  const [currentStep, setCurrentStep] = useState(1); //pour afficher les étapes de l'inscription
+  const [bienvenue, setBienvenue] = useState(false); //pour afficher le message de bienvenue
 
-  const handlecommencerbuton = () => {//pour passer à l'étape suivante
+  const handlecommencerbuton = () => {
+    //pour passer à l'étape suivante
     setCurrentStep(2);
   };
 
-  const handlesuivantbuton = () => {//pour passer à l'étape suivante
+  const handlesuivantbuton = () => {
+    //pour passer à l'étape suivante
     setCurrentStep(3);
   };
 
-  const handlefinirbuton = () => {//pour envoyer les données de l'inscription
-    fetch("http://10.9.0.150:3000/users/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        email: email,
-      }),
-    })
+  const handlefinirbuton = () => {
+    // Fetch the location (latitude, longitude) using the city name
+    fetch(`https://api-adresse.data.gouv.fr/search/?q=${city}`)
       .then((response) => response.json())
       .then((data) => {
-        if(data.result){
-          fetch(`http://10.9.0.150:3000/users/profil/${data.token}`, {//pour créer le profil de l'utilisateur
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: name,
-              age: age,
-              genre: genre,
-              location: city,
-              favMovies: recherchefilm,
-              favGenres: genrefilm,
-              biography: biography,
-            }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if(data.result){
-                console.log("Profil créé");
-                setBienvenue(true);
-              }
-            });
-          
-         
-        }
+        console.log(data);
+        const firstCity = data.features[0];
+        const locationData = {
+          name: firstCity.properties.city,
+          latitude: firstCity.geometry.coordinates[1],
+          longitude: firstCity.geometry.coordinates[0],
+        };
+        console.log(locationData);
+        // Now perform user signup
+        fetch("http://192.168.1.11:3000/users/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+            email: email,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result) {
+              // After successful signup, update the user profile with location
+              fetch(`http://192.168.1.11:3000/users/profil/${data.token}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  age: age,
+                  genre: genre,
+                  location: locationData,
+                  favMovies: recherchefilm,
+                  favGenres: genrefilm,
+                  biography: biography,
+                }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.result) {
+                    console.log(data);
+                    setBienvenue(true); // Successfully signed up and created the profile
+                  }
+                });
+            }
+          });
       });
-
   };
-
 
   return (
     <KeyboardAvoidingView
@@ -98,8 +109,6 @@ export default function InscriptionScreen() {
           <View>
             <InscriptionScreen2
               handleNext={handlesuivantbuton}
-              name={name}
-              setName={setName}
               age={age}
               setAge={setAge}
               city={city}
@@ -112,18 +121,23 @@ export default function InscriptionScreen() {
         {currentStep === 3 && (
           <View>
             <InscriptionScreen3
-            genrefilm={genrefilm} 
-            setGenrefilm={setGenrefilm}
-            recherchefilm={recherchefilm}
-            setRecherchefilm={setRecherchefilm}
-            biography={biography}
-            setBiography={setBiography}
-            filmInput={filmInput}
-            setFilmInput={setFilmInput}
-            handleinscriptionbuton={handlefinirbuton}/>
+              genrefilm={genrefilm}
+              setGenrefilm={setGenrefilm}
+              recherchefilm={recherchefilm}
+              setRecherchefilm={setRecherchefilm}
+              biography={biography}
+              setBiography={setBiography}
+              filmInput={filmInput}
+              setFilmInput={setFilmInput}
+              handleinscriptionbuton={handlefinirbuton}
+            />
           </View>
         )}
-        {bienvenue&&<Text style={styles.text}>Your registration was successful. Welcome to Cinefilms!🎉</Text>} 
+        {bienvenue && (
+          <Text style={styles.text}>
+            Your registration was successful. Welcome to Cinefilms!🎉
+          </Text>
+        )}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
