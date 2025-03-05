@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import Button from "../common/Button";
 import TextInput from "../common/TextInput";
 import { useState } from "react";
+import { useSelector } from 'react-redux';
 
 export default function EditProfilComponent ({
  handleNext,
@@ -13,8 +14,9 @@ export default function EditProfilComponent ({
   setGenre,
 }) {
     const [userData, setUserData] = useState('')
+    const user = useSelector((state) => state.user.value);
 
-    fetch("http://10.9.0.150:3000/users/profil", {
+    fetch(`http://10.9.0.150:3000/users/profil${user.token}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
