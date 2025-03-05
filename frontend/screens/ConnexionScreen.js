@@ -1,4 +1,6 @@
 import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
+import EditProfilComponent from "../components/EditProfilComponents/EditProfilComponent1";
+import ProfilPageComponent from "../components/EditProfilComponents/ProfilPageComponent";
     import {
         StyleSheet,
         KeyboardAvoidingView,
@@ -43,7 +45,7 @@ const handleConnexion = () => {
         behavior={Platform.OS === "padding"}
       >
         <SafeAreaView >
-          <ImageBackground source={require('../assets/wallpaper-cinefilm.jpg')} style={styles.backgroundImage}>
+          {/* <ImageBackground source={require('../assets/wallpaper-cinefilm.jpg')} style={styles.backgroundImage}>
             <ConnexionComponent 
             email={setEmail}
             password={setPassword}/>
@@ -52,7 +54,8 @@ const handleConnexion = () => {
           <Text style={styles.transitionText} >Pas encore inscrit ?</Text>
           <Button text="Inscrivez-vous" onPress={() => navigation.navigate("Inscription")} />
           </View>
-          </ImageBackground>
+          </ImageBackground> */}
+          <ProfilPageComponent/>
         </SafeAreaView>
       </KeyboardAvoidingView>
       </ScrollView>

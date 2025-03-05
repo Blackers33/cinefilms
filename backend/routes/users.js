@@ -76,5 +76,15 @@ User.findOne({ token: req.params.token }).then(data => {
 });
 });
 
+//GET profil de l'utilisateur
+router.get('/profil/:token', (req, res) => {
+  User.findOne({ token: req.params.token }).then(data => {
+    if (data) {
+      res.json({ result: true, profil: data });
+    } else {
+      res.json({ result: false, error: 'No corresponding profil' });
+    }
+  });
+})
 
 module.exports = router;
