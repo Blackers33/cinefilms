@@ -47,9 +47,8 @@ export default function InscriptionScreen() {
           latitude: firstCity.geometry.coordinates[1],
           longitude: firstCity.geometry.coordinates[0],
         };
-        console.log(locationData);
         // Now perform user signup
-        fetch("http://192.168.1.11:3000/users/signup", {
+        fetch("http://10.9.0.150:3000/users/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -62,7 +61,7 @@ export default function InscriptionScreen() {
           .then((data) => {
             if (data.result) {
               // After successful signup, update the user profile with location
-              fetch(`http://192.168.1.11:3000/users/profil/${data.token}`, {
+              fetch(`http://10.9.0.150:3000/users/profil/${data.token}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -77,7 +76,6 @@ export default function InscriptionScreen() {
                 .then((response) => response.json())
                 .then((data) => {
                   if (data.result) {
-                    console.log(data);
                     setBienvenue(true); // Successfully signed up and created the profile
                   }
                 });

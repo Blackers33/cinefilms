@@ -1,8 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import TextInput from "../common/TextInput";
+import TextInputStyled from "../common/TextInput";
 import Button from "../common/Button";
 
 function InscriptionScreen3({
@@ -102,11 +102,11 @@ function InscriptionScreen3({
           Recherchez vos films préférés pour les ajouter à votre profil
         </Text>
         <View style={styles.barfilm}>
-          <TextInput
+          <TextInputStyled
             onChangeText={(value) => setFilmInput(value)}
             value={filmInput}
             placeholder="recherche..."
-          ></TextInput>
+          ></TextInputStyled>
           <TouchableOpacity activeOpacity={0.8} onPress={handlereseachfilm}>
             <FontAwesome
               style={styles.iconsearch}
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   biographyInput: {
     height: 95,
-    width: "100%",
+    width: "95%",
     borderWidth: 1,
     borderColor: "#C94106",
     padding: 10,
