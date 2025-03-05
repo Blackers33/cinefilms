@@ -4,8 +4,6 @@ import TextInput from "../common/TextInput";
 
 function InscriptionScreen2({
   handleNext,
-  name,
-  setName,
   age,
   setAge,
   city,
@@ -18,16 +16,7 @@ function InscriptionScreen2({
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>AVATAR</Text>
       </View>
-      <View style={styles.inputContainer}>
-        <View>
-          <Text style={styles.Input}>Pseudo</Text>
-
-          <TextInput
-            onChangeText={setName}
-            value={name}
-            placeholder="choisissez un pseudo"
-          ></TextInput>
-        </View>
+      <View style={styles.inputContainer}>     
         <View>
           <Text style={styles.Input}>Age</Text>
 
