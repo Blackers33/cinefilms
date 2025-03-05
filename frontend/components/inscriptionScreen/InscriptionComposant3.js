@@ -179,7 +179,9 @@ const styles = StyleSheet.create({
     height: 20,
   },
   reseachfilm: {
-    marginBottom: 15,
+    height: "auto",
+    marginBottom: 30,
+    padding: 10,
   },
   iconsearch: {
     position: "absolute",

@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useDispatch,useSelector } from 'react-redux';
 import { updateinscriptionUser,updateprofilUser } from '../reducers/user';
 
-export default function InscriptionScreen() {
+export default function InscriptionScreen({navigation}) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,6 +94,7 @@ export default function InscriptionScreen() {
                       }));
                    
                     setBienvenue(true); // Successfully signed up and created the profile
+                    navigation.navigate("TabNavigator");//pour naviguer vers la page d'accueil
 
                   };
                 });
