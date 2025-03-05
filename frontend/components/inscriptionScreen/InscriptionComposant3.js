@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -17,8 +24,6 @@ function InscriptionScreen3({
   setFilmInput,
   handleinscriptionbuton,
 }) {
-
-
   const handleSelectGenre = (genre) => {
     if (!genrefilm.includes(genre.name)) {
       setGenrefilm([...genrefilm, JSON.stringify(genre)]);
@@ -33,7 +38,7 @@ function InscriptionScreen3({
   const listgenrefilms = genrefilm.map((data, i) => {
     // Transformer la chaîne JSON en objet
     const genre = JSON.parse(data);
-  
+
     return (
       <Text key={i} style={{ color: "white" }}>
         <FontAwesome name="caret-right" size={25} color="#ec6e5b" />
@@ -45,8 +50,16 @@ function InscriptionScreen3({
   const listefilms = recherchefilm.map((data, i) => {
     //afficher les films recherché par l'utilisateur
     return (
-      <Text key={i} style={{ color: "white", flexDirection: 'row', alignItems: 'center' }}>
-        <FontAwesome name="caret-right" size={25} color="#ec6e5b" style={{ marginRight: 8 }} />
+      <Text
+        key={i}
+        style={{ color: "white", flexDirection: "row", alignItems: "center" }}
+      >
+        <FontAwesome
+          name="caret-right"
+          size={25}
+          color="#ec6e5b"
+          style={{ marginRight: 8 }}
+        />
         {data}
       </Text>
     );
@@ -58,25 +71,25 @@ function InscriptionScreen3({
         <Text style={styles.title}>
           On parle cinéma ! Quel est ton genre ?" 🎥🎭
         </Text>
-        <Dropdown
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          data={genre}
-          search
-          maxHeight={300}
-          labelField="name"
-          valueField="id"
-          placeholder="choissisez votre genre de film"
-          searchPlaceholder="recherche..."
-          onChange={handleSelectGenre}
-          value={genrefilm}
-        />
-        <View>
-        {listgenrefilms}
-        </View>
+        <LinearGradient colors={["#B22E2E", "#333"]} style={styles.gradiantlistderoulant}>
+          <Dropdown
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={genre}
+            search
+            maxHeight={300}
+            labelField="name"
+            valueField="id"
+            placeholder="choissisez votre genre de film"
+            searchPlaceholder="recherche..."
+            onChange={handleSelectGenre}
+            value={genrefilm}
+          />
+        </LinearGradient>
+        <View>{listgenrefilms}</View>
       </View>
       <View style={styles.reseachfilm}>
         <Text style={styles.title}>
@@ -103,17 +116,19 @@ function InscriptionScreen3({
       <Text style={styles.title}>
         Écris ta biographie sur ta passion pour le cinéma
       </Text>
-      <TextInput
-        style={styles.biographyInput}
-        onChangeText={(value) => setBiography(value)}
-        value={biography}
-        placeholder="à vous de jouer !"
-        secureTextEntry={true}
-        autoCorrect={false}
-        textContentType="text"
-        multiline={true}
-        numberOfLines={5}
-      ></TextInput>
+      
+        <TextInput
+          style={styles.biographyInput}
+          onChangeText={(value) => setBiography(value)}
+          value={biography}
+          placeholder="à vous de jouer !"
+          secureTextEntry={true}
+          autoCorrect={false}
+          textContentType="text"
+          multiline={true}
+          numberOfLines={5}
+          placeholderTextColor="#8a8a8a"
+        ></TextInput>
       <View style={styles.button}>
         <Button
           text="Compléter l'inscription"
@@ -131,28 +146,33 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#ffffff",
-    fontSize: 16,
+    fontSize: 12,
     marginBottom: 5,
   },
   reseachbarfilm: {
     marginBottom: 40,
   },
   dropdown: {
-    margin: 10,
-    height: 40,
-    borderColor: "#C94106",
-    backgroundColor: "#bcbcbc",
-    borderWidth: 1.5,
-    borderRadius: 15,
+    width: "100%", 
+    height: 35,   
+    backgroundColor: "rgba(29, 29, 29, 0.7)",
+    borderRadius: 100,   
+    borderWidth: 1,
+    borderColor: "#C94106",  
+    fontSize: 14,    
+    color: "white",
+    marginVertical: 12,   
+
   },
   icon: {
     marginRight: 5,
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 12,
+    color: ""
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 12,
   },
   iconStyle: {
     width: 20,
@@ -168,7 +188,7 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: 12,
   },
   reseachbarfilm: {
     width: "95%",
@@ -181,28 +201,28 @@ const styles = StyleSheet.create({
     color: "white",
     marginVertical: 10,
     paddingLeft: 40,
+
   },
 
   text: {
     color: "#ffffff",
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 15,
   },
   biographyInput: {
-    height: 95,
-    width: "95%",
+    height: 120,
+    width: "100%",
     borderWidth: 1,
     borderColor: "#C94106",
-    padding: 10,
-    borderRadius: 5,
     textAlignVertical: "top",
-    backgroundColor: "#f9f9f9",
-    color: "#000000",
-    marginBottom: 20,
-  },
+    backgroundColor: "rgba(29, 29, 29, 0.7)",
+    paddingLeft: 10,
+    color: "#FFF",
+    borderRadius: 10,
+    marginTop: 20,},
   button: {
-    marginTop: 100,
+    marginTop: 70,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -210,6 +230,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
   },
+
+  gradiantlistderoulant:{
+    height: 35,          
+    width: "100%",        
+    borderRadius: 100,     
+    justifyContent: "center",  
+    alignItems: "center", 
+    
+    marginVertical: 10, 
+  }
 });
 
 export default InscriptionScreen3;

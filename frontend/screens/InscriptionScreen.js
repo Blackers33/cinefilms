@@ -152,7 +152,7 @@ export default function InscriptionScreen() {
         )}
         {bienvenue && (
           <Text style={styles.text}>
-            Your registration was successful. {user.username} Welcome to Cinefilms!🎉
+           Votre inscription a été réussie. {user.username}, bienvenue sur Cinefilms ! 🎉
           </Text>
         )}
       </SafeAreaView>
