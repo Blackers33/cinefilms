@@ -9,9 +9,8 @@ import {
   import { useState } from "react";
   
 
-  function connexionScreen({ navigation }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  function connexionScreen({ email, setEmail, password, setPassword }) {
+  
 
 
     return (
@@ -26,7 +25,7 @@ import {
           <View style={{marginLeft: 20, marginRight: 20}}>
             <Text style={styles.Input}>Email</Text>
             <TextInput
-              onChangeText={(value) => setEmail(value)}
+              onChangeText={setEmail}
               value={email}
               placeholder="Enter your email"
             ></TextInput>
@@ -34,7 +33,7 @@ import {
           <View style={{marginLeft: 20, marginRight: 20}}>
             <Text style={styles.Input}>Password</Text>
             <TextInput
-              onChangeText={(value) => setPassword(value)}
+              onChangeText={setPassword}
               value={password}
               placeholder="Enter your password"
               type="password"
@@ -100,7 +99,6 @@ import {
         backgroundColor: "#000000D9",
         alignItems: "center",
         justifyContent: "center",
-      
       },
       buttonContainer: {
         width: 380,

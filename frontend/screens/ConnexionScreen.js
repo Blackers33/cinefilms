@@ -6,12 +6,15 @@ import ConnexionComponent from "../components/ConnexionComponent/ConnexionCompon
         Platform,
         View,
         ImageBackground,
-        Text
+        Text,
+        ScrollView
       } from "react-native";
   import { useState } from "react";
   import Button from "../components/common/Button";
 
-  export default function ConnexionScreen({ navigation }) {
+  export default function ConnexionScreen({ navigation}) {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     
 const handleConnexion = () => {
       fetch("http://10.9.0.150:3000/users/signin", {
@@ -33,14 +36,17 @@ const handleConnexion = () => {
     }
 
     return (
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
       <KeyboardAvoidingView
       
         style={styles.container}
         behavior={Platform.OS === "padding"}
       >
-        <SafeAreaView>
+        <SafeAreaView >
           <ImageBackground source={require('../assets/wallpaper-cinefilm.jpg')} style={styles.backgroundImage}>
-            <ConnexionComponent />
+            <ConnexionComponent 
+            email={setEmail}
+            password={setPassword}/>
             <View style={styles.buttonContainer} >
           <Button text="Connexion" onPress={() => handleConnexion()} />
           <Text style={styles.transitionText} >Pas encore inscrit ?</Text>
@@ -49,6 +55,7 @@ const handleConnexion = () => {
           </ImageBackground>
         </SafeAreaView>
       </KeyboardAvoidingView>
+      </ScrollView>
     );
   }
 
@@ -69,12 +76,13 @@ const handleConnexion = () => {
     transitionText: {
       color: "#c94106",
       fontSize: 20,
-      marginTop: 80,
+      marginTop: 60,
       textAlign: "center",
     },
     buttonContainer: {
       width: 380,
-      marginTop: 10,
       alignItems: "center",
+      backgroundColor: "#000000D9",
+     paddingBottom: 30,
     },
   })
