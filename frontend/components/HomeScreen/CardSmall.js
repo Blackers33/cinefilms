@@ -3,12 +3,14 @@
  * @param {movie}
  */
 
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { Dimensions } from "react-native";
 
 
 export default function Card({ movie }){
+
 	return (
 		<TouchableWithoutFeedback onPress={() => console.log("press")}>
 			<View style={styles.card}>
@@ -27,10 +29,10 @@ export default function Card({ movie }){
 							<Icon
 								name='heart'
 								size={10}
-								color='#ec412f'
+								color={movie.liked ? '#ec412f' : '#fff'}
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>{movie.likes} Likes</Text>
+							<Text style={styles.text}>{movie.likes?.length || 0} Likes</Text>
 						</View>
 						<View style={{ flexDirection: "row" }}>
 							<Icon
@@ -59,7 +61,7 @@ export default function Card({ movie }){
 
 const styles = StyleSheet.create({
 	card: {
-		width: "48%",
+		width: Dimensions.get("window").width * 0.48,
 		borderWidth: 1,
 		borderColor: "grey",
 		borderRadius: 10,
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "100%",
-		height: 200,
+		height: Dimensions.get("window").width * 0.65,
 		resizeMode: "contain",
 	},
 	movieInfo: {
@@ -89,6 +91,6 @@ const styles = StyleSheet.create({
 	bottomSection: {
 		flexDirection: "row",
 		justifyContent: "space-around",
-        marginBottom: 5
+		marginBottom: 5,
 	},
 });

@@ -1,9 +1,10 @@
-import GradientBackground from "../components/common/GradientBackground";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopSection from "../components/HomeScreen/TopSection";
 import MainSection from "../components/HomeScreen/MainSection";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { ImageBackground } from "react-native";
+import tmdbApiCall from "../components/HomeScreen/tmdbApiCall";
 
 const mockUser = {
 	username: "Dominic Torreto",
@@ -15,7 +16,7 @@ const mockUser = {
 const mockFilms = [
 	{
 		tmdbId: 1241982,
-		likes: ["123456789", "b", "c", "d"],
+		likes: ["123456789", "T", "d"],
 		comments: ["a", "b", "c", "d"],
 	},
 	{
@@ -39,18 +40,12 @@ export default function HomeScreen({ navigation }) {
 	const [movies, setMovies] = useState([]);
 	const [moviesSearched, setMoviesSearched] = useState([]);
 	const [search, setSearch] = useState("");
+	const [filters, setFilters] = useState({
+		sort: null,
+		genres: null,
+	});
 
-	/**
-	 * options est un objet contenant les options de la requête à l'API
-	 */
-	const options = {
-		method: "GET",
-		headers: {
-			accept: "application/json",
-			Authorization:
-				"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NmY4ZDQxNjAyMzFiNjE3YTA2MTU3M2ZhODA4YzlmMCIsIm5iZiI6MTczODc0NDYzMi41ODksInN1YiI6IjY3YTMyMzM4NDRkNjg2M2I3NDhhNzJlZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2GmSmaJ7gWBY4f7F4QCE_TrHH95nnNwEhrqAxg655Q4",
-		},
-	};
+	console.log(filters)
 
 	/**
 	 * moviesToDisplay est un tableau de films à afficher
@@ -61,45 +56,70 @@ export default function HomeScreen({ navigation }) {
 	const moviesToDisplay = moviesSearched.length > 0 ? moviesSearched : movies;
 
 	/**
+	 * Injection des likes et commentaires dans les films
+	 *  TODO à changer pour une requete au backend
+	 */
+	moviesToDisplay.forEach((movie) => {
+		const film = mockFilms.find((film) => film.tmdbId === movie.id);
+		if (film) {
+			movie.likes = film.likes;
+			movie.comments = film.comments;
+			if (movie.likes.includes(mockUser.token)) {
+				movie.liked = true;
+			}
+		}
+	});
+
+	/**
 	 * useEffect servant à récupérer les films populaires
 	 */
 	useEffect(() => {
-		const url =
-			"https://api.themoviedb.org/3/movie/popular?language=fr-FR&page=1";
+		const url = `/discover/movie?include_adult=false&include_video=false&language=fr-FR&page=1${
+			filters.genres && `&with_genres=${filters.genres}`
+		}&sort_by=${filters.sort}`;
 
-		fetch(url, options)
-			.then((res) => res.json())
-			.then((json) => setMovies(json.results))
-			.catch((err) => console.error(err));
-	}, []);
+		console.log(url)
+
+		async function loadMovies() {
+			const movies = await tmdbApiCall(url);
+			setMovies(movies);
+		}
+		loadMovies();
+	}, [filters]);
 
 	/**
 	 * Fonction servant à gérer la recherche
 	 * 		- Appel à l'API de recherche de films
 	 * 		- Mise à jour de l'état moviesSearched
 	 */
-
-	function handleSearch() {
-		const url = `https://api.themoviedb.org/3/search/movie?query=${search}&include_adult=false&language=fr-FR&page=1`;
-
-		fetch(url, options)
-			.then((res) => res.json())
-			.then((json) => setMoviesSearched(json.results))
-			.catch((err) => console.error(err));
+	async function handleSearch() {
+		const searchedMovies = await tmdbApiCall(
+			`/search/movie?query=${search}&include_adult=false&language=fr-FR&page=1`
+		);
+		setMoviesSearched(searchedMovies);
 	}
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
-			<GradientBackground />
-			<TopSection user={mockUser} />
-			<MainSection
-				movies={moviesToDisplay}
-				search={search}
-				setSearch={setSearch}
-				setMoviesSearched={setMoviesSearched}
-				onSubmitEditing={handleSearch}
-			/>
-			<StatusBar style='light' />
+			<ImageBackground
+				source={require("../assets/backgroundGradient.png")}
+				style={{
+					flex: 1,
+					resizeMode: "cover",
+				}}
+			>
+				<TopSection user={mockUser} />
+				<MainSection
+					movies={moviesToDisplay}
+					search={search}
+					setSearch={setSearch}
+					setMoviesSearched={setMoviesSearched}
+					onSubmitEditing={handleSearch}
+					filters={filters}
+					setFilters={setFilters}
+				/>
+				<StatusBar style='light' />
+			</ImageBackground>
 		</SafeAreaView>
 	);
 }

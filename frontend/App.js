@@ -1,7 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import HomeScreen from "./screens/HomeScreen";
-import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
@@ -11,7 +9,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-		<PaperProvider>
+	
 			<NavigationContainer>
 				<Tab.Navigator
 					screenOptions={({ route }) => ({
@@ -48,7 +46,6 @@ export default function App() {
 					<Tab.Screen name='Rencontres' component={HomeScreen} />
 				</Tab.Navigator>
 			</NavigationContainer>
-		</PaperProvider>
 	);
 }
 
