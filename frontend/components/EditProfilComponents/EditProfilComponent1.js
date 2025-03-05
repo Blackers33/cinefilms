@@ -3,6 +3,7 @@ import Button from "../common/Button";
 import TextInput from "../common/TextInput";
 import { useState } from "react";
 import { useSelector } from 'react-redux';
+import Avatar from "../common/Avatar";
 
 export default function EditProfilComponent ({
  handleNext,
@@ -32,9 +33,7 @@ export default function EditProfilComponent ({
 
   return (
     <View style={styles.container} >
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>AVATAR</Text>
-      </View>
+      <Avatar size={100} />
       <View style={styles.inputContainer}>     
         <View>
           <Text style={styles.Input}>Age</Text>
@@ -80,10 +79,9 @@ const styles = StyleSheet.create({
       paddingTop: 50,
   },
   inputContainer: {
-    width: 380,
-    // marginTop: 50,
-    marginLeft: 20,
-    marginRight: 20,
+    flex: 1,
+    width: '90%',
+    
   },
   champInput: {
     borderWidth: 2,
