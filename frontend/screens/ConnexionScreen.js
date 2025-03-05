@@ -16,9 +16,10 @@ import ConnexionComponent from "../components/ConnexionComponent/ConnexionCompon
   export default function ConnexionScreen({ navigation}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
     
 const handleConnexion = () => {
-      fetch("http://10.9.0.150:3000/users/signin", {
+      fetch("http://10.9.0.148:3000/users/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,8 +47,7 @@ const handleConnexion = () => {
         <SafeAreaView >
           <ImageBackground source={require('../assets/wallpaper-cinefilm.jpg')} style={styles.backgroundImage}>
             <ConnexionComponent 
-            email={setEmail}
-            password={setPassword}/>
+            email={email} setEmail={setEmail} password={password} setPassword={setPassword}/>
             <View style={styles.buttonContainer} >
           <Button text="Connexion" onPress={() => handleConnexion()} />
           <Text style={styles.transitionText} >Pas encore inscrit ?</Text>

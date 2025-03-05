@@ -12,14 +12,14 @@ const { checkBody } = require('../modules/checkBody');
   
   //POST new user (inscription)
   router.post('/signup', (req, res) => {
-  const hash = bcrypt.hashSync(req.body.password, 10)
-  if (!checkBody(req.body, ['username', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
-    return;
-  }  
-  // Check if the user has not already been registered
-  User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
-    if (data === null) {
+    if (!checkBody(req.body, ['username', 'password'])) {
+      res.json({ result: false, error: 'Missing or empty fields' });
+      return;
+    }  
+    // Check if the user has not already been registered
+    User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
+      if (data === null) {
+      const hash = bcrypt.hashSync(req.body.password, 10)
       const newUser = new User({
         username: req.body.username,
         password: hash,
@@ -40,12 +40,12 @@ const { checkBody } = require('../modules/checkBody');
 
 //POST user signin (connexion)
 router.post('/signin', (req, res) => {
-  if (!checkBody(req.body, ['username', 'password'])) {
+  if (!checkBody(req.body, ['email', 'password'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
   }
 
-  User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
+  User.findOne({ email: { $regex: new RegExp(req.body.email, 'i') } }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
       res.json({ result: true, token : data.token });
     } else {

@@ -28,6 +28,7 @@ import {
               onChangeText={setEmail}
               value={email}
               placeholder="Enter your email"
+              keyboardType="email-address"
             ></TextInput>
           </View>
           <View style={{marginLeft: 20, marginRight: 20}}>
@@ -36,7 +37,6 @@ import {
               onChangeText={setPassword}
               value={password}
               placeholder="Enter your password"
-              type="password"
               secureTextEntry={true}
             ></TextInput>
           </View>
