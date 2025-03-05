@@ -127,19 +127,19 @@ function InscriptionScreen3({
 const styles = StyleSheet.create({
   genrefilm: {
     alignSelf: "auto",
-    marginBottom: 40,
+    marginBottom: 5,
   },
   title: {
     color: "#ffffff",
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   reseachbarfilm: {
     marginBottom: 40,
   },
   dropdown: {
-    margin: 16,
-    height: 50,
+    margin: 10,
+    height: 40,
     borderColor: "#C94106",
     backgroundColor: "#bcbcbc",
     borderWidth: 1.5,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   reseachfilm: {
-    marginBottom: 70,
+    marginBottom: 15,
   },
   iconsearch: {
     position: "absolute",
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 40,
+    marginBottom: 20,
   },
   biographyInput: {
     height: 95,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     backgroundColor: "#f9f9f9",
     color: "#000000",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   button: {
     marginTop: 100,
