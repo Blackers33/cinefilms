@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD
  * 
+=======
+* 
+>>>>>>> fda50faa7ad3546c9e89247de387b11a3d1bb024
  * usage : import Avatar from "../components/common/Avatar";
  * <Avatar uri={user.avatar} size={64} />
  * 
