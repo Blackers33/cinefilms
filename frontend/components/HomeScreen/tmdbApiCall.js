@@ -3,7 +3,7 @@ export default async function tmdbApiCall(uri) {
 		method: "GET",
 		headers: {
 			accept: "application/json",
-			Authorization:	process.env.TMDB_API,	},
+			Authorization:	process.env.EXPO_PUBLIC_TMDB_API,	},
 	};
 
 	const url =
