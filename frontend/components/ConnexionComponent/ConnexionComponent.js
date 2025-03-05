@@ -15,7 +15,24 @@ import {
     const [password, setPassword] = useState("");
 
     const handleConnexion = () => {
+      fetch("http://10.9.0.150:3000/users/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.result) {
+            navigation.navigate("HomeScreen", { token: data.token });
+          } else {
+            alert("Email ou mot de passe incorrect");
+          }
+        });
     }
+
 
     return (
       
@@ -47,7 +64,7 @@ import {
           <View style={styles.buttonContainer} >
           <Button text="Connexion" onPress={() => handleConnexion()} />
           <Text style={styles.transitionText} >Pas encore inscrit ?</Text>
-          <Button text="Inscrivez-vous" onPress={() => navigation.navigate('InscriptionScreen')} />
+          <Button text="Inscrivez-vous" onPress={() => navigation.navigate("Inscription")} />
           </View>
         </View>
       </View>
