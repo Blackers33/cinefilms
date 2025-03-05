@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import TextInput from "../common/TextInput";
+import TextInputStyled from "../common/TextInput";
 import Button from "../common/Button";
+import genre from "../common/genres.json";
 
 function InscriptionScreen3({
   genrefilm,
@@ -16,33 +17,11 @@ function InscriptionScreen3({
   setFilmInput,
   handleinscriptionbuton,
 }) {
-  const movieGenres = [
-    //data des movieGenres
-    { id: 1, name: "Action" },
-    { id: 2, name: "Adventure" },
-    { id: 3, name: "Animation" },
-    { id: 4, name: "Comedy" },
-    { id: 5, name: "Crime" },
-    { id: 6, name: "Drama" },
-    { id: 7, name: "Fantasy" },
-    { id: 8, name: "Horror" },
-    { id: 9, name: "Mystery" },
-    { id: 10, name: "Romance" },
-    { id: 11, name: "Science Fiction" },
-    { id: 12, name: "Thriller" },
-    { id: 13, name: "Western" },
-    { id: 14, name: "Documentary" },
-    { id: 15, name: "Musical" },
-    { id: 16, name: "War" },
-    { id: 17, name: "Family" },
-    { id: 18, name: "History" },
-    { id: 19, name: "Sport" },
-    { id: 20, name: "Biography" },
-  ];
+
 
   const handleSelectGenre = (genre) => {
     if (!genrefilm.includes(genre.name)) {
-      setGenrefilm([...genrefilm, genre.name]);
+      setGenrefilm([...genrefilm, JSON.stringify(genre)]);
     }
   };
 
@@ -52,11 +31,13 @@ function InscriptionScreen3({
   };
 
   const listgenrefilms = genrefilm.map((data, i) => {
-    // afficher les genres de films choisi par l'utlisateur
+    // Transformer la chaîne JSON en objet
+    const genre = JSON.parse(data);
+  
     return (
       <Text key={i} style={{ color: "white" }}>
         <FontAwesome name="caret-right" size={25} color="#ec6e5b" />
-        {data}
+        {genre.name}
       </Text>
     );
   });
@@ -83,7 +64,7 @@ function InscriptionScreen3({
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          data={movieGenres}
+          data={genre}
           search
           maxHeight={300}
           labelField="name"
@@ -102,11 +83,11 @@ function InscriptionScreen3({
           Recherchez vos films préférés pour les ajouter à votre profil
         </Text>
         <View style={styles.barfilm}>
-          <TextInput
+          <TextInputStyled
             onChangeText={(value) => setFilmInput(value)}
             value={filmInput}
             placeholder="recherche..."
-          ></TextInput>
+          ></TextInputStyled>
           <TouchableOpacity activeOpacity={0.8} onPress={handlereseachfilm}>
             <FontAwesome
               style={styles.iconsearch}
@@ -146,19 +127,19 @@ function InscriptionScreen3({
 const styles = StyleSheet.create({
   genrefilm: {
     alignSelf: "auto",
-    marginBottom: 40,
+    marginBottom: 5,
   },
   title: {
     color: "#ffffff",
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   reseachbarfilm: {
     marginBottom: 40,
   },
   dropdown: {
-    margin: 16,
-    height: 50,
+    margin: 10,
+    height: 40,
     borderColor: "#C94106",
     backgroundColor: "#bcbcbc",
     borderWidth: 1.5,
@@ -178,7 +159,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   reseachfilm: {
-    marginBottom: 70,
+    marginBottom: 15,
   },
   iconsearch: {
     position: "absolute",
@@ -206,11 +187,11 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 40,
+    marginBottom: 20,
   },
   biographyInput: {
     height: 95,
-    width: "100%",
+    width: "95%",
     borderWidth: 1,
     borderColor: "#C94106",
     padding: 10,
@@ -218,7 +199,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     backgroundColor: "#f9f9f9",
     color: "#000000",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   button: {
     marginTop: 100,

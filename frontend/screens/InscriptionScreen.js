@@ -10,6 +10,8 @@ import {
   Text,
 } from "react-native";
 import { useState } from "react";
+import { useDispatch,useSelector } from 'react-redux';
+import { updateinscriptionUser,updateprofilUser } from '../reducers/user';
 
 export default function InscriptionScreen() {
   const [username, setUsername] = useState("");
@@ -24,6 +26,9 @@ export default function InscriptionScreen() {
   const [filmInput, setFilmInput] = useState("");
   const [currentStep, setCurrentStep] = useState(1); //pour afficher les étapes de l'inscription
   const [bienvenue, setBienvenue] = useState(false); //pour afficher le message de bienvenue
+
+  const dispatch = useDispatch();//pour envoyer les données de l'utilisateur
+  const user = useSelector((state) => state.user.value);//pour récupérer les données de l'utilisateur
 
   const handlecommencerbuton = () => {
     //pour passer à l'étape suivante
@@ -40,16 +45,14 @@ export default function InscriptionScreen() {
     fetch(`https://api-adresse.data.gouv.fr/search/?q=${city}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const firstCity = data.features[0];
         const locationData = {
           name: firstCity.properties.city,
           latitude: firstCity.geometry.coordinates[1],
           longitude: firstCity.geometry.coordinates[0],
         };
-        console.log(locationData);
         // Now perform user signup
-        fetch("http://192.168.1.11:3000/users/signup", {
+        fetch("http://10.9.0.150:3000/users/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -62,7 +65,10 @@ export default function InscriptionScreen() {
           .then((data) => {
             if (data.result) {
               // After successful signup, update the user profile with location
-              fetch(`http://192.168.1.11:3000/users/profil/${data.token}`, {
+              dispatch(//pour envoyer les données de l'utilisateur
+                updateinscriptionUser({username:username, email:email,token:data.token}));
+
+              fetch(`http://10.9.0.150:3000/users/profil/${data.token}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -77,14 +83,25 @@ export default function InscriptionScreen() {
                 .then((response) => response.json())
                 .then((data) => {
                   if (data.result) {
-                    console.log(data);
+                    dispatch(
+                      updateprofilUser({
+                        age: age,
+                        genre: genre,
+                        location: locationData,
+                        favMovies: recherchefilm,
+                        favGenres: genrefilm,
+                        biography: biography,
+                      }));
+                   
                     setBienvenue(true); // Successfully signed up and created the profile
-                  }
+
+                  };
                 });
             }
           });
       });
   };
+
 
   return (
     <KeyboardAvoidingView
@@ -135,7 +152,7 @@ export default function InscriptionScreen() {
         )}
         {bienvenue && (
           <Text style={styles.text}>
-            Your registration was successful. Welcome to Cinefilms!🎉
+            Your registration was successful. {user.username} Welcome to Cinefilms!🎉
           </Text>
         )}
       </SafeAreaView>
