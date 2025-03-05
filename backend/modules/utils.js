@@ -27,9 +27,9 @@ const createFilm = (tmdbId) => {
 //Créer un nouveau film à partir de tmdbId s'il n'existe pas 
 const createFilmIfNotExists = (tmdbId) => {
     try {
-        Film.findOne( {tmdbId: tmdbId} ).then((data) => {
-            if (data.length) {
-                return true;
+        Film.findOne({ tmdbId: tmdbId }).then((data) => {
+            if (data !== null) {
+                return true
             }
             return createFilm(tmdbId);
         })

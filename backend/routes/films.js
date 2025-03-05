@@ -57,7 +57,8 @@ router.post('/:filmId', (req, res) => {
         //Conversion de l'ID du film en nombre
         const filmId = Number(req.params?.filmId);
         if (req.params && filmId) {
-            if (createFilmIfNotExists(filmId)) {
+            res.json({result: createFilmIfNotExists(filmId)})
+            /*if (createFilmIfNotExists(filmId)) {
                 Film.findOne({tmdbId: filmId})
                 .then(data => {
                     const newComment = {
@@ -70,7 +71,7 @@ router.post('/:filmId', (req, res) => {
                         res.json({ result: true, film: data });
                     });
                 });
-            }
+            }*/
         }
         
     } catch (error) {
