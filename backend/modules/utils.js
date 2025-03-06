@@ -1,5 +1,7 @@
 const Film = require('../models/films');
+const User = require('../models/users')
 
+// Route permettant de vérifier qu'un champ existe dans la requête et qu'il n'est pas vide.
 const checkBody = (req, inputs) => inputs.every(el => req[el]?.toString().trim());
 
 //Créer un nouveau film à partir de tmdbId 
@@ -32,4 +34,22 @@ const createFilmIfNotExists = async (tmdbId) => {
     }
 }
 
-module.exports = { checkBody, createFilmIfNotExists };
+// Récuperer le userId/ username à partir du token du l'utilisateur
+const autentification = async (token) => {
+    let user;
+    try {
+        await User.findOne({ token: token }).then(data => {
+            user = {
+                userId: data._id,
+                username: data.username
+            };
+        });
+        if (user) {
+            return user
+        }
+    } catch(error) {
+        return false;
+    }
+}
+
+module.exports = { checkBody, createFilmIfNotExists, autentification };

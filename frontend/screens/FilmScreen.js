@@ -4,6 +4,7 @@ import LikeIcon from 'react-native-vector-icons/Ionicons';
 import InfoIcon from 'react-native-vector-icons/Entypo';
 import { StatusBar } from 'expo-status-bar';
 import  Events from '../components/filmScreen/Events';
+import  Comments from '../components/filmScreen/Comments';
 
 export default function FilmScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('events');
@@ -41,7 +42,7 @@ export default function FilmScreen({ navigation }) {
           {activeTab === "events" ? (
             <Events/>
           ) : (
-            <Text>Liste des commentaires ici...</Text>
+            <Comments/>
           )}
       </View>
       <StatusBar style='light'/>
