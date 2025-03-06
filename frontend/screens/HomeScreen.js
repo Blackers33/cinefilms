@@ -1,10 +1,10 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopSection from "../components/HomeScreen/TopSection";
+import TopSection from "../components/common/UserTopSection";
 import MainSection from "../components/HomeScreen/MainSection";
 import { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { ImageBackground } from "react-native";
 import tmdbApiCall from "../components/HomeScreen/tmdbApiCall";
+import { useSelector } from "react-redux";
 
 const mockUser = {
 	username: "Dominic Torreto",
@@ -37,37 +37,13 @@ const mockFilms = [
 ];
 
 export default function HomeScreen({ navigation }) {
+	const user = useSelector((state) => state.user.value);
 	const [movies, setMovies] = useState([]);
 	const [moviesSearched, setMoviesSearched] = useState([]);
 	const [search, setSearch] = useState("");
 	const [filters, setFilters] = useState({
 		sort: null,
 		genres: null,
-	});
-
-	console.log(filters)
-
-	/**
-	 * moviesToDisplay est un tableau de films à afficher
-	 * Si l'utilisateur a effectué une recherche, on affiche les films recherchés
-	 * Sinon, on affiche les films populaires
-	 *
-	 */
-	const moviesToDisplay = moviesSearched.length > 0 ? moviesSearched : movies;
-
-	/**
-	 * Injection des likes et commentaires dans les films
-	 *  TODO à changer pour une requete au backend
-	 */
-	moviesToDisplay.forEach((movie) => {
-		const film = mockFilms.find((film) => film.tmdbId === movie.id);
-		if (film) {
-			movie.likes = film.likes;
-			movie.comments = film.comments;
-			if (movie.likes.includes(mockUser.token)) {
-				movie.liked = true;
-			}
-		}
 	});
 
 	/**
@@ -78,7 +54,7 @@ export default function HomeScreen({ navigation }) {
 			filters.genres && `&with_genres=${filters.genres}`
 		}&sort_by=${filters.sort}`;
 
-		console.log(url)
+		console.log(url);
 
 		async function loadMovies() {
 			const movies = await tmdbApiCall(url);
@@ -86,6 +62,23 @@ export default function HomeScreen({ navigation }) {
 		}
 		loadMovies();
 	}, [filters]);
+
+	/**
+	 * Injection des likes et commentaires dans les films
+	 */
+	/* moviesToDisplay.forEach((movie) => {
+		console.log(movie.id);
+		fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + `/films/${movie.id}/film`)
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+				movie.likes = data.film.likes;
+				movie.comments = data.film.comments;
+				if (movie.likes.includes(mockUser.token)) {
+					movie.liked = true;
+				}
+			});
+	}); */
 
 	/**
 	 * Fonction servant à gérer la recherche
@@ -98,6 +91,14 @@ export default function HomeScreen({ navigation }) {
 		);
 		setMoviesSearched(searchedMovies);
 	}
+
+	/**
+	 * moviesToDisplay est un tableau de films à afficher
+	 * Si l'utilisateur a effectué une recherche, on affiche les films recherchés
+	 * Sinon, on affiche les films populaires
+	 *
+	 */
+	const moviesToDisplay = moviesSearched.length > 0 ? moviesSearched : movies;
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
@@ -117,6 +118,7 @@ export default function HomeScreen({ navigation }) {
 					onSubmitEditing={handleSearch}
 					filters={filters}
 					setFilters={setFilters}
+					navigation={navigation}
 				/>
 			</ImageBackground>
 		</SafeAreaView>

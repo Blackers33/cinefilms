@@ -9,10 +9,10 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 
 
-export default function Card({ movie }){
+export default function Card({ movie, onPress }){
 
     return (
-        <TouchableWithoutFeedback onPress={() => console.log("press")}>
+        <TouchableWithoutFeedback onPress={onPress}>
             <View style={styles.card}>
                 <ImageBackground
                     source={{

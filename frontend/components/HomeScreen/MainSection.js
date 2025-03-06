@@ -1,14 +1,11 @@
 import {
 	ScrollView,
 	StyleSheet,
-	Text,
-	TouchableOpacity,
 	View,
 } from "react-native";
 import { useState } from "react";
 import CardSmall from "./CardSmall";
 import CardLarge from "./CardLarge";
-import TextInput from "../common/TextInput";
 import SearchSection from "./SearchSection";
 import FiltersSection from "./FiltersSection";
 
@@ -19,7 +16,8 @@ export default function MainSection({
 	setMoviesSearched,
 	onSubmitEditing,
 	filters,
-	setFilters
+	setFilters,
+	navigation
 }) {
 
 	
@@ -52,9 +50,17 @@ export default function MainSection({
 				<View style={styles.cards}>
 					{movies.map((movie) =>
 						cardsLarge ? (
-							<CardLarge movie={movie} key={movie.id} />
+							<CardLarge
+								movie={movie}
+								key={movie.id}
+								onPress={() => navigation.navigate("FilmScreen", movie)}
+							/>
 						) : (
-							<CardSmall movie={movie} key={movie.id} />
+							<CardSmall
+								movie={movie}
+								key={movie.id}
+								onPress={() => navigation.navigate("FilmScreen", movie)}
+							/>
 						)
 					)}
 				</View>
