@@ -106,6 +106,7 @@ export default function InscriptionScreen({navigation}) {
 										);
 
 										setBienvenue(true); // Successfully signed up and created the profile
+                    navigation.navigate("TabNavigator");
 									}
 								});
 						}
