@@ -4,7 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Image
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
@@ -28,6 +28,8 @@ function InscriptionScreen3({
   setFilmInput,
   handleinscriptionbuton,
 }) {
+
+  const [errorMessage, setErrorMessage] = useState("");
   //function pour recuperer genre de film
   const handleSelectGenre = (genre) => {
     if (!genrefilm.includes(genre.name)) {
@@ -44,9 +46,14 @@ function InscriptionScreen3({
         filmInput
       )}&language=fr-FR`;
       const results = await tmdbApiCall(uri);
-
-      setReseachfilm((prevFilms) => [...prevFilms, results[0]]);
-      setFavoriteFilm((prevFavorites) => [...prevFavorites, results[0].id]);
+      if (favoritefilm.length < 5) {
+        setReseachfilm((prevFilms) => [...prevFilms, results[0]]);
+        setFavoriteFilm((prevFavorites) => [...prevFavorites, results[0].id]);
+      } else {
+        setErrorMessage(
+          "Vous pouvez ajouter 5 films favoris lors de l'inscription. Rejoignez Cinefims pour en ajouter davantage!"
+        );
+      }
     } catch (error) {
       console.error("Erreur lors de la recherche du film:", error);
     }
@@ -77,8 +84,6 @@ function InscriptionScreen3({
     });
   };
 
-  console.log(reseachfilm);
-  console.log(favoritefilm);
   //display les genres des films choisis
   const listgenrefilms = genrefilm.map((data, i) => {
     // Transformer la chaîne JSON en objet
@@ -91,8 +96,6 @@ function InscriptionScreen3({
       </Text>
     );
   });
-
-
 
   return (
     <>
@@ -147,11 +150,9 @@ function InscriptionScreen3({
               color="#ec6e5b"
             />
           </TouchableOpacity>
-          <View style={styles.favoriteList}>
-          {renderFavoriteFilms()}
-          </View>
+          <View style={styles.favoriteList}>{renderFavoriteFilms()}</View>
+          {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
         </View>
-      
       </View>
 
       <Text style={styles.title}>
@@ -285,48 +286,45 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
   },
- 
+  //style pour les resultats du reseachfilm
   favoriteList: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-around",
   },
   movieItem: {
-    width: 50, 
-    height:50,
-    backgroundColor: '#333', 
-    borderRadius: 5, 
-    marginTop: 40, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    shadowColor: '#000', 
+    width: 50,
+    height: 50,
+    backgroundColor: "#333",
+    borderRadius: 5,
+    marginTop: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2, 
-    shadowRadius: 5, 
-    
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
 
   poster: {
-    width: 50, 
+    width: 50,
     height: 50,
     borderRadius: 5,
   },
 
-  
-  title: {
-    color: '#fff', 
-    fontSize: 14, 
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 10, 
-  },
 
   noImage: {
-    color: '#aaa', 
-    fontSize: 14, 
-    textAlign: 'center', 
-    marginTop: 10, 
+    color: "#aaa",
+    fontSize: 14,
+    textAlign: "center",
+    marginTop: 10,
   },
+  errorMessage:{
+    color:"#fff",
+    fontSize:12,
+    textAlign:"center",
+  }
 });
 
 export default InscriptionScreen3;
