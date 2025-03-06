@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
@@ -12,29 +13,73 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import TextInputStyled from "../common/TextInput";
 import Button from "../common/Button";
 import genre from "../common/genres.json";
+import tmdbApiCall from "../HomeScreen/tmdbApiCall";
 
 function InscriptionScreen3({
   genrefilm,
   setGenrefilm,
-  recherchefilm,
-  setRecherchefilm,
+  reseachfilm,
+  setReseachfilm,
+  favoritefilm,
+  setFavoriteFilm,
   biography,
   setBiography,
   filmInput,
   setFilmInput,
   handleinscriptionbuton,
 }) {
+  //function pour recuperer genre de film
   const handleSelectGenre = (genre) => {
     if (!genrefilm.includes(genre.name)) {
       setGenrefilm([...genrefilm, JSON.stringify(genre)]);
     }
   };
 
-  const handlereseachfilm = () => {
-    setRecherchefilm([...recherchefilm, filmInput]);
+  // function pour  appeler api film et trouver le film correspondant
+  const handlereseachfilm = async () => {
+    if (!filmInput.trim()) return;
+
+    try {
+      const uri = `/search/movie?query=${encodeURIComponent(
+        filmInput
+      )}&language=fr-FR`;
+      const results = await tmdbApiCall(uri);
+
+      setReseachfilm((prevFilms) => [...prevFilms, results[0]]);
+      setFavoriteFilm((prevFavorites) => [...prevFavorites, results[0].id]);
+    } catch (error) {
+      console.error("Erreur lors de la recherche du film:", error);
+    }
+
     setFilmInput("");
   };
 
+  const renderFavoriteFilms = () => {
+    return favoritefilm.map((favoriteId) => {
+      const favoriteMovie = reseachfilm.find((film) => film.id === favoriteId);
+      if (favoriteMovie) {
+        return (
+          <View key={favoriteMovie.id} style={styles.movieItem}>
+            {favoriteMovie.poster_path ? (
+              <Image
+                source={{
+                  uri: `https://image.tmdb.org/t/p/w200${favoriteMovie.poster_path}`,
+                }}
+                style={styles.poster}
+              />
+            ) : (
+              <Text style={styles.noImage}>Pas d'image</Text>
+            )}
+          </View>
+        );
+      }
+      return null;
+    });
+  };
+
+  console.log(reseachfilm);
+  console.log(favoritefilm);
+  //display les genres des films choisis
   const listgenrefilms = genrefilm.map((data, i) => {
     // Transformer la chaîne JSON en objet
     const genre = JSON.parse(data);
@@ -47,23 +92,7 @@ function InscriptionScreen3({
     );
   });
 
-  const listefilms = recherchefilm.map((data, i) => {
-    //afficher les films recherché par l'utilisateur
-    return (
-      <Text
-        key={i}
-        style={{ color: "white", flexDirection: "row", alignItems: "center" }}
-      >
-        <FontAwesome
-          name="caret-right"
-          size={25}
-          color="#ec6e5b"
-          style={{ marginRight: 8 }}
-        />
-        {data}
-      </Text>
-    );
-  });
+
 
   return (
     <>
@@ -71,13 +100,16 @@ function InscriptionScreen3({
         <Text style={styles.title}>
           On parle cinéma ! Quel est ton genre ?" 🎥🎭
         </Text>
-        <LinearGradient colors={["#B22E2E", "#333"]} style={styles.gradiantlistderoulant}>
+        <LinearGradient
+          colors={["#B22E2E", "#333"]}
+          style={styles.gradiantlistderoulant}
+        >
           <Dropdown
             style={styles.dropdown}
             placeholderStyle={{
               color: "rgba(206, 196, 188, 0.8)",
               fontSize: 14,
-              padding:5,
+              padding: 5,
             }}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
@@ -115,26 +147,29 @@ function InscriptionScreen3({
               color="#ec6e5b"
             />
           </TouchableOpacity>
+          <View style={styles.favoriteList}>
+          {renderFavoriteFilms()}
+          </View>
         </View>
-        {listefilms}
+      
       </View>
 
       <Text style={styles.title}>
         Écris ta biographie sur ta passion pour le cinéma
       </Text>
-      
-        <TextInput
-          style={styles.biographyInput}
-          onChangeText={(value) => setBiography(value)}
-          value={biography}
-          placeholder="à vous de jouer !"
-          secureTextEntry={true}
-          autoCorrect={false}
-          textContentType="text"
-          multiline={true}
-          numberOfLines={5}
-          placeholderTextColor="#8a8a8a"
-        ></TextInput>
+
+      <TextInput
+        style={styles.biographyInput}
+        onChangeText={(value) => setBiography(value)}
+        value={biography}
+        placeholder="à vous de jouer !"
+        secureTextEntry={true}
+        autoCorrect={false}
+        textContentType="text"
+        multiline={true}
+        numberOfLines={5}
+        placeholderTextColor="#8a8a8a"
+      ></TextInput>
       <View style={styles.button}>
         <Button
           text="Compléter l'inscription"
@@ -158,23 +193,21 @@ const styles = StyleSheet.create({
   reseachbarfilm: {
     marginBottom: 40,
   },
-  gradiantlistderoulant:{
-    width:"100%",
-    height:40,
-    borderRadius:100,
+  gradiantlistderoulant: {
+    width: "100%",
+    height: 40,
+    borderRadius: 100,
   },
 
   dropdown: {
-    width: "100%", 
-    height: 40,   
+    width: "100%",
+    height: 40,
     backgroundColor: "rgba(29, 29, 29, 0.7)",
-    borderRadius: 100,   
+    borderRadius: 100,
     borderColor: "#C94106",
-    fontSize: 14,    
+    fontSize: 14,
     color: "white",
-    borderTopWidth:2,
- 
-
+    borderTopWidth: 2,
   },
   icon: {
     marginRight: 5,
@@ -190,13 +223,13 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  containerStyle:{
+  containerStyle: {
     backgroundColor: "rgb(0,0,0)",
-    borderRadius:10,
+    borderRadius: 10,
   },
-  itemTextStyle:{
-    color:"#ffffff",
-    fontSize:14,
+  itemTextStyle: {
+    color: "#ffffff",
+    fontSize: 14,
   },
   reseachfilm: {
     height: "auto",
@@ -223,7 +256,6 @@ const styles = StyleSheet.create({
     color: "white",
     marginVertical: 10,
     paddingLeft: 40,
-
   },
 
   text: {
@@ -242,7 +274,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: "#FFF",
     borderRadius: 10,
-    marginTop: 20,},
+    marginTop: 20,
+  },
   button: {
     marginTop: 70,
     flexDirection: "column",
@@ -252,7 +285,48 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
   },
+ 
+  favoriteList: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    justifyContent: "space-around",
+  },
+  movieItem: {
+    width: 50, 
+    height:50,
+    backgroundColor: '#333', 
+    borderRadius: 5, 
+    marginTop: 40, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2, 
+    shadowRadius: 5, 
+    
+  },
 
+  poster: {
+    width: 50, 
+    height: 50,
+    borderRadius: 5,
+  },
+
+  
+  title: {
+    color: '#fff', 
+    fontSize: 14, 
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 10, 
+  },
+
+  noImage: {
+    color: '#aaa', 
+    fontSize: 14, 
+    textAlign: 'center', 
+    marginTop: 10, 
+  },
 });
 
 export default InscriptionScreen3;

@@ -22,13 +22,15 @@ export default function InscriptionScreen({ navigation }) {
   const [city, setCity] = useState("");
   const [genre, setGenre] = useState("");
   const [genrefilm, setGenrefilm] = useState([]);
-  const [recherchefilm, setRecherchefilm] = useState([]); //pour afficher les films recherchés
+  const [reseachfilm, setReseachfilm] = useState([]); //pour afficher les films recherchés
+  const [favoritefilm,setFavoriteFilm]=useState([]);
   const [biography, setBiography] = useState("");
   const [filmInput, setFilmInput] = useState("");
   const [currentStep, setCurrentStep] = useState(1); //pour afficher les étapes de l'inscription
   const [bienvenue, setBienvenue] = useState(false); //pour afficher le message de bienvenue
   const [modalVisible, setModalVisible] = useState(false); //pour afficher la modal d'avatar
   const [avatar, setAvatar] = useState(""); //pour afficher l'avatar
+
 
   const dispatch = useDispatch(); //pour envoyer les données de l'utilisateur
   const user = useSelector((state) => state.user.value); //pour récupérer les données de l'utilisateur
@@ -89,7 +91,7 @@ export default function InscriptionScreen({ navigation }) {
                     avatar: avatar, // ajouter la data avatar suite à la fonction avatar terminée
                     genre: genre,
                     location: locationData,
-                    favMovies: recherchefilm,
+                    favMovies: favoritefilm,
                     favGenres: genrefilm,
                     biography: biography,
                   }),
@@ -104,7 +106,7 @@ export default function InscriptionScreen({ navigation }) {
                         avatar: avatar, //ajouter img avatar suite à la fonction img avatar
                         genre: genre,
                         location: locationData,
-                        favMovies: recherchefilm,
+                        favMovies: favoritefilm,
                         favGenres: genrefilm,
                         biography: biography,
                       })
@@ -171,13 +173,15 @@ export default function InscriptionScreen({ navigation }) {
               <InscriptionScreen3
                 genrefilm={genrefilm}
                 setGenrefilm={setGenrefilm}
-                recherchefilm={recherchefilm}
-                setRecherchefilm={setRecherchefilm}
+                reseachfilm={reseachfilm}
+                setReseachfilm={setReseachfilm}
                 biography={biography}
                 setBiography={setBiography}
                 filmInput={filmInput}
                 setFilmInput={setFilmInput}
                 handleinscriptionbuton={handlefinirbuton}
+                favoritefilm={favoritefilm}
+                setFavoriteFilm={setFavoriteFilm}
               />
             </View>
           )}

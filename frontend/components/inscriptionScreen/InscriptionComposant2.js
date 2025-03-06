@@ -84,17 +84,7 @@ function InscriptionScreen2({
               ))}
             </ScrollView>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => SetmodalVisible(!ModalVisible)}
-              >
-                <FontAwesome
-                  style={styles.iconclose}
-                  name="check-square"
-                  size={25}
-                  color={"#C94106"}
-                ></FontAwesome>
-              </TouchableOpacity>
+             
 
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
@@ -254,7 +244,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     width: "100%",
 
     marginTop: 10,
