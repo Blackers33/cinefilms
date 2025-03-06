@@ -5,6 +5,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Dimensions
   } from "react-native";
   import { useState } from "react";
   
@@ -99,6 +100,7 @@ import {
         backgroundColor: "#000000D9",
         alignItems: "center",
         justifyContent: "center",
+        width: Dimensions.get("window").width,
       },
       buttonContainer: {
         width: 380,
@@ -110,6 +112,8 @@ import {
         height: '100%',
         position: 'absolute',
         zIndex: -1,
+        width: Dimensions.get("window").width,
+		height: Dimensions.get("window").height,
       },
       titrecontenu: {
         color: "#c94106",

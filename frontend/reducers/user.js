@@ -38,8 +38,20 @@ export const userSlice = createSlice({
         state.value.favGenres = favGenres;
         state.value.biography = biography;
     },
+    setProfilUser: (state, action) => {
+      state.value.age = action.payload.age;
+      state.value.genre = action.payload.genre;
+      state.value.location = action.payload.location;
+      state.value.favMovies = action.payload.favMovies;
+      state.value.favGenres = action.payload.favGenres;
+      state.value.biography = action.payload.biography;
+      state.value.friends = action.payload.friends;
+      state.value.username = action.payload.username;
+      state.value.email = action.payload.email;
+      state.value.avatar = action.payload.avatar;
+    }
   },
 });
 
-export const { updateinscriptionUser, updateprofilUser } = userSlice.actions;
+export const { updateinscriptionUser, updateprofilUser, setProfilUser } = userSlice.actions;
 export default userSlice.reducer;

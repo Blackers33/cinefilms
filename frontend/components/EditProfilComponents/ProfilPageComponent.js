@@ -1,45 +1,42 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Dimensions } from "react-native";
 import Button from "../common/Button";
 import TextInput from "../common/TextInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
+import Avatar from "../common/Avatar";
+import GradientBackground from "../common/GradientBackground";
 
-export default function ProfilPageComponent ({
-  age,
-  city,
-  genre,
-  genrefilm,
-  recherchefilm,
-  biography,
-  filmInput,
-}) {
+export default function ProfilPageComponent () {
     const [userData, setUserData] = useState('')
 
     const user = useSelector((state) => state.user.value);
 
-    fetch(process.env.EXPO_PUBLIC_IP_ADDRESS +  '/users/profil' + user.token, {
-			method: "GET",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				age: age,
-				city: city,
-				genre: genre,
-				genrefilm: genrefilm,
-				recherchefilm: recherchefilm,
-				biography: biography,
-			}),
-		})
-			.then((response) => response.json())
-			.then((data) => setUserData(userData));
-    
+
+    useEffect(() => {
+      fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/users/profil/${user.token}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((response) => response.json())
+        .then((data) => setUserData(data))
+    }, []);
     
 
   return (
     <View style={styles.container} >
+      <GradientBackground/>
+     
       <View style={styles.avatar}>
-        <Text style={styles.avatarText}>AVATAR</Text>
+      <Avatar uri={user.avatar} size={64} />
       </View>
-      <View style={styles.inputContainer}>     
+      <Text style={styles.usernameStyle} >{`${userData.username}`}</Text>
+    
+      <View style={styles.inputContainer}> 
+      <ScrollView
+						contentContainerStyle={{ flexGrow: 1}}
+						keyboardShouldPersistTaps='handled'
+            style={styles.scrollViewStyle}
+					>    
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Age</Text>
           <Text  style={styles.text}>
@@ -61,17 +58,17 @@ export default function ProfilPageComponent ({
           </Text>
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.Input}>Tes genres favoris</Text>
-
-          <Text style={styles.text}>
-            {`${userData.genrefilm}`}
-          </Text>
-        </View>
-        <View style={styles.textContainer}>
           <Text style={styles.Input}>Tes films favoris</Text>
 
           <Text style={styles.text}>
             {`${userData.recherchefilm}`}
+          </Text>
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.Input}>Tes genres favoris</Text>
+
+          <Text style={styles.text}>
+            {`${userData.genrefilm}`}
           </Text>
         </View>
         <View style={styles.textContainer}>
@@ -81,12 +78,14 @@ export default function ProfilPageComponent ({
             {`${userData.biography}`}
           </Text>
         </View>
+        </ScrollView>
+        </View>
         <View style={styles.editProfilButtonContainer} >
         <TouchableOpacity style={styles.editProfilButton} >
           <Text style={styles.editProfilText} >Éditer son profil</Text>
         </TouchableOpacity>
         </View>
-      </View>
+      
     </View>
   );
 }
@@ -97,12 +96,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1C1A",
     alignItems: "center",
       justifyContent: "center",
+      width: Dimensions.get("window").width,
   },
   inputContainer: {
-    width: 380,
-    marginTop: 50,
-    marginLeft: 20,
-    marginRight: 20,
+    marginTop: 50,    
+    paddingRight: 12,   
+    height: 480,
+    alignItems: "flex-start",
+    width: "100%"
   },
   champInput: {
     borderWidth: 2,
@@ -119,31 +120,15 @@ const styles = StyleSheet.create({
     color: "#C94106",
     fontWeight: "bold",
   },
-  avatar: {
-    borderColor: "pink",
-    backgroundColor: "pink",
-    borderWidth: 5,
-    height: 120,
-    width: 120,
-    borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    
-    marginLeft: 150,
-  },
-  avatarText: {
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-
+  
   text: {
-    color: "black",
+    color: "white",
     fontSize: 16,
     paddingLeft: 15,
   },
   
   textContainer: {
-  paddingBottom: 10,
+  paddingBottom: 20,
   },
   editProfilText: {
     color: "white",
@@ -158,8 +143,16 @@ const styles = StyleSheet.create({
     height: 50
   },
   editProfilButtonContainer: {
-    marginTop: 30,
+    marginTop: 10,
     width: 380,
     alignItems: "center",
+  },
+  scrollview: {
+  },
+  usernameStyle: {
+
+    fontSize: 22,
+    color: "#C94106",
+    fontWeight: "bold",
   },
 });
