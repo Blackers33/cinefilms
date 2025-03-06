@@ -13,92 +13,56 @@ const mockUser = {
 	token: "123456789",
 };
 
-const mockFilms = [
-	{
-		tmdbId: 1241982,
-		likes: ["123456789", "T", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-	{
-		tmdbId: 1084199,
-		likes: ["a", "123456789", "c", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-	{
-		tmdbId: 539972,
-		likes: ["a", "b", "c", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-	{
-		tmdbId: 549509,
-		likes: ["a", "b", "c", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-];
-
 export default function HomeScreen({ navigation }) {
 	const user = useSelector((state) => state.user.value);
 	const [movies, setMovies] = useState([]);
-	const [moviesSearched, setMoviesSearched] = useState([]);
 	const [search, setSearch] = useState("");
+
+	/**
+	 * Filtres de recherche qui seront passés à l'URL de l'API TMDB dans la fonction loadMovies
+	 * sort_by et with_genres sont vides par défaut,
+	 * ils seront remplis par les filtres dans le composant FiltersSection
+	 */
 	const [filters, setFilters] = useState({
-		sort: null,
-		genres: null,
+		include_adult: false,
+		include_video: false,
+		language: "fr-FR",
+		page: 1,
+		sort_by: "",
+		with_genres: "",
 	});
 
 	/**
-	 * useEffect servant à récupérer les films populaires
+	 * Fonction servant à récupérer les films sur l'API TMDB et les mettre dans l'état movies
+	 */
+	async function loadMovies() {
+		//construction de la string de paramètres
+		const params = new URLSearchParams(filters).toString();
+		const url = "/discover/movie?" + params;
+
+		const movies = await tmdbApiCall(url);
+
+		setMovies(movies);
+	}
+
+	/**
+	 * useEffect permettant de charger les films populaires à l'ouverture de la page
 	 */
 	useEffect(() => {
-		const url = `/discover/movie?include_adult=false&include_video=false&language=fr-FR&page=1${
-			filters.genres && `&with_genres=${filters.genres}`
-		}&sort_by=${filters.sort}`;
-
-		console.log(url);
-
-		async function loadMovies() {
-			const movies = await tmdbApiCall(url);
-			setMovies(movies);
-		}
 		loadMovies();
 	}, [filters]);
 
 	/**
-	 * Injection des likes et commentaires dans les films
-	 */
-	/* moviesToDisplay.forEach((movie) => {
-		console.log(movie.id);
-		fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + `/films/${movie.id}/film`)
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data);
-				movie.likes = data.film.likes;
-				movie.comments = data.film.comments;
-				if (movie.likes.includes(mockUser.token)) {
-					movie.liked = true;
-				}
-			});
-	}); */
-
-	/**
 	 * Fonction servant à gérer la recherche
 	 * 		- Appel à l'API de recherche de films
-	 * 		- Mise à jour de l'état moviesSearched
+	 * 		- Mise à jour de l'état movies
 	 */
 	async function handleSearch() {
 		const searchedMovies = await tmdbApiCall(
 			`/search/movie?query=${search}&include_adult=false&language=fr-FR&page=1`
 		);
-		setMoviesSearched(searchedMovies);
+		setMovies(searchedMovies);
 	}
-
-	/**
-	 * moviesToDisplay est un tableau de films à afficher
-	 * Si l'utilisateur a effectué une recherche, on affiche les films recherchés
-	 * Sinon, on affiche les films populaires
-	 *
-	 */
-	const moviesToDisplay = moviesSearched.length > 0 ? moviesSearched : movies;
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
@@ -111,10 +75,11 @@ export default function HomeScreen({ navigation }) {
 			>
 				<TopSection user={mockUser} />
 				<MainSection
-					movies={moviesToDisplay}
+					movies={movies}
 					search={search}
 					setSearch={setSearch}
-					setMoviesSearched={setMoviesSearched}
+					setMovies={setMovies}
+					loadMovies={loadMovies}
 					onSubmitEditing={handleSearch}
 					filters={filters}
 					setFilters={setFilters}

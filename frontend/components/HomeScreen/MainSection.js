@@ -1,9 +1,5 @@
-import {
-	ScrollView,
-	StyleSheet,
-	View,
-} from "react-native";
-import { useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { use, useState } from "react";
 import CardSmall from "./CardSmall";
 import CardLarge from "./CardLarge";
 import SearchSection from "./SearchSection";
@@ -13,20 +9,21 @@ export default function MainSection({
 	movies,
 	search,
 	setSearch,
-	setMoviesSearched,
+	setMovies,
+	loadMovies,
 	onSubmitEditing,
 	filters,
 	setFilters,
-	navigation
+	navigation,
 }) {
-
-	
 	const [cardsLarge, setCardsLarge] = useState(false);
 
 	function handlePressIcon() {
-		setSearch("");
-		setMoviesSearched([]);
-		console.log("pressing icon");
+		if (search.length > 0) {
+			setSearch("");
+			setMovies([]);
+			loadMovies();
+		}
 	}
 
 	function handleSetSize() {
@@ -48,21 +45,19 @@ export default function MainSection({
 					<FiltersSection filters={filters} setFilters={setFilters} />
 				)}
 				<View style={styles.cards}>
-					{movies.map((movie) =>
-						cardsLarge ? (
-							<CardLarge
-								movie={movie}
-								key={movie.id}
-								onPress={() => navigation.navigate("FilmScreen", movie)}
-							/>
+					{movies.map((movie) => {
+						const commonProps = {
+							movie: movie,
+							
+							onPress: () => navigation.navigate("FilmScreen", movie),
+						};
+
+						return cardsLarge ? (
+							<CardLarge {...commonProps} key={movie.id} />
 						) : (
-							<CardSmall
-								movie={movie}
-								key={movie.id}
-								onPress={() => navigation.navigate("FilmScreen", movie)}
-							/>
-						)
-					)}
+							<CardSmall {...commonProps} key={movie.id} />
+						);
+					})}
 				</View>
 			</ScrollView>
 		</View>
