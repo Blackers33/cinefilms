@@ -74,10 +74,16 @@ function InscriptionScreen3({
         <LinearGradient colors={["#B22E2E", "#333"]} style={styles.gradiantlistderoulant}>
           <Dropdown
             style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
+            placeholderStyle={{
+              color: "rgba(206, 196, 188, 0.8)",
+              fontSize: 14,
+              padding:5,
+            }}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
             iconStyle={styles.iconStyle}
+            containerStyle={styles.containerStyle}
+            itemTextStyle={styles.itemTextStyle}
             data={genre}
             search
             maxHeight={300}
@@ -152,16 +158,22 @@ const styles = StyleSheet.create({
   reseachbarfilm: {
     marginBottom: 40,
   },
+  gradiantlistderoulant:{
+    width:"100%",
+    height:40,
+    borderRadius:100,
+  },
+
   dropdown: {
     width: "100%", 
-    height: 35,   
+    height: 40,   
     backgroundColor: "rgba(29, 29, 29, 0.7)",
     borderRadius: 100,   
-    borderWidth: 1,
-    borderColor: "#C94106",  
+    borderColor: "#C94106",
     fontSize: 14,    
     color: "white",
-    marginVertical: 12,   
+    borderTopWidth:2,
+ 
 
   },
   icon: {
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 12,
-    color: ""
+    color: "#FFFFFF",
   },
   selectedTextStyle: {
     fontSize: 12,
@@ -177,6 +189,14 @@ const styles = StyleSheet.create({
   iconStyle: {
     width: 20,
     height: 20,
+  },
+  containerStyle:{
+    backgroundColor: "rgb(0,0,0)",
+    borderRadius:10,
+  },
+  itemTextStyle:{
+    color:"#ffffff",
+    fontSize:14,
   },
   reseachfilm: {
     height: "auto",
@@ -193,7 +213,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   reseachbarfilm: {
-    width: "95%",
+    width: "100%",
     height: 50,
     backgroundColor: "#bcbcbc",
     borderRadius: 5,
@@ -233,15 +253,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
-  gradiantlistderoulant:{
-    height: 35,          
-    width: "100%",        
-    borderRadius: 100,     
-    justifyContent: "center",  
-    alignItems: "center", 
-    
-    marginVertical: 10, 
-  }
 });
 
 export default InscriptionScreen3;
