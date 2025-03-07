@@ -8,6 +8,7 @@ export default function Events() {
     const [filter, setFilter] = useState('');
     return(
         <View style={styles.containerEvents}>
+            
             <View style={styles.filterBar}>
                 <TextInput
                     type='text'
@@ -53,7 +54,7 @@ export default function Events() {
 
 const styles = StyleSheet.create({
     containerEvents: {
-
+        
     },
     inputFilter: {
         backgroundColor: 'rgba(77, 77, 77, 0.1)',

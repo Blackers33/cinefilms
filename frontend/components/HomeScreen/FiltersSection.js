@@ -5,24 +5,24 @@ const genresData = require("../common/genres.json");
 
 
 export default function FiltersSection({ filters, setFilters }) {
-	const sort = [
-		{ label: "Popularité ⇂  ", value: "popularity.desc" },
-		{ label: "Popularité ↾ ", value: "popularity.asc" },
+	const sortList = [
+		{ label: "Popularité ↓  ", value: "popularity.desc" },
+		{ label: "Popularité ↑ ", value: "popularity.asc" },
 
-		{ label: "Recettes ⇂", value: "revenue.desc" },
-		{ label: "Recettes ↾", value: "revenue.asc" },
+		{ label: "Recettes ↓", value: "revenue.desc" },
+		{ label: "Recettes ↑", value: "revenue.asc" },
 
-		{ label: "Date de sortie ⇂", value: "primary_release_date.desc" },
-		{ label: "Date de sortie ↾", value: "primary_release_date.asc" },
+		{ label: "Date de sortie ↓", value: "primary_release_date.desc" },
+		{ label: "Date de sortie ↑", value: "primary_release_date.asc" },
 
 		{ label: "Titre (A-Z)", value: "title.asc" },
 		{ label: "Titre (Z-A)", value: "title.desc" },
 
-		{ label: "Note moyenne ⇂", value: "vote_average.desc" },
-		{ label: "Note moyenne ↾", value: "vote_average.asc" },
+		{ label: "Note moyenne ↓", value: "vote_average.desc" },
+		{ label: "Note moyenne ↑", value: "vote_average.asc" },
 
-		{ label: "Nb de votes ⇂", value: "vote_count.desc" },
-		{ label: "Nb de votes ↾", value: "vote_count.asc" },
+		{ label: "Nb de votes ↓", value: "vote_count.desc" },
+		{ label: "Nb de votes ↑", value: "vote_count.asc" },
 	];
     
 	const handleFilterChange = (filterName, value) => {
@@ -90,22 +90,23 @@ export default function FiltersSection({ filters, setFilters }) {
 		<View style={styles.filterSection}>
 			<DropdownComponent
 				title='Trier...'
-				filterKey='sort'
-				dataset={sort}
+				filterKey='sort_by'
+				dataset={sortList}
 				icon='bars'
 			/>
 			<DropdownComponent
 				title='Genres'
-				filterKey='genres'
+				filterKey='with_genres'
 				dataset={genres}
 				icon='film'
 			/>
-			{(filters.sort || filters.genres) && (
+			{(filters.sort_by || filters.with_genres) && (
 				<TouchableOpacity
 					onPress={() =>
+						//reset filters by passing empty strings
 						setFilters({
-							sort: null,
-							genres: null,
+							sort: "",
+							genres: "",
 						})
 					}
 				>
