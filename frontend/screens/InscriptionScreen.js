@@ -9,6 +9,7 @@ import {
   View,
   Text,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -112,9 +113,8 @@ export default function InscriptionScreen({ navigation }) {
                     );
 
                     setBienvenue(true); // Successfully signed up and created the profile
-                    setTimeout(() => {
-                      navigation.navigate("TabNavigator");
-                    }, 3000);
+                    navigation.navigate("TabNavigator");
+                 
                   }
                 })
                 .catch((error) => {
@@ -126,6 +126,11 @@ export default function InscriptionScreen({ navigation }) {
   };
 
   return (
+
+    <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps='handled'
+        >
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "padding"}
@@ -195,6 +200,7 @@ export default function InscriptionScreen({ navigation }) {
         </ImageBackground>
       </SafeAreaView>
     </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 

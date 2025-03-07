@@ -5,7 +5,6 @@ import {
   View,
   Modal,
   ScrollView,
-  FlatList,
   Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -63,7 +62,6 @@ function InscriptionScreen2({
         transparent={true}
         visible={ModalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           SetmodalVisible(!ModalVisible);
         }}
       >

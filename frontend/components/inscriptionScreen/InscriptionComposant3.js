@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
@@ -29,7 +30,7 @@ function InscriptionScreen3({
   handleinscriptionbuton,
 }) {
 
-  const [errorMessage, setErrorMessage] = useState("");// message d'erreur sur le limite des films à ajouter 
+  const [noResultsFound,setNoResultsFound]=useState(false);
 
 
   //function pour recuperer genre de film
@@ -48,22 +49,25 @@ function InscriptionScreen3({
         filmInput
       )}&language=fr-FR`;
       const results = await tmdbApiCall(uri);
-      if (favoritefilm.length < 5) {
+
+      if(results.length===0){
+        setNoResultsFound(true);
+        return
+      }
+       
         setReseachfilm((prevFilms) => [...prevFilms, results[0]]);
         setFavoriteFilm((prevFavorites) => [...prevFavorites, results[0].id]);
-      } else {
-        setErrorMessage(
-          "Vous pouvez ajouter 5 films favoris lors de l'inscription. Rejoignez Cinefims pour en ajouter davantage!"
-        );
-      }
+        setNoResultsFound(false);
     } catch (error) {
       console.error("Erreur lors de la recherche du film:", error);
+      setNoResultsFound(true) 
     }
 
     setFilmInput("");
   };
-// afficher les posters des films trouvés pour l'utilisateur 
+  // afficher les posters des films trouvés pour l'utilisateur
   const renderFavoriteFilms = () => {
+  
     return favoritefilm.map((favoriteId) => {
       const favoriteMovie = reseachfilm.find((film) => film.id === favoriteId);
       if (favoriteMovie) {
@@ -134,28 +138,38 @@ function InscriptionScreen3({
         </LinearGradient>
         <View>{listgenrefilms}</View>
       </View>
-      <View style={styles.reseachfilm}>
-        <Text style={styles.title}>
-          Recherchez vos films préférés pour les ajouter à votre profil
-        </Text>
-        <View style={styles.barfilm}>
+
+      <Text style={styles.title}>
+        Recherchez vos films préférés pour les ajouter à votre profil
+      </Text>
+      <View style={styles.barfilm}>
+        <View style={{ width: "80%" }}>
           <TextInputStyled
             onChangeText={(value) => setFilmInput(value)}
             value={filmInput}
             placeholder="recherche..."
-          ></TextInputStyled>
-          <TouchableOpacity activeOpacity={0.8} onPress={handlereseachfilm}>
-            <FontAwesome
-              style={styles.iconsearch}
-              name="search"
-              size={25}
-              color="#ec6e5b"
-            />
-          </TouchableOpacity>
-          <View style={styles.favoriteList}>{renderFavoriteFilms()}</View>
-          {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+          />
         </View>
+        <TouchableOpacity activeOpacity={0.7}>
+          <FontAwesome
+            style={styles.iconsearch}
+            name="search"
+            size={25}
+            color="#ec6e5b"
+            onPress={handlereseachfilm}
+          />
+        </TouchableOpacity>
       </View>
+      <View style={styles.favoriteList}>
+        <ScrollView horizontal={true} >
+          {favoritefilm&&renderFavoriteFilms()}
+        </ScrollView>
+      </View>
+      {noResultsFound && (
+      <Text style={{ color: "#FFFFFF", textAlign: "center", marginTop: 20 }}>
+        Aucun film trouvé pour cette recherche.
+      </Text>
+    )}
 
       <Text style={styles.title}>
         Écris ta biographie sur ta passion pour le cinéma
@@ -192,6 +206,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 12,
     marginBottom: 5,
+    marginTop: 80,
   },
   reseachbarfilm: {
     marginBottom: 40,
@@ -236,29 +251,13 @@ const styles = StyleSheet.create({
   },
   reseachfilm: {
     height: "auto",
-    marginBottom: 30,
+    marginBottom: 20,
     padding: 10,
   },
-  iconsearch: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 12,
-  },
-  reseachbarfilm: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#bcbcbc",
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: "#C94106",
-    fontSize: 12,
-    color: "white",
-    marginVertical: 10,
-    paddingLeft: 40,
+  barfilm: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
   },
 
   text: {
@@ -268,7 +267,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   biographyInput: {
-    height: 120,
+    height: 100,
     width: "100%",
     borderWidth: 1,
     borderColor: "#C94106",
@@ -277,10 +276,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: "#FFF",
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
   },
   button: {
-    marginTop: 70,
+    marginTop: 50,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -290,31 +289,32 @@ const styles = StyleSheet.create({
   },
   //style pour les resultats du reseachfilm
   favoriteList: {
+    flex:1,
+    marginTop: 30,
+    height: "auto",
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
   },
   movieItem: {
-    width: 50,
-    height: 50,
     backgroundColor: "#333",
     borderRadius: 5,
-    marginTop: 40,
+    marginTop: 10,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
+    pading: 2,
   },
 
   poster: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 110,
     borderRadius: 5,
   },
-
 
   noImage: {
     color: "#aaa",
@@ -322,11 +322,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
-  errorMessage:{
-    color:"#fff",
-    fontSize:12,
-    textAlign:"center",
-  }
+ noFavoritesContainer:{
+  color: "#FFFFFF",
+
+ }
 });
 
 export default InscriptionScreen3;

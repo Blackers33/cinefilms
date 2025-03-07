@@ -26,7 +26,7 @@ function InscriptionScreen1({
   };
 
   return (
-    <>
+    <View>
       <Text style={styles.titrelogo}>
         Commencer votre inscription sur Cinefilms
       </Text>
@@ -68,7 +68,7 @@ function InscriptionScreen1({
           </Text>
         )}
       </View>
-    </>
+    </View>
   );
 }
 
