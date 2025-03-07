@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("./app");
+const User = require("./models/users");
 
 /**
  * @author Sacha
@@ -104,4 +105,6 @@ it("POST /signup", async () => {
 	});
 	expect(res.statusCode).toBe(200);
 	expect(res.body.result).toBe(true);
+	const deleteUser = await User.deleteOne({ email: "test@gmail.com" })
+	console.log(deleteUser)
 });
