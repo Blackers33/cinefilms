@@ -3,62 +3,64 @@
  * @param {movie}
  */
 
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 
-
-export default function Card({ movie }){
-
-    return (
-        <TouchableWithoutFeedback onPress={() => console.log("press")}>
-            <View style={styles.card}>
-                <ImageBackground
-                    source={{
-                        uri: movie.poster_path
-                            ? "https://image.tmdb.org/t/p/w780" + movie.poster_path
-                            : "https://www.theyearinpictures.co.uk/images//image-placeholder.png",
-                    }}
-                    style={styles.image}
-                />
-                <View style={styles.movieInfo}>
-                    <Text style={styles.title}>{movie.title}</Text>
-                    <Text style={styles.text}>{movie.overview}</Text>
-                    <View style={styles.bottomSection}>
-                        <View style={{ flexDirection: "row" }}>
-                            <Icon
-                                name='heart'
-                                size={10}
-                                color={movie.liked ? '#ec412f' : '#fff'}
-                                style={{ marginTop: 2, marginRight: 2 }}
-                            />
-                            <Text style={styles.text}>{movie.likes?.length || 0} Likes</Text>
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <Icon
-                                name='calendar-number-outline'
-                                size={10}
-                                color='#fff'
-                                style={{ marginTop: 2, marginRight: 2 }}
-                            />
-                            <Text style={styles.text}>Events</Text>
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <Icon
-                                name='chatbox-ellipses-outline'
-                                size={10}
-                                color='#fff'
-                                style={{ marginTop: 2, marginRight: 2 }}
-                            />
-                            <Text style={styles.text}>Comments</Text>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        </TouchableWithoutFeedback>
-    );
-};
+export default function Card({ movie, onPress }) {
+	return (
+		<TouchableWithoutFeedback onPress={onPress}>
+			<View style={styles.card}>
+				<ImageBackground
+					source={{
+						uri: movie.poster_path
+							? "https://image.tmdb.org/t/p/w780" + movie.poster_path
+							: "https://www.theyearinpictures.co.uk/images//image-placeholder.png",
+					}}
+					style={styles.image}
+				/>
+				<View style={styles.movieInfo}>
+					<Text style={styles.title}>{movie.title}</Text>
+					<Text style={styles.text}>{movie.overview}</Text>
+					<View style={styles.bottomSection}>
+						<TouchableOpacity>
+						    <View style={styles.bottomButton}>
+    							<Icon
+    								name='heart'
+    								size={20}
+    								color={movie.liked ? "#ec412f" : "#fff"}
+    								style={{ marginTop: 2, marginRight: 2 }}
+    							/>
+    							<Text style={styles.text}>{movie.likes?.length || 0} Likes</Text>
+    						</View>
+						</TouchableOpacity>
+						<View style={styles.bottomButton}>
+							<Icon
+								name='calendar-number-outline'
+								size={20}
+								color='#fff'
+								style={{ marginTop: 2, marginRight: 2 }}
+							/>
+							<Text style={styles.text}>0 Events</Text>
+						</View>
+						<View style={styles.bottomButton}>
+							<Icon
+								name='chatbox-ellipses-outline'
+								size={20}
+								color='#fff'
+								style={{ marginTop: 2, marginRight: 2 }}
+							/>
+							<Text style={styles.text}>
+								{movie.comments?.length || 0} Comments
+							</Text>
+						</View>
+					</View>
+				</View>
+			</View>
+		</TouchableWithoutFeedback>
+	);
+}
 
 const styles = StyleSheet.create({
 	card: {
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "100%",
-		height: Dimensions.get("window").width * 1.5,
+		height: Dimensions.get("window").width * 1.1,
 		resizeMode: "contain",
 	},
 	movieInfo: {
@@ -92,7 +94,15 @@ const styles = StyleSheet.create({
 	},
 	bottomSection: {
 		flexDirection: "row",
-		justifyContent: "space-around",
+		justifyContent: "space-between",
 		marginBottom: 5,
 	},
+	bottomButton: { 
+        flexDirection: "row", 
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#bbb",
+        padding: 5,
+        borderRadius: 10,
+    },
 });
