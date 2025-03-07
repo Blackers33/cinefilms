@@ -1,3 +1,5 @@
+//@author : Charlie
+
 import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
 import { useDispatch } from 'react-redux';
 import { setProfilUser } from '../reducers/user';
@@ -51,10 +53,10 @@ export default function ConnexionScreen({ navigation }) {
 	return (
 		<KeyboardAvoidingView
 			style={styles.container}
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
+			behavior={Platform.OS === "ios" && "padding"}
 		>
 			<SafeAreaView>
-				{/* <ImageBackground
+				<ImageBackground
 					source={require("../assets/wallpaper-cinefilm.jpg")}
 					style={styles.backgroundImage}
 				>	
@@ -77,8 +79,7 @@ export default function ConnexionScreen({ navigation }) {
 							/>
 						</View>
 					</ScrollView>
-				</ImageBackground> */}
-				<ProfilPageComponent/>
+				</ImageBackground>
 			</SafeAreaView>
 		</KeyboardAvoidingView>
 	);

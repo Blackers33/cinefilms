@@ -1,3 +1,5 @@
+//@author : Charlie
+
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Dimensions } from "react-native";
 import Button from "../common/Button";
 import TextInput from "../common/TextInput";

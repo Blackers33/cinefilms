@@ -1,3 +1,5 @@
+//@author : Charlie
+
 import TextInput from "../common/TextInput";
 import {
   ImageBackground,
@@ -56,7 +58,7 @@ import {
       Input: {
         padding: 12,
         fontSize: 16,
-        color: "#C94106",
+        color: "white",
         paddingLeft: 30,
       },
       bouton: {
