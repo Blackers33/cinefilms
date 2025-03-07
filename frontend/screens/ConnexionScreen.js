@@ -40,8 +40,8 @@ export default function ConnexionScreen({ navigation }) {
 					fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + data.token)
 						.then((response) => response.json())
 						.then((profileData) => {
-							dispatch(setProfilUser(profileData));
-							navigation.navigate("TabNavigator", { token: data.token });
+							dispatch(setProfilUser({profileData, token: data.token}));
+							navigation.navigate("Profil");
 						});
 				} else {
 					alert("Email ou mot de passe incorrect");

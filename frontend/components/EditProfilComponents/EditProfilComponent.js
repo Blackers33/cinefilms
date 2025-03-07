@@ -11,39 +11,26 @@ import TextInput from "../common/TextInput";
 import GradientBackground from "../common/GradientBackground";
 
 export default function ProfilPageComponent() {
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+console.log(user)
 
-  const [age, setAge] = useState(user.age || "");
-  const [city, setCity] = useState(user.city || "");
-  const [genre, setGenre] = useState(user.genre || "");
-  const [genrefilm, setGenrefilm] = useState(user.genrefilm || "");
-  const [recherchefilm, setRecherchefilm] = useState(user.recherchefilm || "");
-  const [biography, setBiography] = useState(user.biography || "");
+const profile = user?.profileData?.profil || {};
 
-  const handleConfirmation = () => {
-    fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + '/users/profil/' + user.token, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        age: age,
-        city: city,
-        genre: genre,
-        genrefilm: genrefilm,
-        recherchefilm: recherchefilm,
-        biography: biography,
-      })
-    })
-      .then(res => res.json())
-      .then(data => dispatch(updateprofilUser(data)))
-  }
+const [avatar, setAvatar] = useState(profile.Avatar || "");
+const [age, setAge] = useState(profile.age || "");
+const [city, setCity] = useState(profile.city || "");
+const [genre, setGenre] = useState(profile.genre || "");
+const [genrefilm, setGenrefilm] = useState(profile.genrefilm || "");
+const [recherchefilm, setRecherchefilm] = useState(profile.recherchefilm || "");
+const [biography, setBiography] = useState(profile.biography || "");
+
 
   return (
     <View style={styles.container} >
       <GradientBackground />
 
       <View style={styles.avatar}>
-        <Avatar uri={user.avatar} size={64} />
+        <Avatar uri={user.avatar} size={150} />
       </View>
 
       <View style={styles.inputContainer}>
@@ -91,12 +78,6 @@ export default function ProfilPageComponent() {
 
         </ScrollView>
       </View>
-      <View style={styles.editProfilButtonContainer} >
-        <TouchableOpacity style={styles.editProfilButton} onPress={() => handleConfirmation()} >
-          <Text style={styles.editProfilText} >Confirmer</Text>
-        </TouchableOpacity>
-      </View>
-
     </View>
   );
 }
@@ -141,25 +122,5 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingBottom: 20,
     width: Dimensions.get("window").width,
-  },
-  editProfilText: {
-    color: "white",
-    fontSize: 20,
-  },
-  editProfilButton: {
-    width: 180,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 100,
-    backgroundColor: "#c94106",
-    height: 50
-  },
-  editProfilButtonContainer: {
-    marginTop: 10,
-    width: 380,
-    alignItems: "center",
-  },
-  scrollview: {
-
   },
 });
