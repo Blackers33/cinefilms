@@ -8,12 +8,14 @@ import {
   Platform,
   View,
   Text,
+  ImageBackground,
+  ScrollView,
 } from "react-native";
 import { useState } from "react";
-import { useDispatch,useSelector } from 'react-redux';
-import { updateinscriptionUser,updateprofilUser } from '../reducers/user';
+import { useDispatch, useSelector } from "react-redux";
+import { updateinscriptionUser, updateprofilUser } from "../reducers/user";
 
-export default function InscriptionScreen({navigation}) {
+export default function InscriptionScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,14 +23,17 @@ export default function InscriptionScreen({navigation}) {
   const [city, setCity] = useState("");
   const [genre, setGenre] = useState("");
   const [genrefilm, setGenrefilm] = useState([]);
-  const [recherchefilm, setRecherchefilm] = useState([]); //pour afficher les films recherchés
+  const [reseachfilm, setReseachfilm] = useState([]); //pour afficher les films recherchés
+  const [favoritefilm, setFavoriteFilm] = useState([]);
   const [biography, setBiography] = useState("");
   const [filmInput, setFilmInput] = useState("");
   const [currentStep, setCurrentStep] = useState(1); //pour afficher les étapes de l'inscription
   const [bienvenue, setBienvenue] = useState(false); //pour afficher le message de bienvenue
+  const [modalVisible, setModalVisible] = useState(false); //pour afficher la modal d'avatar
+  const [avatar, setAvatar] = useState(""); //pour afficher l'avatar
 
-  const dispatch = useDispatch();//pour envoyer les données de l'utilisateur
-  const user = useSelector((state) => state.user.value);//pour récupérer les données de l'utilisateur
+  const dispatch = useDispatch(); //pour envoyer les données de l'utilisateur
+  const user = useSelector((state) => state.user.value); //pour récupérer les données de l'utilisateur
 
   const handlecommencerbuton = () => {
     //pour passer à l'étape suivante
@@ -53,122 +58,149 @@ export default function InscriptionScreen({navigation}) {
         };
         // Now perform user signup
         fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/signup", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						username: username,
-						password: password,
-						email: email,
-					}),
-				})
-					.then((response) => response.json())
-					.then((data) => {
-						if (data.result) {
-							// After successful signup, update the user profile with location
-							dispatch(
-								//pour envoyer les données de l'utilisateur
-								updateinscriptionUser({
-									username: username,
-									email: email,
-									token: data.token,
-								})
-							);
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+            email: email,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.result) {
+              // After successful signup, update the user profile with location
+              dispatch(
+                //pour envoyer les données de l'utilisateur
+                updateinscriptionUser({
+                  username: username,
+                  email: email,
+                  token: data.token,
+                })
+              );
 
-							fetch(
-								process.env.EXPO_PUBLIC_IP_ADDRESS +
-									"/users/profil/" +
-									data.token,
-								{
-									method: "PUT",
-									headers: { "Content-Type": "application/json" },
-									body: JSON.stringify({
-										age: age,
-										genre: genre,
-										location: locationData,
-										favMovies: recherchefilm,
-										favGenres: genrefilm,
-										biography: biography,
-									}),
-								}
-							)
-								.then((response) => response.json())
-								.then((data) => {
-									if (data.result) {
-										dispatch(
-											updateprofilUser({
-												age: age,
-												genre: genre,
-												location: locationData,
-												favMovies: recherchefilm,
-												favGenres: genrefilm,
-												biography: biography,
-											})
-										);
+              fetch(
+                process.env.EXPO_PUBLIC_IP_ADDRESS +
+                  "/users/profil/" +
+                  data.token,
+                {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    age: age,
+                    avatar: avatar, // ajouter la data avatar suite à la fonction avatar terminée
+                    genre: genre,
+                    location: locationData,
+                    favMovies: favoritefilm,
+                    favGenres: genrefilm,
+                    biography: biography,
+                  }),
+                }
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.result) {
+                    dispatch(
+                      updateprofilUser({
+                        age: age,
+                        avatar: avatar, //ajouter img avatar suite à la fonction img avatar
+                        genre: genre,
+                        location: locationData,
+                        favMovies: favoritefilm,
+                        favGenres: genrefilm,
+                        biography: biography,
+                      })
+                    );
 
-										setBienvenue(true); // Successfully signed up and created the profile
+                    setBienvenue(true); // Successfully signed up and created the profile
                     navigation.navigate("TabNavigator");
-									}
-								});
-						}
-					});
+                 
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error updating user profile:", error);
+                });
+            }
+          });
       });
   };
 
-
   return (
+
+    <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps='handled'
+        >
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "padding"}
     >
-      <SafeAreaView>
-        {currentStep === 1 && (
-          <View>
-            <InscriptionScreen1
-              handleNext={handlecommencerbuton}
-              username={username}
-              setUsername={setUsername}
-              email={email}
-              setEmail={setEmail}
-              password={password}
-              setPassword={setPassword}
-            />
-          </View>
-        )}
-        {currentStep === 2 && (
-          <View>
-            <InscriptionScreen2
-              handleNext={handlesuivantbuton}
-              age={age}
-              setAge={setAge}
-              city={city}
-              setCity={setCity}
-              genre={genre}
-              setGenre={setGenre}
-            />
-          </View>
-        )}
-        {currentStep === 3 && (
-          <View>
-            <InscriptionScreen3
-              genrefilm={genrefilm}
-              setGenrefilm={setGenrefilm}
-              recherchefilm={recherchefilm}
-              setRecherchefilm={setRecherchefilm}
-              biography={biography}
-              setBiography={setBiography}
-              filmInput={filmInput}
-              setFilmInput={setFilmInput}
-              handleinscriptionbuton={handlefinirbuton}
-            />
-          </View>
-        )}
-        {bienvenue && (
-          <Text style={styles.text}>
-           Votre inscription a été réussie. {user.username}, bienvenue sur Cinefilms ! 🎉
-          </Text>
-        )}
+      <SafeAreaView
+      >
+        <ImageBackground
+          source={require("../assets/backgroundGradient.png")}
+          style={{
+            resizeMode: "cover",
+            height:"100%",
+          }}
+        >
+          {currentStep === 1 && (
+            <View>
+              <InscriptionScreen1
+                handleNext={handlecommencerbuton}
+                username={username}
+                setUsername={setUsername}
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+              />
+            </View>
+          )}
+          {currentStep === 2 && (
+            <View>
+              <InscriptionScreen2
+                handleNext={handlesuivantbuton}
+                age={age}
+                setAge={setAge}
+                city={city}
+                setCity={setCity}
+                genre={genre}
+                setGenre={setGenre}
+                avatar={avatar}
+                setAvatar={setAvatar}
+                ModalVisible={modalVisible}
+                SetmodalVisible={setModalVisible}
+              />
+            </View>
+          )}
+          {currentStep === 3 && (
+            <View>
+              <InscriptionScreen3
+                genrefilm={genrefilm}
+                setGenrefilm={setGenrefilm}
+                reseachfilm={reseachfilm}
+                setReseachfilm={setReseachfilm}
+                biography={biography}
+                setBiography={setBiography}
+                filmInput={filmInput}
+                setFilmInput={setFilmInput}
+                handleinscriptionbuton={handlefinirbuton}
+                favoritefilm={favoritefilm}
+                setFavoriteFilm={setFavoriteFilm}
+              />
+            </View>
+          )}
+          {bienvenue && (
+            <Text style={styles.text}>
+              Votre inscription a été réussie. {user.username}, bienvenue sur
+              Cinefilms ! 🎉
+            </Text>
+          )}
+        </ImageBackground>
       </SafeAreaView>
     </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
