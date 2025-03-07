@@ -1,7 +1,4 @@
 const request = require("supertest");
-const express = require("express");
-const router = require("./routes/films");
-const Film = require("./models/films");
 const app = require("./app");
 
 /**
@@ -38,6 +35,19 @@ it("POST /films/:filmId/like", async () => {
 });
 
 /**
+ * @author Kahina
+ */
+
+it("GET /:filmId/film", async () => {
+	const res = await request(app).get("/films/1/film");
+
+	expect(res.statusCode).toBe(200);
+	expect(res.body.result).toBe(true);
+	expect(res.body.film._id).toBe("67cab3ef17d319fa6164bce5");
+	expect(res.body.film.tmdbId).toBe(1);
+});
+
+/**
  * @author Yirui
  */
 
@@ -45,7 +55,7 @@ it("POST /films/:filmId/like", async () => {
 it(`PUT /users/profil/`, async () => {
 	//exemple token de l'utilisateur qui existe dèjà dans les bases des données
 	const token = "_ZpeuBlpvOL6Qd1yLwyg50_GhAxA-cMl";
-    
+
 	const res = await request(app)
 		.put(`/users/profil/${token}`)
 		.send({
@@ -80,29 +90,6 @@ it("POST /signin", async () => {
 	expect(res.statusCode).toBe(200);
 	expect(res.body.result).toBe(true);
 	expect(res.body.token).toBe("AJrdD3LbgYExWqbR81vDDCwwF3xc7Qtt");
-});
-
-/**
- * @author Kahina
- */
-
-const _app = express();
-_app.use(express.json());
-_app.use(router);
-
-jest.mock("./models/films");
-
-describe("GET /:filmId/film", () => {
-	it("should return a film when it exists", async () => {
-		const testFilm = { tmdbId: 123, likes: [], comments: [] };
-		Film.findOne.mockResolvedValue(testFilm); // Correction ici
-
-		const res = await request(_app).get("/123/film");
-
-		expect(res.statusCode).toBe(200);
-		expect(res.body.result).toBe(true);
-		expect(res.body.film).toEqual(testFilm);
-	});
 });
 
 /**
