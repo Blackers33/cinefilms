@@ -40,8 +40,12 @@ export const userSlice = createSlice({
         state.value.favGenres = favGenres;
         state.value.biography = biography;
     },
+    setProfilUser: (state, action) => {
+      state.value = action.payload
+      
+    }
   },
 });
 
-export const { updateinscriptionUser, updateprofilUser } = userSlice.actions;
+export const { updateinscriptionUser, updateprofilUser, setProfilUser } = userSlice.actions;
 export default userSlice.reducer;

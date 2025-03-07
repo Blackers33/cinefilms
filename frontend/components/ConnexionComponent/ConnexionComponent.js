@@ -1,3 +1,5 @@
+//@author : Charlie
+
 import TextInput from "../common/TextInput";
 import {
   ImageBackground,
@@ -5,6 +7,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Dimensions
   } from "react-native";
   import { useState } from "react";
   
@@ -55,7 +58,7 @@ import {
       Input: {
         padding: 12,
         fontSize: 16,
-        color: "#C94106",
+        color: "white",
         paddingLeft: 30,
       },
       bouton: {
@@ -99,6 +102,7 @@ import {
         backgroundColor: "#000000D9",
         alignItems: "center",
         justifyContent: "center",
+        width: Dimensions.get("window").width,
       },
       buttonContainer: {
         width: 380,
@@ -110,6 +114,8 @@ import {
         height: '100%',
         position: 'absolute',
         zIndex: -1,
+        width: Dimensions.get("window").width,
+		height: Dimensions.get("window").height,
       },
       titrecontenu: {
         color: "#c94106",

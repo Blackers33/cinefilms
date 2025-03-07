@@ -1,6 +1,8 @@
-import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
-import EditProfilComponent from "../components/EditProfilComponents/EditProfilComponent1";
+//@author : Charlie
 
+import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
+import { useDispatch } from 'react-redux';
+import { setProfilUser } from '../reducers/user';
 import {
 	StyleSheet,
 	KeyboardAvoidingView,
@@ -10,18 +12,20 @@ import {
 	ImageBackground,
 	Text,
 	ScrollView,
+	Dimensions,
 } from "react-native";
 import { useState } from "react";
 import Button from "../components/common/Button";
+import ProfilPageComponent from "../components/EditProfilComponents/ProfilPageComponent";
+
 
 export default function ConnexionScreen({ navigation }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const dispatch = useDispatch();
 
 	const handleConnexion = () => {
- 
 
-    
 		fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/signin", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -32,28 +36,33 @@ export default function ConnexionScreen({ navigation }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(data);
 				if (data.result) {
-					navigation.navigate("TabNavigator", { token: data.token });
+					fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + data.token)
+						.then((response) => response.json())
+						.then((profileData) => {
+							dispatch(setProfilUser({profileData, token: data.token}));
+							navigation.navigate("Profil");
+						});
 				} else {
 					alert("Email ou mot de passe incorrect");
 				}
 			});
 	};
 
+
 	return (
-		<ScrollView
-			contentContainerStyle={{ flexGrow: 1 }}
-			keyboardShouldPersistTaps='handled'
+		<KeyboardAvoidingView
+			style={styles.container}
+			behavior={Platform.OS === "ios" && "padding"}
 		>
-			<KeyboardAvoidingView
-				style={styles.container}
-				behavior={Platform.OS === "padding"}
-			>
-				<SafeAreaView>
-					<ImageBackground
-						source={require("../assets/wallpaper-cinefilm.jpg")}
-						style={styles.backgroundImage}
+			<SafeAreaView>
+				<ImageBackground
+					source={require("../assets/wallpaper-cinefilm.jpg")}
+					style={styles.backgroundImage}
+				>	
+					<ScrollView
+						contentContainerStyle={{ flexGrow: 1 }}
+						keyboardShouldPersistTaps='handled'
 					>
 						<ConnexionComponent
 							email={email}
@@ -69,24 +78,25 @@ export default function ConnexionScreen({ navigation }) {
 								onPress={() => navigation.navigate("Inscription")}
 							/>
 						</View>
-					</ImageBackground>
-				</SafeAreaView>
-			</KeyboardAvoidingView>
-		</ScrollView>
+					</ScrollView>
+				</ImageBackground>
+			</SafeAreaView>
+		</KeyboardAvoidingView>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		// backgroundColor: "#1E1C1A",
 		alignItems: "center",
 		justifyContent: "center",
+		width: Dimensions.get("window").width,
+		height: Dimensions.get("window").height,
 	},
 	backgroundImage: {
 		flex: 1,
-		width: "100%",
-		height: "100%",
+		width: Dimensions.get("window").width,
+		height: Dimensions.get("window").height,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -97,9 +107,9 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 	buttonContainer: {
-		width: 380,
 		alignItems: "center",
 		backgroundColor: "#000000D9",
 		paddingBottom: 30,
+		width: Dimensions.get("window").width,
 	},
 });

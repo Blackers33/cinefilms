@@ -80,7 +80,22 @@ User.findOne({ token: req.params.token }).then(data => {
 router.get('/profil/:token', (req, res) => {
   User.findOne({ token: req.params.token }).then(data => {
     if (data) {
-      res.json({ result: true, profil: data });
+      res.json({ 
+        result: true, 
+        profil: {
+          username: data.username,
+          email: data.email,
+          avatar: data.avatar,
+          age: data.age,
+          genre: data.genre,
+          location: data.location,
+          favMovies: data.favMovies,
+          favGenres: data.favGenres,
+          biography: data.biography,
+          friends: data.friends,
+        }
+      });
+      console.log(data);
     } else {
       res.json({ result: false, error: 'No corresponding profil' });
     }
