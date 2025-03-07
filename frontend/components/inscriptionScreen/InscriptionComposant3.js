@@ -29,7 +29,9 @@ function InscriptionScreen3({
   handleinscriptionbuton,
 }) {
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");// message d'erreur sur le limite des films à ajouter 
+
+
   //function pour recuperer genre de film
   const handleSelectGenre = (genre) => {
     if (!genrefilm.includes(genre.name)) {
@@ -60,7 +62,7 @@ function InscriptionScreen3({
 
     setFilmInput("");
   };
-
+// afficher les posters des films trouvés pour l'utilisateur 
   const renderFavoriteFilms = () => {
     return favoritefilm.map((favoriteId) => {
       const favoriteMovie = reseachfilm.find((film) => film.id === favoriteId);

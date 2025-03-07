@@ -23,14 +23,13 @@ export default function InscriptionScreen({ navigation }) {
   const [genre, setGenre] = useState("");
   const [genrefilm, setGenrefilm] = useState([]);
   const [reseachfilm, setReseachfilm] = useState([]); //pour afficher les films recherchés
-  const [favoritefilm,setFavoriteFilm]=useState([]);
+  const [favoritefilm, setFavoriteFilm] = useState([]);
   const [biography, setBiography] = useState("");
   const [filmInput, setFilmInput] = useState("");
   const [currentStep, setCurrentStep] = useState(1); //pour afficher les étapes de l'inscription
   const [bienvenue, setBienvenue] = useState(false); //pour afficher le message de bienvenue
   const [modalVisible, setModalVisible] = useState(false); //pour afficher la modal d'avatar
   const [avatar, setAvatar] = useState(""); //pour afficher l'avatar
-
 
   const dispatch = useDispatch(); //pour envoyer les données de l'utilisateur
   const user = useSelector((state) => state.user.value); //pour récupérer les données de l'utilisateur
@@ -131,11 +130,13 @@ export default function InscriptionScreen({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === "padding"}
     >
-      <SafeAreaView>
+      <SafeAreaView
+      >
         <ImageBackground
           source={require("../assets/backgroundGradient.png")}
           style={{
             resizeMode: "cover",
+            height:"100%",
           }}
         >
           {currentStep === 1 && (
