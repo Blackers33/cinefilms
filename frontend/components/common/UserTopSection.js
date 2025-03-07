@@ -5,7 +5,7 @@ import Avatar from "./Avatar";
 
 export default function TopSection({ user }) {
 	return (
-		<View style={styles.topSection}>
+		<View style={styles.topSection} onPress={() => navigation.navigate("ProfilScreen")}>
 			<View style={styles.userSection}>
 				<Avatar uri={user.avatar} size={64} />
 				<View>

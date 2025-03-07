@@ -15,10 +15,11 @@ export default function MainSection({
 	filters,
 	setFilters,
 	navigation,
+	onPressLike,
 }) {
 	const [cardsLarge, setCardsLarge] = useState(false);
 
-	function handlePressIcon() {
+	function handlePressSearchIcon() {
 		if (search.length > 0) {
 			setSearch("");
 			setMovies([]);
@@ -38,7 +39,7 @@ export default function MainSection({
 					setSearch={setSearch}
 					onSubmitEditing={onSubmitEditing}
 					cardsLarge={cardsLarge}
-					handlePressIcon={handlePressIcon}
+					handlePressSearchIcon={handlePressSearchIcon}
 					handleSetSize={handleSetSize}
 				/>
 				{search.length === 0 && (
@@ -47,7 +48,8 @@ export default function MainSection({
 				<View style={styles.cards}>
 					{movies.map((movie) => {
 						const commonProps = {
-							movie: movie,
+							movie,
+							onPressLike,
 							
 							onPress: () => navigation.navigate("FilmScreen", movie),
 						};

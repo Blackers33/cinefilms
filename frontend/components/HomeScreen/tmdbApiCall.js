@@ -15,8 +15,7 @@ export default async function tmdbApiCall(uri) {
 			console.error(res.status_message);
 			return [];
 		}
-		const movies = await addLikesAndComments(res.results);
-		return movies;
+		return res.results
 	} catch (error) {
 		console.error(error);
 	}
@@ -26,7 +25,7 @@ export default async function tmdbApiCall(uri) {
 /**
  * Injection des likes et commentaires depuis la BDD Cinéfilms dans le tableau de films renvoyé par l'API TMDB
  */
-async function addLikesAndComments(movies) {
+async function getLikesAndComments(movies) {
 	const updatedMovies = await Promise.all( //await Promise.all() permet d'attendre que toutes les promesses (les await) soient résolues
 		movies.map(async (movie) => {
 			try {

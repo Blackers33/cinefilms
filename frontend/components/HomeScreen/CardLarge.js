@@ -3,12 +3,18 @@
  * @param {movie}
  */
 
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	ImageBackground,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 
-export default function Card({ movie, onPress }) {
+export default function Card({ movie, onPress, onPressLike }) {
 	return (
 		<TouchableWithoutFeedback onPress={onPress}>
 			<View style={styles.card}>
@@ -24,16 +30,18 @@ export default function Card({ movie, onPress }) {
 					<Text style={styles.title}>{movie.title}</Text>
 					<Text style={styles.text}>{movie.overview}</Text>
 					<View style={styles.bottomSection}>
-						<TouchableOpacity>
-						    <View style={styles.bottomButton}>
-    							<Icon
-    								name='heart'
-    								size={20}
-    								color={movie.liked ? "#ec412f" : "#fff"}
-    								style={{ marginTop: 2, marginRight: 2 }}
-    							/>
-    							<Text style={styles.text}>{movie.likes?.length || 0} Likes</Text>
-    						</View>
+						<TouchableOpacity onPress={() => onPressLike(movie.id)}>
+							<View style={styles.bottomButton}>
+								<Icon
+									name='heart'
+									size={20}
+									color={movie.isLiked ? "#ec412f" : "#fff"}
+									style={{ marginTop: 2, marginRight: 2 }}
+								/>
+								<Text style={styles.text}>
+									{movie.likes?.length || 0} Likes
+								</Text>
+							</View>
 						</TouchableOpacity>
 						<View style={styles.bottomButton}>
 							<Icon
@@ -97,12 +105,12 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		marginBottom: 5,
 	},
-	bottomButton: { 
-        flexDirection: "row", 
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: "#bbb",
-        padding: 5,
-        borderRadius: 10,
-    },
+	bottomButton: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderWidth: 1,
+		borderColor: "#bbb",
+		padding: 5,
+		borderRadius: 10,
+	},
 });

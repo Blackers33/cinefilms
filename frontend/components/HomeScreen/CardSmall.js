@@ -10,8 +10,7 @@ import { Dimensions } from "react-native";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
 
-export default function Card({ movie, onPress }){
-	const [liked, setLiked] = useState(false);
+export default function Card({ movie, onPress, onPressLike }){
 
 	return (
 		<TouchableWithoutFeedback onPress={onPress}>
@@ -27,7 +26,7 @@ export default function Card({ movie, onPress }){
 
 				<TouchableOpacity
 					style={styles.likeSection}
-					onPress={() => setLiked(!liked)}
+					onPress={()=>onPressLike(movie.id)}
 				>
 					<BlurView
 						experimentalBlurMethod='dimezisBlurView'
@@ -36,24 +35,15 @@ export default function Card({ movie, onPress }){
 						style={styles.likeSectionBlurview}
 					>
 						<Icon
-							name={liked ? "heart" : "heart-outline"}
+							name={movie.isLiked ? "heart" : "heart-outline"}
 							size={20}
-							color={liked ? "#ec412f" : "#fff"}
+							color={movie.isLiked ? "#ec412f" : "#fff"}
 						/>
 					</BlurView>
 				</TouchableOpacity>
 				<View style={styles.movieInfo}>
 					<Text style={styles.title}>{movie.title}</Text>
 					<View style={styles.bottomSection}>
-						<View style={styles.bottomButton}>
-							<Icon
-								name='heart'
-								size={18}
-								color={liked ? "#ec412f" : "#fff"}
-								style={{ marginTop: 2, marginRight: 2 }}
-							/>
-							<Text style={styles.text}>{movie.likes?.length || 0}</Text>
-						</View>
 						<View style={styles.bottomButton}>
 							<Icon
 								name='calendar-number-outline'
