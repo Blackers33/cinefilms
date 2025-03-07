@@ -16,7 +16,7 @@ export default function NewEventScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar  backgroundColor="white" />
+            <StatusBar  backgroundColor="white"/>
             <View style={styles.container}>
                 <View>
                     <Text style={styles.onglet}>Créer un évènement</Text>
@@ -25,12 +25,12 @@ export default function NewEventScreen({ navigation }) {
                     <View style={styles.inputBubble}>
                         <TextInput style={styles.input}
                             placeholder="Titre de l'évènement"
-                            placeholderTextColor="black"> </TextInput>
+                            placeholderTextColor="black"></TextInput>
                     </View>
                     <View style={styles.inputBubble}>
                         <TextInput style={styles.input}
                             placeholder="Ajouter un lieu"
-                            placeholderTextColor="black"> </TextInput>
+                            placeholderTextColor="black"></TextInput>
                     </View>
                     <View style={styles.inputBubble}>
                         <TextInput style={styles.input}
