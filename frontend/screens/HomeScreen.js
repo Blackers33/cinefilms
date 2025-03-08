@@ -30,7 +30,7 @@ const mockUser = {
 };
 
 export default function HomeScreen({ navigation }) {
-	const user = mockUser; //useSelector((state) => state.user.value);
+	const user = useSelector((state) => state.user.value);
 	const [movies, setMovies] = useState([]);
 	const [search, setSearch] = useState("");
 

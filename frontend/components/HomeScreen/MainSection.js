@@ -51,7 +51,7 @@ export default function MainSection({
 							movie,
 							onPressLike,
 							
-							onPress: () => navigation.navigate("FilmScreen", movie),
+							onPress: () => navigation.navigate("Film", movie),
 						};
 
 						return cardsLarge ? (
