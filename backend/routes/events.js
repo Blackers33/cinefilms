@@ -2,35 +2,61 @@ var express = require('express');
 var router = express.Router();
 const Event = require('../models/events');
 const Film=require('../models/films');
-
+const User=require('../models/users');
 const { checkBody, autentification} = require('../modules/utils');
 
-// route Get qui recuperer toutes les evenements crees par l'utilisateur 
-router.get('/:token', async (req, res) => {
+// Route GET pour récupérer les événements d'un utilisateur
+router.get('/:username', async (req, res) => {
     try {
-        // Récupérer le token de la requête
-        const token = req.params.token;
+        // Vérifier si le username est fourni en query params (meilleure pratique pour un GET)
+        if (!req.params.username) {
+            return res.status(400).json({ result: false, error: 'Missing username parameter' });
+        }
+        const username = req.params.username;
 
-        // Vérifier et décoder le token
-        const user = await autentification(token); 
+        // Trouver l'utilisateur par username (insensible à la casse)
+        const user = await User.findOne({ username: { $regex: new RegExp(username, 'i') } });
+
         if (!user) {
-            return res.status(401).json({ message: "Utilisateur non authentifié." });
+            return res.status(404).json({ message: "Utilisateur non trouvé." });
         }
 
-       
-        const events = await Event.find({ owner: user.userId });
-        // Si l'utilisateur n'a pas d'événements créés
+        // Trouver les événements créés par cet utilisateur
+        const events = await Event.find({ owner: user._id });
+
         if (events.length === 0) {
             return res.status(404).json({ message: "Aucun événement trouvé." });
         }
 
-        // Retourner les événements trouvés
+        // Retourner les événements
         res.status(200).json(events);
 
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 });
+
+// route get qui permet de filter les endroit des evenements 
+router.get('/location/:cityname', async (req, res) => {
+    try {
+        const cityname = req.params.cityname;
+
+        // Recherche des événements avec une localisation qui correspond à la ville donnée
+        const events = await Event.find({ location: { $regex: new RegExp(cityname, 'i') } });
+
+        if (events.length === 0) {
+            return res.status(404).json({ success: false, message: "Aucun événement trouvé sur cette localisation." });
+        }
+
+        // Retourner les événements trouvés
+        res.status(200).json({ success: true, events });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Erreur serveur", error: error.message });
+    }
+});
+
+
 
 // route get qui permet de trouver tous les evenements  
 
