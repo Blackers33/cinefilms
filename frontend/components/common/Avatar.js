@@ -11,12 +11,12 @@ export default function Avatar({
 	uri,
 	size = 32,
 }) {
-	const image = uri ? uri : "https://www.w3schools.com/w3images/avatar2.png"
+
 	return (
 		<View
 			style={{
-				width:  size ,
-				height:  size ,
+				width: size,
+				height: size,
 				borderWidth: 1,
 				borderRadius: 100,
 				borderColor: "rgba(198, 198, 198, 0.38)",
@@ -28,7 +28,11 @@ export default function Avatar({
 					height: "100%",
 					borderRadius: 100,
 				}}
-				source={{ uri : image }}
+				source={
+					uri
+						? { uri }
+						: require("../../assets/logo/placeholder/avatar.png")
+				}
 			/>
 		</View>
 	);

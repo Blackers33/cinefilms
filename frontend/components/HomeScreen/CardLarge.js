@@ -19,11 +19,11 @@ export default function Card({ movie, onPress, onPressLike }) {
 		<TouchableWithoutFeedback onPress={onPress}>
 			<View style={styles.card}>
 				<ImageBackground
-					source={{
-						uri: movie.poster_path
-							? "https://image.tmdb.org/t/p/w780" + movie.poster_path
-							: "https://www.theyearinpictures.co.uk/images//image-placeholder.png",
-					}}
+					source={
+						movie.poster_path
+							? { uri: "https://image.tmdb.org/t/p/w780" + movie.poster_path }
+							: require("../../assets/logo/placeholder/poster.png")
+					}
 					style={styles.image}
 				/>
 				<View style={styles.movieInfo}>
