@@ -1,24 +1,33 @@
+import { StyleSheet } from "react-native";
+//Navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+//Screens
 import InscriptionScreen from "./screens/InscriptionScreen";
 import ConnexionScreen from "./screens/ConnexionScreen";
+import HomeScreen from "./screens/HomeScreen";
+//import EventScreen from "./screens/EventScreen";
+import FilmScreen from "./screens/FilmScreen";
+
+
+//redux
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
-import { StyleSheet } from "react-native";
-import HomeScreen from "./screens/HomeScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+//Style
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
-import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
+
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const store = configureStore({
 	reducer: { user },
 });
-
-const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
 	return (
@@ -52,7 +61,7 @@ const TabNavigator = () => {
 			})}
 		>
 			<Tab.Screen name='Home' component={HomeScreen} />
-			<Tab.Screen name='Events' component={HomeScreen} />
+			{/* <Tab.Screen name='Events' component={EventScreen} /> */}
 			<Tab.Screen name='Rencontres' component={HomeScreen} />
 		</Tab.Navigator>
 	);
