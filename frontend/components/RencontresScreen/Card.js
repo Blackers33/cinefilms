@@ -1,6 +1,7 @@
 import {
 	Image,
 	ImageBackground,
+	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -10,40 +11,63 @@ import { TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
+import Button from "../common/Button";
 
 export default function Card({ user }) {
-	const Movie = ({data}) => {
+	const Movie = ({ data }) => {
 		return (
 			<View key={data.id} style={styles.movieItem}>
 				<Image
-					source={{
-						uri: `https://image.tmdb.org/t/p/w200${data.poster_path}`,
-					}}
+					source={
+						data.poster_path
+							? { uri: "https://image.tmdb.org/t/p/w200" + data.poster_path }
+							: require("../../assets/logo/placeholder/poster.png")
+					}
 					style={styles.poster}
 				/>
 			</View>
 		);
 	};
+	const Genre = ({ data }) => {
+		console.log(typeof data)
+		return (
+			<View>
+				<Text>{data}</Text>
+			</View>
+		);
+	};
 
 	return (
-		<TouchableWithoutFeedback>
-			<View style={styles.card}>
+		<View style={styles.card}>
+			<View style={styles.topSection}>
 				<View style={styles.userInfo}>
 					<Avatar uri={user.avatar} size={64} />
 					<Text style={styles.title}>{user.username}</Text>
 				</View>
-				<View style={styles.biography}>
-					<Text style={styles.text}>{user.biography}</Text>
-				</View>
-				<Text style={styles.title}>Mes films préférés</Text>
-				<View>
+				<TouchableOpacity
+					onPress={() => console.log("pressed")}
+					style={styles.addFriendButton}
+					activeOpacity={0.8}
+				>
+					<Text style={styles.buttonText}>+ Ajouter</Text>
+				</TouchableOpacity>
+			</View>
+			<View style={styles.biography}>
+				<Text style={styles.text}>{user.biography}</Text>
+			</View>
+			<Text style={styles.title}>Mes films préférés</Text>
+			<ScrollView horizontal={true}>
+				<View style={styles.favoriteList}>
 					{user.favMovies.map((movie) => (
-						<Movie data={movie}/>
+						<Movie data={movie} />
 					))}
 				</View>
-				<Text style={styles.title}>Mes genres préférés</Text>
-			</View>
-		</TouchableWithoutFeedback>
+			</ScrollView>
+			<Text style={styles.title}>Mes genres préférés</Text>
+			{user.favGenres.map((genre) => (
+				<Genre data={genre} />
+			))}
+		</View>
 	);
 }
 
@@ -56,6 +80,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#303232D9",
 		marginTop: 20,
 		padding: 8,
+	},
+	topSection : {
+		flexDirection: "row",
+		alignItems: "center",
 	},
 	userInfo: {
 		gap: 12,
@@ -93,5 +121,29 @@ const styles = StyleSheet.create({
 		width: 80,
 		height: 110,
 		borderRadius: 5,
+	},
+	favoriteList: {
+		flex: 1,
+		height: "auto",
+		width: "100%",
+		flexDirection: "row",
+		flexWrap: "wrap",
+		justifyContent: "space-around",
+		gap: 10,
+		marginBottom: 15,
+	},
+	addFriendButton: {
+		backgroundColor: "rgb(201, 65, 6)",
+		width: 130,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 5,
+		height: 30
+	},
+	buttonText: {
+		textAlign: "center",
+		color: "white",
+		fontSize: 18,
+		fontWeight: "500",
 	},
 });
