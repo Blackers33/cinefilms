@@ -10,6 +10,8 @@ import ConnexionScreen from "./screens/ConnexionScreen";
 import HomeScreen from "./screens/HomeScreen";
 //import EventScreen from "./screens/EventScreen";
 import FilmScreen from "./screens/FilmScreen";
+import RencontresScreen from "./screens/RencontresScreen";
+
 
 
 //redux
@@ -62,7 +64,7 @@ const TabNavigator = () => {
 		>
 			<Tab.Screen name='Home' component={HomeScreen} />
 			{/* <Tab.Screen name='Events' component={EventScreen} /> */}
-			<Tab.Screen name='Rencontres' component={HomeScreen} />
+			<Tab.Screen name='Rencontres' component={RencontresScreen} />
 		</Tab.Navigator>
 	);
 };
@@ -73,9 +75,9 @@ export default function App() {
 		<Provider store={store}>
 			<NavigationContainer>
 				<Stack.Navigator screenOptions={{ headerShown: false }}>
+					<Stack.Screen name='TabNavigator' component={TabNavigator} />
 					<Stack.Screen name='Connexion' component={ConnexionScreen} />
 					<Stack.Screen name='Inscription' component={InscriptionScreen} />
-					<Stack.Screen name='TabNavigator' component={TabNavigator} />
 					<Stack.Screen name='Film' component={FilmScreen} />
 				</Stack.Navigator>
 			</NavigationContainer>
