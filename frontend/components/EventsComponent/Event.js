@@ -8,22 +8,24 @@ import {
   TouchableOpacity,
   TextInput,
   ImageBackground,
+  FlatList,
 } from "react-native";
 import { useState } from "react";
 import Avatar from "../common/Avatar";
 import CommentsIcon from "react-native-vector-icons/Fontisto";
 import Search from "react-native-vector-icons/EvilIcons";
 
-export default function Event() {
-
+export default function Event(props) {
   return (
     <View style={styles.containerEvents}>
       <View style={styles.eventContainer}>
         <View style={styles.eventInfos}>
           <Avatar size={40} />
           <View style={styles.appointmentInfos}>
-            <Text style={styles.appointmentPlace}>City - CineName</Text>
-            <Text style={styles.appointmentDate}>Date</Text>
+            <Text style={styles.appointmentPlace}>
+              {props.location} - {props.title}
+            </Text>
+            <Text style={styles.appointmentDate}>{props.date}</Text>
           </View>
         </View>
         <ImageBackground
@@ -31,11 +33,7 @@ export default function Event() {
           imageStyle={{ opacity: 0.3 }}
           style={styles.backgroundDescriptionEvent}
         >
-          <Text style={styles.descriptionText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-            tincidunt, nunc ut varius tincidunt, felis justo vehicula nunc, nec
-            volutpat libero erat vel lectus orem ipsum dolor sit amet...
-          </Text>
+          <Text style={styles.descriptionText}>{props.description}</Text>
         </ImageBackground>
         <View style={styles.interactionBar}>
           <View style={styles.interactionToEventView}>
@@ -45,7 +43,7 @@ export default function Event() {
               <Avatar style={styles.avatar3} size={30} />
             </View>
             <TouchableOpacity
-              onPress={() => displayComments()}
+              onPress={props.displayComments}
               style={styles.displayCommentsButton}
               activeOpacity={0.8}
             >
@@ -53,13 +51,23 @@ export default function Event() {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => handleJoinEvent()}
+            onPress={props.handleJoinEvent}
             style={styles.joingEventButton}
             activeOpacity={0.8}
           >
             <Text style={styles.buttonText}>+ Joindre</Text>
           </TouchableOpacity>
         </View>
+          {props.showComments && (
+            <View style={styles.commentsSection}>
+              <Avatar></Avatar>
+              {props.comments.map((comment, index) => (
+                <Text key={index} style={styles.commentText}>
+                  {comment.content}
+                </Text>
+              ))}
+            </View>
+          )}
       </View>
     </View>
   );
@@ -146,5 +154,24 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "500",
+  },
+  commentsSection: {
+    display:"flex",
+    flexDirection:"row",
+    justifyContent:"space-between",
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#444",
+    borderRadius: 5,
+  },
+  commentsTitle: {
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 5,
+  },
+  commentText: {
+    fontSize: 10,
+    color: "white",
   },
 });

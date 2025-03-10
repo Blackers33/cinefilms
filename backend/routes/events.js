@@ -5,6 +5,28 @@ const Film = require("../models/films");
 const User = require("../models/users");
 const { checkBody, autentification } = require("../modules/utils");
 
+
+// route get qui permet de trouver tous les evenements
+
+router.get("/", async (req, res) => {
+  try {
+    const events = await Event.find();
+
+    if (events.length === 0) {
+      return res.status(404).json({ message: "Aucun événement trouvé " });
+    }
+
+    res.status(200).json({ result: true, data: events });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: "Erreur lors de la récupération des événements",
+        error: error.message,
+      });
+  }
+});
+
 // Route GET pour récupérer les événements d'un utilisateur
 router.get("/:username", async (req, res) => {
   try {
@@ -15,7 +37,7 @@ router.get("/:username", async (req, res) => {
     }
     const username = req.params.username;
 
-    // Trouver l'utilisateur par username (insensible à la casse)
+
     const user = await User.findOne({
       username: { $regex: new RegExp(username, "i") },
     });
@@ -57,7 +79,7 @@ router.get("/location/:cityname", async (req, res) => {
         });
     }
 
-    // Retourner les événements trouvés
+  
     res.status(200).json({ success: true, events });
   } catch (error) {
     res
@@ -74,7 +96,6 @@ router.get("/location/:cityname", async (req, res) => {
 router.get("/film/:tmdbId", async (req, res) => {
   try {
 
-    // Recherche des événements avec une localisation qui correspond à la ville donnée
     const film = await Film.findOne({ tmdbId: req.params.tmdbId });
     
     if (!film) {
@@ -96,7 +117,7 @@ router.get("/film/:tmdbId", async (req, res) => {
         });
     }
 
-    // Retourner les événements trouvés
+
     res.status(200).json({ success: true, events });
   } catch (error) {
     res
@@ -104,27 +125,6 @@ router.get("/film/:tmdbId", async (req, res) => {
       .json({
         success: false,
         message: "Erreur serveur",
-        error: error.message,
-      });
-  }
-});
-
-// route get qui permet de trouver tous les evenements
-
-router.get("/", async (req, res) => {
-  try {
-    const events = await Event.find();
-
-    if (events.length === 0) {
-      return res.status(404).json({ message: "Aucun événement trouvé " });
-    }
-
-    res.status(200).json({ result: true, data: events });
-  } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération des événements",
         error: error.message,
       });
   }
@@ -179,7 +179,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ajouter les comment sur un event
+//route post - ajouter les comment sur un event
 router.post("/:eventId/comment", async (req, res) => {
   try {
     if (!checkBody(req.body, ["user", "content"])) {
@@ -218,5 +218,8 @@ router.post("/:eventId/comment", async (req, res) => {
     res.status(500).json({ result: false, error: "Internal server error" });
   }
 });
+
+//route put pour qu'un utilisateur puisse rejoindr un évenement 
+
 
 module.exports = router;
