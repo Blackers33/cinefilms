@@ -13,9 +13,9 @@ export default function ProfilPageComponent () {
     <View style={styles.container} >
      
       <View style={styles.avatar}>
-      <Avatar uri={user.profileData.profil.avatar} size={150} />
+      <Avatar uri={user.avatar} size={150} />
       </View>
-      <Text style={styles.usernameStyle} >{user.profileData.profil.username}</Text>
+      <Text style={styles.usernameStyle} >{user.username}</Text>
     
       <View style={styles.inputContainer}> 
       <ScrollView
@@ -26,42 +26,42 @@ export default function ProfilPageComponent () {
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Age</Text>
           <Text  style={styles.text}>
-          {user.profileData.profil.age} ans
+          {user.age} ans
           </Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Votre localisation </Text>
 
           <Text style={styles.text}>
-            {user.profileData.profil.city}
+            {user.city}
           </Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Genre</Text>
 
           <Text style={styles.text}>
-            {user.profileData.profil.genre}
+            {user.genre}
           </Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Tes films favoris</Text>
 
           <Text style={styles.text}>
-            {user.profileData.profil.recherchefilm}
+            {user.recherchefilm}
           </Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Tes genres favoris</Text>
 
           <Text style={styles.text}>
-            {user.profileData.profil.genrefilm}
+            {user.genrefilm}
           </Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.Input}>Biographie</Text>
 
           <Text style={styles.text} >
-          {user.profileData.profil.biography}
+          {user.biography}
           </Text>
         </View>
         </ScrollView>
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-      // justifyContent: "center",
       width: Dimensions.get("window").width,
       height: Dimensions.get("window").height
   },

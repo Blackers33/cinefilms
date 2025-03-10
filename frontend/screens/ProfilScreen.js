@@ -3,18 +3,29 @@
  */
 
 import { useState } from "react";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProfilPageComponent from "../components/EditProfilComponents/ProfilPageComponent";
 import EditProfilComponent from "../components/EditProfilComponents/EditProfilComponent";
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Dimensions, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../components/common/Button";
+import { setProfilUser } from "../reducers/user";
 
 export default function ProfilScreen() {
 
     const user = useSelector((state) => state.user.value);
 
     const [edit, setEdit] = useState(false);
+    const dispatch = useDispatch()
+
+    const [age, setAge] = useState(user?.age || "");
+const [city, setCity] = useState(user?.city || "");
+const [genre, setGenre] = useState(user?.genre || "");
+const [genrefilm, setGenrefilm] = useState(user?.genrefilm || "");
+const [recherchefilm, setRecherchefilm] = useState(user?.recherchefilm || "");
+const [biography, setBiography] = useState(user?.biography || "");
+const [avatar, setAvatar] = useState(user?.avatar || "");
+
 
     const handleEditButton = () => {
        setEdit(true)
@@ -35,14 +46,15 @@ export default function ProfilScreen() {
          })
        })
          .then(res => res.json())
-         .then(data => dispatch(updateprofilUser(data)));
+         .then(data => data.result && dispatch(setProfilUser(data.profil)));
          setEdit(false)
      }
 
     return (
         <KeyboardAvoidingView
             style={styles.container}
-            behavior={Platform.OS === "ios" && "padding"}><ImageBackground
+            behavior={Platform.OS === "ios" && "padding"}>
+                <ImageBackground
                 source={require("../assets/backgroundGradient.png")}
                 style={{
                     flex: 1,
@@ -50,12 +62,20 @@ export default function ProfilScreen() {
                 }}
             >
                 <SafeAreaView>
-                    {edit ? <EditProfilComponent /> : <ProfilPageComponent />}
+                    {edit ? (<EditProfilComponent 
+                    age={age} setAge={setAge}
+                    city={city} setCity={setCity}
+                    genre={genre} setGenre={setGenre}
+                    genrefilm={genrefilm} setGenrefilm={setGenrefilm}
+                    recherchefilm={recherchefilm} setRecherchefilm={setRecherchefilm}
+                    biography={biography} setBiography={setBiography}
+                    avatar={avatar} setAvatar={setAvatar}/>) : (<ProfilPageComponent />)}
                     <View style={styles.editProfilButtonContainer} >
-                      {edit? <Button text='Terminer' onPress={handleConfirmation}></Button> : <Button text='Éditer son profil' onPress={handleEditButton}></Button> }
+                      {edit? <Button text='Terminer' onPress={() => handleConfirmation()}></Button> : <Button text='Éditer son profil' onPress={handleEditButton}></Button> }
                     </View>
 
-                </SafeAreaView></ImageBackground >
+                </SafeAreaView>
+                </ImageBackground >
         </KeyboardAvoidingView>
     )
 }

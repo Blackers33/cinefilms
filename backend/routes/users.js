@@ -55,26 +55,36 @@ router.post('/signin', (req, res) => {
 });
 
 
-//PUT creation & update de profile
+// PUT creation & update de profil
 router.put('/profil/:token', (req, res) => {
-User.findOne({ token: req.params.token }).then(data => {
-  if (data)
-  User.updateOne ({token: req.params.token},
-    {
-    avatar: req.body.avatar,
-    age: req.body.age,
-    genre: req.body.genre,
-    location: req.body.location,
-    favMovies: req.body.favMovies,
-    favGenres: req.body.favGenres,
-    biography: req.body.biography,
-  }).then(updatedData => {
-    res.json({ result: true, message: 'Profil updated', profil: updatedData})
-  }); else {
+  User.findOne({ token: req.params.token }).then(data => {
+    if (data) {
+      User.updateOne ({token: req.params.token},
+        {
+          avatar: req.body.avatar,
+          age: Number(req.body.age),
+          genre: req.body.genre,
+          location: req.body.location,
+          favMovies: req.body.favMovies,
+          favGenres: req.body.favGenres,
+          biography: req.body.biography,
+        }).then(updatedData => {
+          console.log(updatedData)
+          if (updatedData.modifiedCount > 0) {
+            User.findOne({ token: req.params.token})
+            .then(dataUser => {
+              res.json({ result: true, message: 'Profil updated', profil: dataUser})
+            })
+  } else {
+    res.json({ result : false, message: 'Profil not updated'})
+  }
+  });} else {
     res.json({ result: false, message: 'No corresponding profil'})
   }
 });
 });
+
+
 
 //GET profil de l'utilisateur
 router.get('/profil/:token', (req, res) => {

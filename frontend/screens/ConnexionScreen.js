@@ -16,12 +16,13 @@ import {
 } from "react-native";
 import { useState } from "react";
 import Button from "../components/common/Button";
-import ProfilPageComponent from "../components/EditProfilComponents/ProfilPageComponent";
+
 
 
 export default function ConnexionScreen({ navigation }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [connexionError, setConnexionError] = useState("");
 	const dispatch = useDispatch();
 
 	const handleConnexion = () => {
@@ -40,11 +41,11 @@ export default function ConnexionScreen({ navigation }) {
 					fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + data.token)
 						.then((response) => response.json())
 						.then((profileData) => {
-							dispatch(setProfilUser({profileData, token: data.token}));
+							dispatch(setProfilUser({...profileData.profil, token: data.token}));
 							navigation.navigate("Profil");
 						});
 				} else {
-					alert("Email ou mot de passe incorrect");
+					setConnexionError(true);
 				}
 			});
 	};
@@ -70,6 +71,9 @@ export default function ConnexionScreen({ navigation }) {
 							password={password}
 							setPassword={setPassword}
 						/>
+						<View style={styles.errorContainer}>
+						 {connexionError && (<Text style={styles.ErrorText} >Email ou Mot de Passe invalide.</Text>)}
+						 </View>
 						<View style={styles.buttonContainer}>
 							<Button text='Connexion' onPress={() => handleConnexion()} />
 							<Text style={styles.transitionText}>Pas encore inscrit ?</Text>
@@ -105,11 +109,21 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		marginTop: 60,
 		textAlign: "center",
+		
 	},
 	buttonContainer: {
 		alignItems: "center",
 		backgroundColor: "#000000D9",
 		paddingBottom: 30,
 		width: Dimensions.get("window").width,
+	},
+	ErrorText: {
+		alignItems: 'center',
+		color: "#c94106",
+		fontSize: 20,
+	},
+	errorContainer: {
+		alignItems: 'center',
+		backgroundColor: "#000000D9",
 	},
 });

@@ -42,8 +42,7 @@ export const userSlice = createSlice({
     },
     setProfilUser: (state, action) => {
       state.value = action.payload
-      
-    }
+    },
   },
 });
 
