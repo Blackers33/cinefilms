@@ -3,15 +3,20 @@
  * @param {movie}
  */
 
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	ImageBackground,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
 
-export default function Card({ movie, onPress, onPressLike }){
-
+export default function Card({ movie, onPress, onPressLike }) {
 	return (
 		<TouchableWithoutFeedback onPress={onPress}>
 			<View style={styles.card}>
@@ -39,6 +44,7 @@ export default function Card({ movie, onPress, onPressLike }){
 							size={20}
 							color={movie.isLiked ? "#ec412f" : "#fff"}
 						/>
+						{movie.likes > 0 &&<Text style={styles.text}>{movie.likes}</Text>}
 					</BlurView>
 				</TouchableOpacity>
 				<View style={styles.movieInfo}>
@@ -60,14 +66,14 @@ export default function Card({ movie, onPress, onPressLike }){
 								color='#fff'
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>{movie.comments?.length || 0}</Text>
+							<Text style={styles.text}>{movie.comments || 0}</Text>
 						</View>
 					</View>
 				</View>
 			</View>
 		</TouchableWithoutFeedback>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	card: {
@@ -106,10 +112,12 @@ const styles = StyleSheet.create({
 	},
 	likeSectionBlurview: {
 		borderColor: "rgba(255,255,255,0.5)",
-		borderWidth: .5,
+		borderWidth: 0.5,
 		padding: 10,
 		borderRadius: 100,
 		overflow: "hidden",
+		flexDirection : "row",
+		gap: 5
 	},
 	likeSection: {
 		position: "absolute",

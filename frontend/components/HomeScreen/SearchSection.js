@@ -3,7 +3,7 @@ import TextInputStyled from "../common/TextInput";
 import Icon from "react-native-vector-icons/Ionicons";
 
 
-export default function SearchSection({search, setSearch, onSubmitEditing, cardsLarge, handlePressSearchIcon, handleSetSize}) {
+export default function SearchSection({search, setSearch, onSubmitSearch, cardsLarge, handlePressSearchIcon, toggleCardSize}) {
 	return (
 		<View style={styles.searchSection}>
 			<View style={{ flex: 5 }}>
@@ -11,7 +11,7 @@ export default function SearchSection({search, setSearch, onSubmitEditing, cards
 					value={search}
 					onChangeText={setSearch}
 					placeholder='search'
-					onSubmitEditing={onSubmitEditing}
+					onSubmitEditing={onSubmitSearch}
 				/>
 			</View>
 			<View style={{ flex: 1 }}>
@@ -26,7 +26,7 @@ export default function SearchSection({search, setSearch, onSubmitEditing, cards
 				</TouchableOpacity>
 			</View>
 			<View style={{ flex: 1 }}>
-				<TouchableOpacity onPress={handleSetSize}>
+				<TouchableOpacity onPress={toggleCardSize}>
 					<View style={styles.button}>
 						<Icon
 							name={cardsLarge ? "tablet-portrait-outline" : "grid-outline"}

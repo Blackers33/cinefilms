@@ -39,7 +39,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 									style={{ marginTop: 2, marginRight: 2 }}
 								/>
 								<Text style={styles.text}>
-									{movie.likes?.length || 0} Likes
+									{movie.likes || 0} Likes
 								</Text>
 							</View>
 						</TouchableOpacity>
@@ -60,7 +60,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
 							<Text style={styles.text}>
-								{movie.comments?.length || 0} Comments
+								{movie.comments || 0} Comments
 							</Text>
 						</View>
 					</View>

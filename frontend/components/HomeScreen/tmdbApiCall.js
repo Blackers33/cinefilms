@@ -20,26 +20,3 @@ export default async function tmdbApiCall(uri) {
 		console.error(error);
 	}
 }
-
-
-/**
- * Injection des likes et commentaires depuis la BDD Cinéfilms dans le tableau de films renvoyé par l'API TMDB
- */
-async function getLikesAndComments(movies) {
-	const updatedMovies = await Promise.all( //await Promise.all() permet d'attendre que toutes les promesses (les await) soient résolues
-		movies.map(async (movie) => {
-			try {
-				const response = await fetch(
-					`${process.env.EXPO_PUBLIC_IP_ADDRESS}/films/${movie.id}/film`
-				);
-				const data = await response.json();
-				movie.likes = data.film.likes;
-				movie.comments = data.film.comments;
-			} catch (error) {
-				console.log("no likes or comments for movie " + movie.id);
-			}
-			return movie;
-		})
-	);
-	return updatedMovies;
-}
