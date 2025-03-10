@@ -7,6 +7,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import { StyleSheet } from 'react-native';
 import HomeScreen from "./screens/HomeScreen";
+import EventScreen from "./screens/EventScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -54,7 +55,7 @@ const TabNavigator = () => {
 			})}
 		>
 			<Tab.Screen name='Home' component={HomeScreen} />
-			<Tab.Screen name='Events' component={HomeScreen} />
+			<Tab.Screen name='Events' component={EventScreen} />
 			<Tab.Screen name='Rencontres' component={HomeScreen} />
 		</Tab.Navigator>
 	);
@@ -66,9 +67,9 @@ export default function App() {
 			<Provider store={store}>
 				<NavigationContainer>
 					<Stack.Navigator screenOptions={{ headerShown: false }}>
+						<Stack.Screen name='TabNavigator' component={TabNavigator} />
 						<Stack.Screen name='Connexion' component={ConnexionScreen} />
 						<Stack.Screen name='Inscription' component={InscriptionScreen} />
-						<Stack.Screen name='TabNavigator' component={TabNavigator} />
 					</Stack.Navigator>
 				</NavigationContainer>
 				<StatusBar style='light' />
