@@ -1,4 +1,5 @@
 import {
+	Image,
 	ImageBackground,
 	StyleSheet,
 	Text,
@@ -11,6 +12,19 @@ import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
 
 export default function Card({ user }) {
+	const Movie = ({data}) => {
+		return (
+			<View key={data.id} style={styles.movieItem}>
+				<Image
+					source={{
+						uri: `https://image.tmdb.org/t/p/w200${data.poster_path}`,
+					}}
+					style={styles.poster}
+				/>
+			</View>
+		);
+	};
+
 	return (
 		<TouchableWithoutFeedback>
 			<View style={styles.card}>
@@ -22,6 +36,11 @@ export default function Card({ user }) {
 					<Text style={styles.text}>{user.biography}</Text>
 				</View>
 				<Text style={styles.title}>Mes films préférés</Text>
+				<View>
+					{user.favMovies.map((movie) => (
+						<Movie data={movie}/>
+					))}
+				</View>
 				<Text style={styles.title}>Mes genres préférés</Text>
 			</View>
 		</TouchableWithoutFeedback>
@@ -38,11 +57,6 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		padding: 8,
 	},
-	image: {
-		width: "100%",
-		height: Dimensions.get("window").width * 1.1,
-		resizeMode: "contain",
-	},
 	userInfo: {
 		gap: 12,
 		flex: 1,
@@ -58,21 +72,26 @@ const styles = StyleSheet.create({
 		color: "#FFF",
 		fontSize: 13,
 	},
-	bottomSection: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		marginBottom: 5,
-	},
-	bottomButton: {
-		flexDirection: "row",
-		alignItems: "center",
-		borderWidth: 1,
-		borderColor: "#bbb",
-		padding: 5,
-		borderRadius: 10,
-	},
 	biography: {
 		marginTop: 10,
 		marginBottom: 15,
+	},
+	movieItem: {
+		backgroundColor: "#333",
+		borderRadius: 5,
+		marginTop: 10,
+		alignItems: "center",
+		justifyContent: "center",
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.2,
+		shadowRadius: 5,
+		pading: 2,
+	},
+
+	poster: {
+		width: 80,
+		height: 110,
+		borderRadius: 5,
 	},
 });

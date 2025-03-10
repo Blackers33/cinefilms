@@ -17,7 +17,41 @@ const friend = {
 		'{"id":12,"name":"Adventure","_index":1}',
 		'{"id":16,"name":"Animation","_index":2}',
 	],
-	favMovies: ["Roi de Lion"],
+	favMovies: [
+		{
+			adult: false,
+			backdrop_path: "/jl2YIADk391yc6Qjy9JhgCRkHJk.jpg",
+			genre_ids: [16, 18, 35],
+			id: 1064486,
+			original_language: "en",
+			original_title: "Memoir of a Snail",
+			overview:
+				"La vie de Grace Pudel, petite fille solitaire, collectionneuse d’escargots et passionnée de lecture, a volé en éclats le jour de la mort de son père. Dans une famille d’accueil indifférente, séparée de son frère jumeau dont elle attend désespérément les lettres, malmenée par ses camarades, elle s’enfonce dans le désespoir...",
+			popularity: 86.264,
+			poster_path: "/h7yY9BmOWKnZW45Fg125K4W403R.jpg",
+			release_date: "2024-10-17",
+			title: "Mémoires d’un escargot",
+			video: false,
+			vote_average: 7.822,
+			vote_count: 256,
+		},
+		{
+			adult: false,
+			backdrop_path: "/aqMBEpd4kC8GpUg6761qFPkvQuS.jpg",
+			genre_ids: [28, 80],
+			id: 1188104,
+			original_language: "th",
+			original_title: "ปล้นทะลุไมล์",
+			overview: "",
+			popularity: 92.281,
+			poster_path: "/2qAv3Oo5akuJgZUzMzBNamfcO1j.jpg",
+			release_date: "2023-11-09",
+			title: "ปล้นทะลุไมล์",
+			video: false,
+			vote_average: 8.5,
+			vote_count: 15,
+		},
+	],
 	__v: 0,
 	age: 25,
 	biography:
@@ -31,7 +65,7 @@ const friend = {
 };
 
 export default function MainSection({ navigation, user }) {
-	
+
 
 	return (
 		<View>
