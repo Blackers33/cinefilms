@@ -3,16 +3,22 @@ import { useState } from "react";
 import TextInput from "../common/TextInput";
 import Button from "../common/Button";
 
-
-function InscriptionScreen1({ handleNext,username,setUsername, email, setEmail, password, setPassword,}) {
-  
+function InscriptionScreen1({
+  handleNext,
+  username,
+  setUsername,
+  email,
+  setEmail,
+  password,
+  setPassword,
+}) {
   const [emailError, setEmailError] = useState(false);
 
-  const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const EMAIL_REGEX =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handlecommencebuton = () => {
     if (EMAIL_REGEX.test(email)) {
-      
       handleNext();
     } else {
       setEmailError(true);
@@ -21,8 +27,10 @@ function InscriptionScreen1({ handleNext,username,setUsername, email, setEmail, 
 
   return (
     <View>
-      <Text style={styles.titrelogo}>Commencer votre inscription sur Cinefilms</Text>
-     
+      <Text style={styles.titrelogo}>
+        Commencer votre inscription sur Cinefilms
+      </Text>
+
       <View>
         <Text style={styles.titreInput}>Nom d'utilisateur</Text>
 
@@ -53,10 +61,14 @@ function InscriptionScreen1({ handleNext,username,setUsername, email, setEmail, 
         ></TextInput>
       </View>
       <View style={styles.button}>
-      <Button text="C'est parti" onPress={handlecommencebuton} />
-      {emailError && <Text style={styles.text}>Merci de saisir une adresse e-mail valide</Text>}
-    </View>
+        <Button text="C'est parti" onPress={handlecommencebuton} />
+        {emailError && (
+          <Text style={styles.text}>
+            Merci de saisir une adresse e-mail valide
+          </Text>
+        )}
       </View>
+    </View>
   );
 }
 
@@ -67,6 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 85,
     textAlign: "center",
+    marginTop:70,
   },
   titrecontenu: {
     color: "#c94106",
@@ -74,13 +87,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
-  
- titreInput: {
+
+  titreInput: {
     padding: 12,
     fontSize: 16,
     color: "#C94106",
   },
-  
+
   text: {
     color: "#ffffff",
     fontSize: 16,

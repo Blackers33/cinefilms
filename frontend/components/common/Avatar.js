@@ -8,9 +8,10 @@ import { Image, View } from "react-native";
 
 
 export default function Avatar({
-	uri = "https://www.w3schools.com/w3images/avatar2.png",
+	uri,
 	size = 32,
 }) {
+	const image = uri ? uri : "https://www.w3schools.com/w3images/avatar2.png"
 	return (
 		<View
 			style={{
@@ -27,7 +28,7 @@ export default function Avatar({
 					height: "100%",
 					borderRadius: 100,
 				}}
-				source={{ uri }}
+				source={{ uri : image }}
 			/>
 		</View>
 	);

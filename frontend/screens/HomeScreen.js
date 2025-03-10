@@ -1,102 +1,128 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopSection from "../components/HomeScreen/TopSection";
+import TopSection from "../components/common/UserTopSection";
 import MainSection from "../components/HomeScreen/MainSection";
 import { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { ImageBackground } from "react-native";
 import tmdbApiCall from "../components/HomeScreen/tmdbApiCall";
+import { useSelector } from "react-redux";
+
 
 const mockUser = {
-	username: "Dominic Torreto",
+	_id: "67ca1d44bfc125477ece24ce",
+	username: "Lou",
+	password: "$2b$10$nPPlMDeI.NFKkZCh7Bs0e.WYyIVs3rwj6D6i.yCXlIWWXt3T8SDB6",
+	email: "Lou@gmail.com",
+	token: "_ZpeuBlpvOL6Qd1yLwyg50_GhAxA-cMl",
+	friends: [],
+	favGenres: ["447277", "812"],
+	favMovies: ["Action", "Adventure"],
+	__v: 0,
+	age: 25,
 	avatar:
-		"https://static.thefinancialbrand.com/uploads/2010/12/lloyds_tsb_me_hero.jpg",
-	token: "123456789",
+		"https://image.noelshack.com/fichiers/2015/12/1426650974-quiz-les-personnages-de-tintin-5472.jpeg",
+	biography: "je ne suis pas un robot",
+	genre: "Homme",
+	location: {
+		name: "Paris",
+		latitude: 48.859,
+		longitude: 2.347,
+	},
 };
 
-const mockFilms = [
-	{
-		tmdbId: 1241982,
-		likes: ["123456789", "T", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-	{
-		tmdbId: 1084199,
-		likes: ["a", "123456789", "c", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-	{
-		tmdbId: 539972,
-		likes: ["a", "b", "c", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-	{
-		tmdbId: 549509,
-		likes: ["a", "b", "c", "d"],
-		comments: ["a", "b", "c", "d"],
-	},
-];
-
 export default function HomeScreen({ navigation }) {
+	const user = mockUser; //useSelector((state) => state.user.value);
 	const [movies, setMovies] = useState([]);
-	const [moviesSearched, setMoviesSearched] = useState([]);
 	const [search, setSearch] = useState("");
+
+	/**
+	 * Filtres de recherche qui seront passés à l'URL de l'API TMDB dans la fonction loadMovies
+	 * sort_by et with_genres sont vides par défaut,
+	 * ils seront remplis par les filtres dans le composant FiltersSection
+	 */
 	const [filters, setFilters] = useState({
-		sort: null,
-		genres: null,
-	});
-
-	console.log(filters)
-
-	/**
-	 * moviesToDisplay est un tableau de films à afficher
-	 * Si l'utilisateur a effectué une recherche, on affiche les films recherchés
-	 * Sinon, on affiche les films populaires
-	 *
-	 */
-	const moviesToDisplay = moviesSearched.length > 0 ? moviesSearched : movies;
-
-	/**
-	 * Injection des likes et commentaires dans les films
-	 *  TODO à changer pour une requete au backend
-	 */
-	moviesToDisplay.forEach((movie) => {
-		const film = mockFilms.find((film) => film.tmdbId === movie.id);
-		if (film) {
-			movie.likes = film.likes;
-			movie.comments = film.comments;
-			if (movie.likes.includes(mockUser.token)) {
-				movie.liked = true;
-			}
-		}
+		include_adult: false,
+		include_video: false,
+		language: "fr-FR",
+		page: 1,
+		sort_by: "",
+		with_genres: "",
 	});
 
 	/**
-	 * useEffect servant à récupérer les films populaires
+	 * Fonction servant à récupérer les films sur l'API TMDB et les mettre dans l'état movies
+	 */
+	async function loadMovies() {
+		//construction de la string de paramètres
+		const params = new URLSearchParams(filters).toString();
+		const url = "/discover/movie?" + params;
+
+		let movies = await tmdbApiCall(url);
+
+		movies = await getLikesAndComments(movies);
+		setMovies(movies);
+	}
+
+	/**
+	 * useEffect permettant de charger les films populaires à l'ouverture de la page
 	 */
 	useEffect(() => {
-		const url = `/discover/movie?include_adult=false&include_video=false&language=fr-FR&page=1${
-			filters.genres && `&with_genres=${filters.genres}`
-		}&sort_by=${filters.sort}`;
-
-		console.log(url)
-
-		async function loadMovies() {
-			const movies = await tmdbApiCall(url);
-			setMovies(movies);
-		}
 		loadMovies();
 	}, [filters]);
 
 	/**
 	 * Fonction servant à gérer la recherche
 	 * 		- Appel à l'API de recherche de films
-	 * 		- Mise à jour de l'état moviesSearched
+	 * 		- Mise à jour de l'état movies
 	 */
 	async function handleSearch() {
-		const searchedMovies = await tmdbApiCall(
+		let searchedMovies = await tmdbApiCall(
 			`/search/movie?query=${search}&include_adult=false&language=fr-FR&page=1`
 		);
-		setMoviesSearched(searchedMovies);
+		searchedMovies = await getLikesAndComments(searchedMovies);
+		setMovies(searchedMovies);
+	}
+
+	/**
+	 * Fonction servant à ajouter les likes et commentaires aux films
+	 */
+	async function getLikesAndComments(movies) {
+		let updatedNb = movies.length;
+		const updatedMovies = await Promise.all(
+			//await Promise.all() permet d'attendre que toutes les promesses (les await) soient résolues
+			movies.map(async (movie) => {
+				try {
+					const response = await fetch(
+						`${process.env.EXPO_PUBLIC_IP_ADDRESS}/films/${movie.id}/film`
+					);
+					const data = await response.json();
+					movie.likes = data.film.likes;
+					movie.comments = data.film.comments;
+					movie.isLiked = data.film.likes.includes(user._id);
+				} catch (error) {
+					updatedNb--;
+				}
+				return movie;
+			})
+		);
+		return updatedMovies;
+	}
+
+	/**
+	 * Fonction servant à gérer le like d'un film
+	 */
+
+	async function handlePressLike(id) {
+		await fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/films/${id}/like`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ user: user.token }),
+		})
+		const updatedMovies = 	await getLikesAndComments(movies)
+		setMovies(updatedMovies)
+			
+
 	}
 
 	return (
@@ -108,15 +134,18 @@ export default function HomeScreen({ navigation }) {
 					resizeMode: "cover",
 				}}
 			>
-				<TopSection user={mockUser} />
+				<TopSection user={user} />
 				<MainSection
-					movies={moviesToDisplay}
+					movies={movies}
 					search={search}
 					setSearch={setSearch}
-					setMoviesSearched={setMoviesSearched}
+					setMovies={setMovies}
+					loadMovies={loadMovies}
 					onSubmitEditing={handleSearch}
 					filters={filters}
 					setFilters={setFilters}
+					navigation={navigation}
+					onPressLike={handlePressLike}
 				/>
 			</ImageBackground>
 		</SafeAreaView>

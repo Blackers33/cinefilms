@@ -5,6 +5,7 @@ const initialState = {
     username: null,
     email: null,
     age: null,
+    avatar:null,
     genre: null,
     token: null,
     location: {
@@ -30,8 +31,9 @@ export const userSlice = createSlice({
         state.value.token = token;
     },
     updateprofilUser: (state, action) => {
-        const { age, genre, location, favMovies, favGenres, biography } = action.payload;
+        const { age,avatar, genre, location, favMovies, favGenres, biography } = action.payload;
         state.value.age = age;
+        state.value.avatar=avatar;
         state.value.genre = genre;
         state.value.location = location;
         state.value.favMovies = favMovies;

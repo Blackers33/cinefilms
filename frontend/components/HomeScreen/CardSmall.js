@@ -3,16 +3,17 @@
  * @param {movie}
  */
 
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
+import { BlurView } from "expo-blur";
+import { useState } from "react";
 
-
-export default function Card({ movie }){
+export default function Card({ movie, onPress, onPressLike }){
 
 	return (
-		<TouchableWithoutFeedback onPress={() => console.log("press")}>
+		<TouchableWithoutFeedback onPress={onPress}>
 			<View style={styles.card}>
 				<ImageBackground
 					source={{
@@ -22,35 +23,44 @@ export default function Card({ movie }){
 					}}
 					style={styles.image}
 				/>
+
+				<TouchableOpacity
+					style={styles.likeSection}
+					onPress={()=>onPressLike(movie.id)}
+				>
+					<BlurView
+						experimentalBlurMethod='dimezisBlurView'
+						intensity={50}
+						tint='dark'
+						style={styles.likeSectionBlurview}
+					>
+						<Icon
+							name={movie.isLiked ? "heart" : "heart-outline"}
+							size={20}
+							color={movie.isLiked ? "#ec412f" : "#fff"}
+						/>
+					</BlurView>
+				</TouchableOpacity>
 				<View style={styles.movieInfo}>
 					<Text style={styles.title}>{movie.title}</Text>
 					<View style={styles.bottomSection}>
-						<View style={{ flexDirection: "row" }}>
-							<Icon
-								name='heart'
-								size={10}
-								color={movie.liked ? '#ec412f' : '#fff'}
-								style={{ marginTop: 2, marginRight: 2 }}
-							/>
-							<Text style={styles.text}>{movie.likes?.length || 0} Likes</Text>
-						</View>
-						<View style={{ flexDirection: "row" }}>
+						<View style={styles.bottomButton}>
 							<Icon
 								name='calendar-number-outline'
-								size={10}
+								size={18}
 								color='#fff'
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>Events</Text>
+							<Text style={styles.text}>0</Text>
 						</View>
-						<View style={{ flexDirection: "row" }}>
+						<View style={styles.bottomButton}>
 							<Icon
 								name='chatbox-ellipses-outline'
-								size={10}
+								size={18}
 								color='#fff'
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>Comments</Text>
+							<Text style={styles.text}>{movie.comments?.length || 0}</Text>
 						</View>
 					</View>
 				</View>
@@ -77,20 +87,38 @@ const styles = StyleSheet.create({
 	movieInfo: {
 		padding: 2,
 		gap: 12,
-		minHeight: 70,
 		justifyContent: "space-between",
+		flex: 1,
 	},
 	title: {
 		color: "#FFF",
 		fontWeight: 600,
+		marginLeft: 5,
 	},
 	text: {
 		color: "#FFF",
-		fontSize: 10,
+		fontSize: 15,
 	},
 	bottomSection: {
 		flexDirection: "row",
 		justifyContent: "space-around",
 		marginBottom: 5,
+	},
+	likeSectionBlurview: {
+		borderColor: "rgba(255,255,255,0.5)",
+		borderWidth: .5,
+		padding: 10,
+		borderRadius: 100,
+		overflow: "hidden",
+	},
+	likeSection: {
+		position: "absolute",
+		right: 0,
+		top: 0,
+		padding: 12,
+	},
+	bottomButton: {
+		flexDirection: "row",
+		alignItems: "center",
 	},
 });

@@ -1,14 +1,7 @@
-import {
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
-} from "react-native";
-import { useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { use, useState } from "react";
 import CardSmall from "./CardSmall";
 import CardLarge from "./CardLarge";
-import TextInput from "../common/TextInput";
 import SearchSection from "./SearchSection";
 import FiltersSection from "./FiltersSection";
 
@@ -16,19 +9,22 @@ export default function MainSection({
 	movies,
 	search,
 	setSearch,
-	setMoviesSearched,
+	setMovies,
+	loadMovies,
 	onSubmitEditing,
 	filters,
-	setFilters
+	setFilters,
+	navigation,
+	onPressLike,
 }) {
-
-	
 	const [cardsLarge, setCardsLarge] = useState(false);
 
-	function handlePressIcon() {
-		setSearch("");
-		setMoviesSearched([]);
-		console.log("pressing icon");
+	function handlePressSearchIcon() {
+		if (search.length > 0) {
+			setSearch("");
+			setMovies([]);
+			loadMovies();
+		}
 	}
 
 	function handleSetSize() {
@@ -43,20 +39,27 @@ export default function MainSection({
 					setSearch={setSearch}
 					onSubmitEditing={onSubmitEditing}
 					cardsLarge={cardsLarge}
-					handlePressIcon={handlePressIcon}
+					handlePressSearchIcon={handlePressSearchIcon}
 					handleSetSize={handleSetSize}
 				/>
 				{search.length === 0 && (
 					<FiltersSection filters={filters} setFilters={setFilters} />
 				)}
 				<View style={styles.cards}>
-					{movies.map((movie) =>
-						cardsLarge ? (
-							<CardLarge movie={movie} key={movie.id} />
+					{movies.map((movie) => {
+						const commonProps = {
+							movie,
+							onPressLike,
+							
+							onPress: () => navigation.navigate("FilmScreen", movie),
+						};
+
+						return cardsLarge ? (
+							<CardLarge {...commonProps} key={movie.id} />
 						) : (
-							<CardSmall movie={movie} key={movie.id} />
-						)
-					)}
+							<CardSmall {...commonProps} key={movie.id} />
+						);
+					})}
 				</View>
 			</ScrollView>
 		</View>

@@ -55,7 +55,7 @@ router.post('/signin', (req, res) => {
 });
 
 
-//PUT creation de profile
+//PUT creation & update de profile
 router.put('/profil/:token', (req, res) => {
 User.findOne({ token: req.params.token }).then(data => {
   if (data)

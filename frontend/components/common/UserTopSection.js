@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import Avatar from "../common/Avatar";
+import Avatar from "./Avatar";
 
 
 export default function TopSection({ user }) {
 	return (
-		<View style={styles.topSection}>
+		<View style={styles.topSection} onPress={() => navigation.navigate("ProfilScreen")}>
 			<View style={styles.userSection}>
 				<Avatar uri={user.avatar} size={64} />
 				<View>

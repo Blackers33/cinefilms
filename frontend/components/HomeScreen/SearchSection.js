@@ -3,7 +3,7 @@ import TextInputStyled from "../common/TextInput";
 import Icon from "react-native-vector-icons/Ionicons";
 
 
-export default function SearchSection({search, setSearch, onSubmitEditing, cardsLarge, handlePressIcon, handleSetSize}) {
+export default function SearchSection({search, setSearch, onSubmitEditing, cardsLarge, handlePressSearchIcon, handleSetSize}) {
 	return (
 		<View style={styles.searchSection}>
 			<View style={{ flex: 5 }}>
@@ -15,7 +15,7 @@ export default function SearchSection({search, setSearch, onSubmitEditing, cards
 				/>
 			</View>
 			<View style={{ flex: 1 }}>
-				<TouchableOpacity onPress={handlePressIcon}>
+				<TouchableOpacity onPress={handlePressSearchIcon}>
 					<View style={styles.button}>
 						<Icon
 							name={search.length > 0 ? "close" : "search-sharp"}

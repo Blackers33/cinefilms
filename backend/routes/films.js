@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 const Event = require('../models/events');
 const Film = require('../models/films');
-const { checkBody, createFilmIfNotExists} = require('../modules/utils');
+const { checkBody, createFilmIfNotExists, autentification} = require('../modules/utils');
 
 
 //Route qui récupère les événements liés à un film en BDD
-router.get('/:filmId', (req, res) => {
+router.get('/:filmId/events', (req, res) => {
     try {
         //Conversion de l'ID du film en nombre
         const filmId = Number(req.params?.filmId);
@@ -27,15 +27,15 @@ router.get('/:filmId', (req, res) => {
 });
 
 //Route qui permet de récupérer le film 
-router.get('/:filmId', (req, res) => {
+router.get('/:filmId/film', (req, res) => {
     try {
         //Conversion de l'ID du film en nombre
         const filmId = Number(req.params?.filmId);
-
+        
         if (req.params && filmId) {
-            Film.findOne({tmdbId: filmId}).populate('users')
+            Film.findOne({tmdbId: filmId})
             .then(data => {
-                if (data.length) {
+                if (data !== null) {
                     res.json({ result: true, film: data })
                 } else {
                     res.json({ result: false, error: 'Not found' });
@@ -48,7 +48,7 @@ router.get('/:filmId', (req, res) => {
 });
 
 //Route qui permet d'jouter un commentaire sur un film dans la BDD
-router.post('/:filmId', (req, res) => {
+router.post('/:filmId/comment', async(req, res) => {
     try {
         if (!checkBody(req.body, ['user', 'content'])) {
             res.json({ result: false, error: 'Missing or empty fields' });
@@ -56,28 +56,77 @@ router.post('/:filmId', (req, res) => {
         }
         //Conversion de l'ID du film en nombre
         const filmId = Number(req.params?.filmId);
+        //
+        const user = await autentification(req.body.user);
+        console.log(user);
         if (req.params && filmId) {
-            res.json({result: createFilmIfNotExists(filmId)})
-            /*if (createFilmIfNotExists(filmId)) {
+            const isFilmExists = await createFilmIfNotExists(filmId);
+            if (isFilmExists) {
                 Film.findOne({tmdbId: filmId})
                 .then(data => {
                     const newComment = {
-                        user: req.body.user,
+                        user: user.userId,
                         content: req.body.content,
                         date: new Date(),
-                    };
+                    }; 
                     data.comments.push(newComment);
+                    data.save().then(() => {
+                        res.json({ result: true, film: {
+                            content : newComment.content,
+                            date: newComment.date
+                        } }); 
+                    });
+                });
+            } else {
+                res.json({ result: false, error: 'error while checking/creating film'});
+            }
+            
+        } else {
+            res.json({ result: false, error: 'invalid filmId'});
+        }    
+    } catch (error) {
+        res.status(500).json({ result: false, error: 'Internal server error' });
+    }
+});
+
+//Route qui permet d'ajouter/supprimer un like à un film
+router.post('/:filmId/like', async(req, res) => {
+    try {
+        if (!checkBody(req.body, ['user'])) {
+            res.json({ result: false, error: 'Missing or empty fields' });
+            return
+        }
+        //Conversion de l'ID du film en nombre
+        const filmId = Number(req.params?.filmId);
+        //Récuperer l'ObjectID de l'utilisateur à partir du token
+        const user = await autentification(req.body.user);
+
+        if (req.params && filmId) {
+            const isFilmExists = await createFilmIfNotExists(filmId);
+            if (isFilmExists) {
+                Film.findOne({tmdbId: filmId})
+                .then(data => {
+                    if (data.likes.includes(user.userId)) {
+                        const likes = data.likes.filter(el => el.toString() !== user.userId.toString());
+                        data.likes = likes;
+                    } else {
+                        data.likes.push(user.userId);
+                    }
                     data.save().then(() => {
                         res.json({ result: true, film: data });
                     });
                 });
-            }*/
-        }
-        
+            } else {
+                res.json({ result: false, error: 'error while checking/creating film'});
+            }
+            
+        } else {
+            res.json({ result: false, error: 'invalid filmId'});
+        }    
     } catch (error) {
         res.status(500).json({ result: false, error: 'Internal server error' });
     }
-})
+});
 
 
 
