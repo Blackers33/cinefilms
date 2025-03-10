@@ -5,20 +5,18 @@ import ConnexionScreen from "./screens/ConnexionScreen";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
-
+import * as NavigationBar from "expo-navigation-bar";
 const Stack = createNativeStackNavigator();
 
 const store = configureStore({
-  reducer: { user },
+	reducer: { user },
 });
-
-
 
 const Tab = createBottomTabNavigator();
 
@@ -58,32 +56,28 @@ const TabNavigator = () => {
 			<Tab.Screen name='Rencontres' component={HomeScreen} />
 		</Tab.Navigator>
 	);
-}
+};
 
 export default function App() {
-  return (
-
-			<Provider store={store}>
-				<NavigationContainer>
-					<Stack.Navigator screenOptions={{ headerShown: false }}>
-						<Stack.Screen name='Connexion' component={ConnexionScreen} />
-						<Stack.Screen name='Inscription' component={InscriptionScreen} />
-						<Stack.Screen name='TabNavigator' component={TabNavigator} />
-					</Stack.Navigator>
-				</NavigationContainer>
-				<StatusBar style='light' />
-			</Provider>
-
+	NavigationBar.setBackgroundColorAsync("black");
+	return (
+		<Provider store={store}>
+			<NavigationContainer>
+				<Stack.Navigator screenOptions={{ headerShown: false }}>
+					<Stack.Screen name='Connexion' component={ConnexionScreen} />
+					<Stack.Screen name='Inscription' component={InscriptionScreen} />
+					<Stack.Screen name='TabNavigator' component={TabNavigator} />
+					<Stack.Screen name='Film' component={FilmScreen} />
+				</Stack.Navigator>
+			</NavigationContainer>
+		</Provider>
 	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+	container: {
+		backgroundColor: "#fff",
 
+	},
+});
 

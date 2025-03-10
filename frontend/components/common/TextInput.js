@@ -19,19 +19,20 @@ export default function TextInputStyled(props) {
 			<LinearGradient colors={colors} style={styles.gradiant}>
 				<TextInput
 					placeholderTextColor='#999'
+					keyboardType='web-search'
 					style={styles.buttonText}
 					{...props}
-				/>{props.icon && (
-				<Icon
-					name={props.icon}
-					size={25}
-					color='#fff'
-					style={styles.icon}
-					onPress={props.onPressIcon}
 				/>
-			)}
+				{props.icon && (
+					<Icon
+						name={props.icon}
+						size={25}
+						color='#fff'
+						style={styles.icon}
+						onPress={props.onPressIcon}
+					/>
+				)}
 			</LinearGradient>
-			
 		</View>
 	);
 }
