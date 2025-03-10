@@ -44,7 +44,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 							size={20}
 							color={movie.isLiked ? "#ec412f" : "#fff"}
 						/>
-						{movie.likes > 0 &&<Text style={styles.text}>{movie.likes}</Text>}
+						{movie.likes > 0 && <Text style={styles.text}>{movie.likes}</Text>}
 					</BlurView>
 				</TouchableOpacity>
 				<View style={styles.movieInfo}>
@@ -57,7 +57,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 								color='#fff'
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>0</Text>
+							<Text style={styles.text}>{movie.events || 0}</Text>
 						</View>
 						<View style={styles.bottomButton}>
 							<Icon

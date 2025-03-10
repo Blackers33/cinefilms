@@ -32,25 +32,25 @@ router.get("/:filmId/events", (req, res) => {
 });
 
 //Route qui permet de récupérer le film
-router.get("/:filmId/:token/film", async (req, res) => {
+router.get("/:tmdbId/:token/film", async (req, res) => {
 	try {
 		//Conversion de l'ID du film en nombre
-		const filmId = Number(req.params?.filmId);
+		const tmdbId = Number(req.params?.tmdbId);
 		const user = await User.findOne({ token: req.params.token });
+		const film = await Film.findOne({ tmdbId });
+		const events = await Event.find({ filmId : film._id });
 
-		if (req.params && filmId && user._id) {
-			const film = await Film.findOne({ tmdbId: filmId });
-			if (film) {
-				const filmData = {
-					tmdbId: film.tmdbId,
-					likes: film.likes.length,
-					comments: film.comments.length,
-					isLiked: film.likes.includes(user._id),
-				};
-				res.json({ result: true, ...filmData });
-			} else {
-				res.json({ result: false, error: "Not found" });
-			}
+		if (film) {
+			const filmData = {
+				tmdbId: film.tmdbId,
+				likes: film.likes.length,
+				comments: film.comments.length,
+				isLiked: film.likes.includes(user._id),
+				events : events.length
+			};
+			res.json({ result: true, ...filmData });
+		} else {
+			res.json({ result: false, error: "Not found" });
 		}
 	} catch (error) {
 		res.status(500).json({ result: false, error: "Internal server error" });

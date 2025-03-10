@@ -74,6 +74,7 @@ export default function MainSection({ navigation, user }) {
 					movie.likes = data.likes;
 					movie.comments = data.comments;
 					movie.isLiked = data.isLiked;
+					movie.events = data.events
 				}
 				console.log(movie);
 

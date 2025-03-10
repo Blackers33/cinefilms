@@ -38,9 +38,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 									color={movie.isLiked ? "#ec412f" : "#fff"}
 									style={{ marginTop: 2, marginRight: 2 }}
 								/>
-								<Text style={styles.text}>
-									{movie.likes || 0} Likes
-								</Text>
+								<Text style={styles.text}>{movie.likes || 0} Likes</Text>
 							</View>
 						</TouchableOpacity>
 						<View style={styles.bottomButton}>
@@ -50,7 +48,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 								color='#fff'
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>0 Events</Text>
+							<Text style={styles.text}>{movie.events || 0} Events</Text>
 						</View>
 						<View style={styles.bottomButton}>
 							<Icon
@@ -59,9 +57,7 @@ export default function Card({ movie, onPress, onPressLike }) {
 								color='#fff'
 								style={{ marginTop: 2, marginRight: 2 }}
 							/>
-							<Text style={styles.text}>
-								{movie.comments || 0} Comments
-							</Text>
+							<Text style={styles.text}>{movie.comments || 0} Comments</Text>
 						</View>
 					</View>
 				</View>
