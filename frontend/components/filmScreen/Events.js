@@ -1,14 +1,65 @@
-import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
-import { useState } from 'react';
+import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, ImageBackground, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
 import Avatar from '../common/Avatar';
 import CommentsIcon from 'react-native-vector-icons/Fontisto';
 import Search from 'react-native-vector-icons/EvilIcons'
+import formatDate from '../../utils/utils';
 
-export default function Events() {
+export default function Events({ filmId, allEvents, refresh }) {
     const [filter, setFilter] = useState('');
+    
+    //Affichet tout les événements avec map
+    const events = allEvents?.map((event, i) => {
+        //Mettre date en format jj/mm/aaaa hh:mm avec formatDate
+        const date = formatDate(event.date);
+        
+        /**
+        * Affiche les avatars des participants avec une gestion dynamique du nombre affiché.
+        * - Si le nombre de participants est inférieur à 3, utilise `participantsLessThanThree` pour l'affichage.
+        * - Sinon, affiche les 3 premiers avatars suivis de `+X` indiquant le nombre de participants restants.
+        */
+        const participantsLessThenThree = event.particiapants?.map(participant => {
+            <Avatar style={styles.avatar1} size={30} uri={participant.avatar}/>
+        });
+        const particiapants = event.participants.length > 3 ? 
+        <View style={styles.participants}>  
+            <Avatar style={styles.avatar1} size={30} uri={event.participants[0].avatar}/>
+            <Avatar style={styles.avatar2} size={30} uri={event.participants[1].avatar}/>
+            <Avatar style={styles.avatar3} size={30} uri={event.participants[2].avatar}/>
+            <Text style={styles.participantsNumber}>{`+ ${event.particiapants.length - 3}`}</Text>
+        </View> 
+        : 
+        <View style={styles.participants}>  
+            {participantsLessThenThree}
+        </View> 
+        return(
+            <View key={i} style={styles.eventContainer}>
+                <View style={styles.eventInfos}>
+                    <Avatar size={40} uri={event.owner.avatar} style={styles.avatar}/>
+                    <View style={styles.appointmentInfos}>
+                        <Text style={styles.appointmentPlace}>{event.location} - {event.title}</Text>
+                        <Text style={styles.appointmentDate}>{date}</Text>
+                    </View>
+                </View>
+                <ImageBackground source={require('../../assets/image-film.webp')} imageStyle={{ opacity: 0.3 }} style={styles.backgroundDescriptionEvent}>
+                    <Text style={styles.descriptionText}>{event.description}</Text>
+                </ImageBackground>
+                <View style={styles.interactionBar}>
+                    <View style={styles.interactionToEventView}>
+                        {particiapants}
+                        <TouchableOpacity onPress={() => displayComments()} style={styles.displayCommentsButton} activeOpacity={0.8}>
+                            <CommentsIcon name='comments' size={30} color={'#C94106'} />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity onPress={() => handleJoinEvent()} style={styles.joingEventButton} activeOpacity={0.8}>
+                        <Text style={styles.buttonText}>+ Joindre</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    })
     return(
-        <View style={styles.containerEvents}>
-            
+        <View style={styles.events}>
             <View style={styles.filterBar}>
                 <TextInput
                     type='text'
@@ -21,39 +72,24 @@ export default function Events() {
                     <Search name='search' size={34} color={'#C94106'} />
                 </TouchableOpacity>
             </View>
-            <View style={styles.eventContainer}>
-                <View style={styles.eventInfos}>
-                    <Avatar size={40}/>
-                    <View style={styles.appointmentInfos}>
-                        <Text style={styles.appointmentPlace}>City - CineName</Text>
-                        <Text style={styles.appointmentDate}>Date</Text>
-                    </View>
-                </View>
-                <ImageBackground source={require('../../assets/image-film.webp')} imageStyle={{ opacity: 0.3 }} style={styles.backgroundDescriptionEvent}>
-                    <Text style={styles.descriptionText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tincidunt, nunc ut varius tincidunt, felis justo vehicula nunc, nec volutpat libero erat vel lectus orem ipsum dolor sit amet...</Text>
-                </ImageBackground>
-                <View style={styles.interactionBar}>
-                    <View style={styles.interactionToEventView}>
-                        <View style={styles.participants}>  
-                            <Avatar style={styles.avatar1} size={30} />
-                            <Avatar style={styles.avatar2} size={30} />
-                            <Avatar style={styles.avatar3} size={30} />
-                        </View>
-                        <TouchableOpacity onPress={() => displayComments()} style={styles.displayCommentsButton} activeOpacity={0.8}>
-                            <CommentsIcon name='comments' size={30} color={'#C94106'} />
-                        </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity onPress={() => handleJoinEvent()} style={styles.joingEventButton} activeOpacity={0.8}>
-                        <Text style={styles.buttonText}>+ Joindre</Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.eventsContainer}>
+                <ScrollView style={styles.containerevents}>
+                    {events}    
+                </ScrollView>
+                
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    containerEvents: {
+    events: {
+
+    },
+    eventContainer: {
+        
+    },
+    containerevents: {
         
     },
     inputFilter: {
@@ -95,11 +131,12 @@ const styles = StyleSheet.create({
     },
     appointmentPlace: {
         color: 'white',
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: '500'
     },
     appointmentDate: {
-        color: "rgb(170, 170, 170)",
+        color: 'white',
+        fontWeight: 300,
         fontSize: 16,
     },
     backgroundDescriptionEvent: {
@@ -110,7 +147,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         padding: 10,
-        
     },
     interactionBar: {
         flexDirection: 'row',

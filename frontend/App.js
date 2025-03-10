@@ -11,6 +11,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
+import FilmScreen from "./screens/FilmScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -65,10 +66,13 @@ export default function App() {
 
 			<Provider store={store}>
 				<NavigationContainer>
+					
 					<Stack.Navigator screenOptions={{ headerShown: false }}>
+					<Stack.Screen name='TabNavigator' component={TabNavigator} />
+
 						<Stack.Screen name='Connexion' component={ConnexionScreen} />
 						<Stack.Screen name='Inscription' component={InscriptionScreen} />
-						<Stack.Screen name='TabNavigator' component={TabNavigator} />
+						<Stack.Screen name='FilmScreen' component={FilmScreen} />
 					</Stack.Navigator>
 				</NavigationContainer>
 				<StatusBar style='light' />
