@@ -57,13 +57,12 @@ const villes = [
 export default function EventScreen({ navigation }) {
   const user = mockUser; //useSelector((state) => state.user.value);
   const [events, setEvents] = useState([]);
-  // États pour les valeurs des filtres
-  const [username, setUsername] = useState("");
-  const [tmdbId, setTmdbId] = useState("");
   const [ville, setVille] = useState(null);
   const [userNameseach, setUserNameseach] = useState("");
   const [showCommentsForEvent, setShowCommentsForEvent] = useState(null);
+  const [comment, setComment] = useState('');
 
+  const userId= "AJrdD3LbgYExWqbR81vDDCwwF3xc7Qtt";
 
   const handledSelectville = (selectedValue) => {
     setVille(selectedValue.name);
@@ -72,6 +71,33 @@ export default function EventScreen({ navigation }) {
   const toggleComments = (eventId) => {
     setShowCommentsForEvent(showCommentsForEvent === eventId ? null : eventId);
   };
+
+  const ajoutcomment=(event)=>{
+    fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${event._id}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: userId,
+        content: comment, 
+      }),
+    })
+    .then((response) => response.json())  
+    .then((data) => {
+      if (data.result) {
+
+        setComment('');  // Effacer le champ commentaire
+      } else {
+        console.log("comment not posted")
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      setError('An error occurred while adding your comment');
+    })
+
+  }
 
   // Fonction pour rechercher les événements par nom d'utilisateur
   const handleUsername = () => {
@@ -132,10 +158,7 @@ export default function EventScreen({ navigation }) {
             <TouchableOpacity activeOpacity={0.7}>
               <FontAwesome name="search" size={25} color="#ec6e5b" />
             </TouchableOpacity>
-            <LinearGradient
-              colors={["#B22E2E", "#333"]}
-              style={styles.gradiant}
-            ></LinearGradient>
+           
           </View>
           <View style={styles.reseachsecondcontainer}>
             <View style={styles.reseachUserInput}>
@@ -148,6 +171,8 @@ export default function EventScreen({ navigation }) {
                 <FontAwesome name="search" size={25} color="#ec6e5b" />
               </TouchableOpacity>
             </View>
+            
+
             <Dropdown
               style={styles.dropdowngenre}
               selectedTextStyle={styles.selectedTextStyle}
@@ -166,11 +191,12 @@ export default function EventScreen({ navigation }) {
               onChange={handledSelectville}
               value={ville}
             />
+    
           </View>
           <View style={styles.buttoncreationEvent}>
             <Button text="Créer un évènement"></Button>
           </View>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView >
             <View style={styles.eventscontainer}>
               {events.map((event) => (
                 <Event
@@ -187,7 +213,10 @@ export default function EventScreen({ navigation }) {
                   })}
                   showComments={showCommentsForEvent === event._id} 
                   displayComments={() => toggleComments(event._id)} 
+                  ajoutcomment={()=>ajoutcomment(event)}
                   comments={event.comments}
+                  comment={comment}
+                  setComment={setComment}
                 />
               ))}
             </View>
@@ -200,18 +229,16 @@ export default function EventScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
-    width: "100%",
     backgroundColor: "#000000",
     justifyContent: "space-between",
+    alignItems:"center",
   },
   backgroundImage: {
-    flex: 1,
     width: "100%",
     height: "100%",
   },
   userTopContainer: {
-    marginTop: 30,
+    marginTop: 20,
     width: "100%",
   },
   textInputrseach: {
@@ -224,23 +251,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    marginTop: 10,
+    marginTop: 5,
     paddingRight: 20,
   },
   reseachInput: {
     width: "80%",
-    height: 50,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    padding: 20,
+    height: 40,
   },
 
   buttoncreationEvent: {
     alignItems: "center",
   },
   dropdowngenre: {
-    height: 45,
+    height: 20,
     width: 100,
     opacity: 0.7,
     borderRadius: 20,
@@ -249,13 +272,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingLeft: 10,
   },
-  gradiant: {
-    marginTop: 10,
-    borderRadius: 20,
-    width: 100,
-    alignItems: "stretch",
-    paddingLeft: 10,
-  },
+
   selectedTextStyle: {
     fontSize: 10,
     color: "white",
@@ -285,4 +302,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingRight: 20,
   },
+  eventscontainer:{
+    flexDirection:"column",
+    justifyContent:"space-between",
+  }
 });

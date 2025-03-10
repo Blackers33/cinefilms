@@ -93,39 +93,62 @@ router.get("/location/:cityname", async (req, res) => {
 });
 
 //rout get qui permet de filtrer les evenement par rapport le film
-router.get("/film/:tmdbId", async (req, res) => {
+router.get("/:tmdbId/events", async (req, res) => {
   try {
-
-    const film = await Film.findOne({ tmdbId: req.params.tmdbId });
-    
-    if (!film) {
-        return res.status(404).json({
-          success: false,
-          message: "Aucun film trouvé avec cet ID.",
-        });
+      // Récupération du film correspondant au tmdbId
+      const film = await Film.findOne({ tmdbId: req.params.tmdbId });
+      
+      if (!film) {
+          return res.status(404).json({
+              success: false,
+              message: "Aucun film trouvé avec cet ID.",
+          });
       }
-    const filmId = film._id;
 
-    const events = await Event.find({filmId: filmId });
+      // Récupération des événements liés à ce film
+      const allEvents = await Event.find({ filmId: film._id })
+          .populate("filmId")
+          .populate('comments.user')
+          .populate('owner');
 
-    if (events.length === 0) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Aucun événement trouvé sur ce film.",
-        });
-    }
+      if (allEvents.length === 0) {
+          return res.status(404).json({
+              success: false,
+              message: "Aucun événement trouvé pour ce film.",
+          });
+      }
 
+      // Réponse avec les événements trouvés
+      const events = allEvents.map(event => {
+          return {
+              owner: {
+                  username: event.owner.username,
+                  avatar: event.owner.avatar
+              },
+              location: event.location, 
+              date: event.date,
+              comments: event.comments.map((comment) =>({
+                  username: comment.user.username,
+                  avatar: comment.user.avatar,
+                  date: comment.date,
+                  content: comment.content,
+              })),
+              participants: event.participants.map(participant => ({
+                  username: participant.username,
+                  avatar: participant.avatar,
+              })),
+              description: event.description,
+              title: event.title,
+          }
+      })
+      res.json({ success: true, events: events });
 
-    res.status(200).json({ success: true, events });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Erreur serveur",
-        error: error.message,
+      console.error("Erreur serveur :", error);
+      res.status(500).json({
+          success: false,
+          message: "Erreur serveur",
+          error: error.message,
       });
   }
 });

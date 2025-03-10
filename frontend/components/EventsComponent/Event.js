@@ -14,10 +14,11 @@ import { useState } from "react";
 import Avatar from "../common/Avatar";
 import CommentsIcon from "react-native-vector-icons/Fontisto";
 import Search from "react-native-vector-icons/EvilIcons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function Event(props) {
   return (
-    <View style={styles.containerEvents}>
+    
       <View style={styles.eventContainer}>
         <View style={styles.eventInfos}>
           <Avatar size={40} />
@@ -58,41 +59,38 @@ export default function Event(props) {
             <Text style={styles.buttonText}>+ Joindre</Text>
           </TouchableOpacity>
         </View>
-          {props.showComments && (
-            <View style={styles.commentsSection}>
-              <Avatar></Avatar>
-              {props.comments.map((comment, index) => (
-                <Text key={index} style={styles.commentText}>
-                  {comment.content}
-                </Text>
-              ))}
-            </View>
-          )}
+        {props.showComments && (
+          <View style={styles.commentsSection}>
+            <Avatar></Avatar>
+            {props.comments.map((comment, index) => (
+              <Text key={index} style={styles.commentText}>
+                {comment.content}
+              </Text>
+            ))}
+        <View style={styles.inputcommentcontaire}>
+
+          <TextInput style={styles.inputcomment}
+            placeholder="écrire un commentaire"
+            value={props.comment}
+            onChangeText={props.setComment}
+
+          ></TextInput>
+          <TouchableOpacity activeOpacity={0.7} onPress={props.ajoutcomment}>
+            <FontAwesome name="send" size={25} color="#ec6e5b" />
+          </TouchableOpacity>
+        </View>
+          </View>
+        )}
       </View>
-    </View>
+   
   );
 }
 
 const styles = StyleSheet.create({
-  containerEvents: {},
-  inputFilter: {
-    backgroundColor: "rgba(77, 77, 77, 0.1)",
-    width: "80%",
-    height: 35,
-    borderColor: "rgb(201, 65, 6)",
-    borderWidth: 1,
-    borderRadius: 30,
-    marginRight: 5,
-    color: "white",
-  },
-
-  filterBar: {
-    marginTop: 20,
-    flexDirection: "row",
-    justifyContent: "center",
-  },
+ 
   eventContainer: {
-    width: "90%",
+    height:"auto",
+    width:"auto",
     alignSelf: "center", // Centre horizontalement
     borderRadius: 10,
     elevation: 3, // Ombre pour Android
@@ -103,7 +101,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(77, 77, 77, 0.5)",
     marginTop: 10,
     padding: 10,
-    height: 250,
   },
   eventInfos: {
     flexDirection: "row",
@@ -156,22 +153,34 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   commentsSection: {
-    display:"flex",
-    flexDirection:"row",
-    justifyContent:"space-between",
-    marginTop: 10,
+    height:50,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginTop: 5,
     padding: 10,
     backgroundColor: "#444",
     borderRadius: 5,
-  },
-  commentsTitle: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 5,
   },
   commentText: {
     fontSize: 10,
     color: "white",
   },
+  inputcommentcontaire:{
+    display: "flex",
+    flexDirection:"row",
+    justifyContent:"space-between",
+    marginTop:10,
+  },
+  inputcomment:{
+    width:"70%",
+    height:"20%",
+    backgroundColor: "#333",
+    color: "#fff",
+    padding: 10,
+    borderRadius: 8, 
+    fontSize: 12, 
+    borderWidth: 1,
+    borderColor: "#555",
+  }
 });
