@@ -10,9 +10,12 @@ import {
     TextInput,
     StatusBar,
 } from "react-native";
+import Inputstyled from "../components/common/TextInput";
+
 
 
 export default function NewEventScreen({ navigation }) {
+
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -21,19 +24,19 @@ export default function NewEventScreen({ navigation }) {
             <View style={styles.container}>
                 <View style={styles.infos}>
                     <View style={styles.inputBubble}>
-                        <TextInput style={styles.input}
+                        <Inputstyled
                             placeholder="Titre de l'évènement"
-                            placeholderTextColor="black"></TextInput>
+                            placeholderTextColor="white"></Inputstyled>
                     </View>
                     <View style={styles.inputBubble}>
-                        <TextInput style={styles.input}
+                        <Inputstyled
                             placeholder="Ajouter un lieu"
-                            placeholderTextColor="black"></TextInput>
+                            placeholderTextColor="white"></Inputstyled>
                     </View>
                     <View style={styles.inputBubble}>
-                        <TextInput style={styles.input}
+                        <Inputstyled
                             placeholder="Date"
-                            placeholderTextColor="black"></TextInput>
+                            placeholderTextColor="white"></Inputstyled>
                     </View>
                 </View>
                 <View>
@@ -41,23 +44,24 @@ export default function NewEventScreen({ navigation }) {
                 </View>
                 <View>
                     <View style={styles.inputBubble}>
-                        <TextInput style={styles.input}
+                        <Inputstyled
                             placeholder="Ajouter un film"
-                            placeholderTextColor="black" ></TextInput>
+                            placeholderTextColor="white" ></Inputstyled>
                     </View>
                     <View style={styles.inputBubble}>
-                        <TextInput style={styles.inputDescription}
+                        <TextInput style={styles.description}
                             placeholder="Description de l'évènement"
-                            placeholderTextColor="black"></TextInput>
+                            placeholderTextColor="white">
+                        </TextInput>
                     </View>
-                    <Text style={styles.text}>Inviter des personnes</Text>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity onPress={() => handleSubmitMessage()} style={styles.addEvent} activeOpacity={0.8}>
                         <Text style={styles.buttonText}>Créer</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => handleSubmitMessage()} style={styles.removeEvent} activeOpacity={0.8}>
+                    
+                    {/* Permet de naviguer avec la page 'Events' */}
+                    <TouchableOpacity onPress={() => navigation.navigate('Events')} style={styles.removeEvent} activeOpacity={0.8}>
                         <Text style={styles.buttonText}>Annuler</Text>
                     </TouchableOpacity>
                 </View>
@@ -97,27 +101,20 @@ const styles = StyleSheet.create({
     },
 
     inputBubble: {
-        borderWidth: 1,
+       
         borderRadius: 20,
         padding: 10,
         margin: 10,
-        backgroundColor: 'rgb(30.28.26)',
+       
     },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 20,
-        paddingHorizontal: 10,
-        backgroundColor: 'white',
-    },
+
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 20,
     },
     addEvent: {
-        backgroundColor: 'rgba(201, 65, 6, 0.78)',
+        backgroundColor: 'rgb(201, 65, 6)',
         padding: 10,
         borderRadius: 10,
         flex: 1,
@@ -139,15 +136,15 @@ const styles = StyleSheet.create({
         fontFamily: 'Mulish',
     },
 
-    inputDescription: {
-        height: 80,
-        borderColor: 'gray',
+    description: {
+        height: 100,
         borderWidth: 1,
         borderRadius: 20,
         paddingHorizontal: 10,
-        backgroundColor: 'white',
+        backgroundColor: 'rgb(30,28,26)',
+        borderColor: 'rgb(201,65,6)',
         marginTop: -20,
-        marginBottom: -20,
+        marginBottom: -30,
         paddingTop: 10,
     }
 
