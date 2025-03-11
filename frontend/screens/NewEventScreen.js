@@ -11,10 +11,17 @@ import {
     StatusBar,
 } from "react-native";
 import Inputstyled from "../components/common/TextInput";
+import { useState } from 'react';
 
 
 
 export default function NewEventScreen({ navigation }) {
+
+    const [title, setTitle] = useState('');
+    const [place, setPlace] = useState('');
+    const [date, setDate] = useState('');
+    const [description, setDescription] = useState('');
+    
 
 
     return (
@@ -26,22 +33,28 @@ export default function NewEventScreen({ navigation }) {
                     <View style={styles.inputBubble}>
                         <Inputstyled
                             placeholder="Titre de l'évènement"
-                            placeholderTextColor="white"></Inputstyled>
+                            placeholderTextColor="white"
+                            onChangeText={(value) => setTitle(value)}
+                            value={title}></Inputstyled>
                     </View>
                     <View style={styles.inputBubble}>
                         <Inputstyled
                             placeholder="Ajouter un lieu"
-                            placeholderTextColor="white"></Inputstyled>
+                            placeholderTextColor="white"
+                            onChangeText={(value) => setPlace(value)}
+
+                            value={place}></Inputstyled>
+
                     </View>
                     <View style={styles.inputBubble}>
                         <Inputstyled
                             placeholder="Date"
-                            placeholderTextColor="white"></Inputstyled>
+                            placeholderTextColor="white"
+                            onChangeText={(value) => setDate(value)}
+                            value={date}></Inputstyled>
                     </View>
                 </View>
-                <View>
-                    <Image style={styles.image} source={require('../assets/map.jpg')} />
-                </View>
+
                 <View>
                     <View style={styles.inputBubble}>
                         <Inputstyled
@@ -51,15 +64,21 @@ export default function NewEventScreen({ navigation }) {
                     <View style={styles.inputBubble}>
                         <TextInput style={styles.description}
                             placeholder="Description de l'évènement"
-                            placeholderTextColor="white">
+                            placeholderTextColor="white"
+                            onChangeText={(value) => setDescription(value)}
+                            value={description}>
                         </TextInput>
                     </View>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={() => handleSubmitMessage()} style={styles.addEvent} activeOpacity={0.8}>
+                    <TouchableOpacity onPress={() => handleSubmitMessage(
+                       
+
+                    )} style={styles.addEvent} activeOpacity={0.8}>
                         <Text style={styles.buttonText}>Créer</Text>
+
                     </TouchableOpacity>
-                    
+
                     {/* Permet de naviguer avec la page 'Events' */}
                     <TouchableOpacity onPress={() => navigation.navigate('Events')} style={styles.removeEvent} activeOpacity={0.8}>
                         <Text style={styles.buttonText}>Annuler</Text>
@@ -101,11 +120,11 @@ const styles = StyleSheet.create({
     },
 
     inputBubble: {
-       
+
         borderRadius: 20,
         padding: 10,
         margin: 10,
-       
+
     },
 
     buttonContainer: {
@@ -146,8 +165,7 @@ const styles = StyleSheet.create({
         marginTop: -20,
         marginBottom: -30,
         paddingTop: 10,
+        color: 'white',
+        fontFamily: 'Mulish',
     }
-
-
-
-});
+}) 
