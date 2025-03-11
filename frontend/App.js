@@ -8,6 +8,7 @@ import user from "./reducers/user";
 import { StyleSheet } from 'react-native';
 import HomeScreen from "./screens/HomeScreen";
 import EventScreen from "./screens/EventScreen";
+import createEventScreen from "./screens/NewEventScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -70,6 +71,7 @@ export default function App() {
 						<Stack.Screen name='TabNavigator' component={TabNavigator} />
 						<Stack.Screen name='Connexion' component={ConnexionScreen} />
 						<Stack.Screen name='Inscription' component={InscriptionScreen} />
+						<Stack.Screen name='CreateEventScreen' component={createEventScreen} />
 					</Stack.Navigator>
 				</NavigationContainer>
 				<StatusBar style='light' />
