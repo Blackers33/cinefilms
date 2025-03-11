@@ -1,0 +1,127 @@
+/**
+ * @author Charlie
+ */
+
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ProfilPageComponent from "../components/ProfilScreen/ProfilPageComponent";
+import EditProfilComponent from "../components/ProfilScreen/EditProfilComponent";
+import {
+	View,
+	StyleSheet,
+	KeyboardAvoidingView,
+	Platform,
+	Dimensions,
+	ImageBackground,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "../components/common/Button";
+import { setProfilUser } from "../reducers/user";
+
+const mockUser = {
+	username: "Louli",
+	password: "$2b$10$5KN9ROMYhdVNoAGP8fJCSOCht9WZLZYZPsB/STHjljlf2yEvtBaZe",
+	email: "Louli@gmail.com",
+	token: "aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk",
+	friends: [],
+	favGenres: [
+		'{"id":28,"name":"Action","_index":0}',
+		'{"id":12,"name":"Adventure","_index":1}',
+		'{"id":16,"name":"Animation","_index":2}',
+	],
+	favMovies: ["447277", "429473", "604605"],
+	__v: 0,
+	age: 25,
+	avatar:
+		"https://pbs.twimg.com/profile_images/794107415876747264/g5fWe6Oh_400x400.jpg",
+	biography: "freee",
+	genre: "Homme",
+	location: {
+		name: "Lyon",
+		latitude: 45.758,
+		longitude: 4.835,
+	},
+};
+
+export default function ProfilScreen() {
+	const user = mockUser; //useSelector((state) => state.user.value);
+
+	const [edit, setEdit] = useState(false);
+	const dispatch = useDispatch();
+
+	const handleEditButton = () => {
+		setEdit(true);
+	};
+
+	const handleConfirmation = () => {
+		fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + user.token, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				age: age,
+				city: city,
+				genre: genre,
+				genrefilm: genrefilm,
+				recherchefilm: recherchefilm,
+				biography: biography,
+				avatar: avatar,
+			}),
+		})
+			.then((res) => res.json())
+			.then((data) => data.result && dispatch(setProfilUser(data.profil)));
+		setEdit(false);
+	};
+
+	return (
+		<KeyboardAvoidingView
+			style={styles.container}
+			behavior={Platform.OS === "ios" && "padding"}
+		>
+			<SafeAreaView>
+				{edit ? <EditProfilComponent /> : <ProfilPageComponent user={user} />}
+				<View style={styles.editProfilButtonContainer}>
+					{edit ? (
+						<Button
+							text='Terminer'
+							onPress={() => handleConfirmation()}
+						></Button>
+					) : (
+						<Button
+							text='Éditer son profil'
+							onPress={handleEditButton}
+						></Button>
+					)}
+				</View>
+			</SafeAreaView>
+		</KeyboardAvoidingView>
+	);
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		width: Dimensions.get("window").width,
+		height: Dimensions.get("window").height,
+		backgroundColor: "#1E1C1A",
+	},
+	editProfilText: {
+		color: "white",
+		fontSize: 20,
+	},
+	editProfilButton: {
+		width: 180,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 100,
+		backgroundColor: "#c94106",
+		height: 50,
+	},
+	editProfilButtonContainer: {
+		marginTop: 10,
+		width: 380,
+		alignItems: "center",
+		marginBottom: 30,
+	},
+});

@@ -3,107 +3,80 @@
  */
 
 import { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import ProfilPageComponent from "../components/EditProfilComponents/ProfilPageComponent";
-import EditProfilComponent from "../components/EditProfilComponents/EditProfilComponent";
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Dimensions, ImageBackground } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	View,
+	StyleSheet,
+	KeyboardAvoidingView,
+	Platform,
+	Dimensions,
+	ImageBackground,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Button from "../components/common/Button";
 import { setProfilUser } from "../reducers/user";
+import ProfilPageEdit from "../components/ProfilScreen/ProfilPageEdit";
+import ProfilPageView from "../components/ProfilScreen/ProfilPageView";
+
+const mockUser = {
+	_id: {
+		$oid: "67cf4657ee764954eda595d1",
+	},
+	username: "Julie",
+	password: "$2b$10$Z4e/QLS..SqeKZ3HOK5K4OLbTxuxcAEDcgYI7o6YcLgULK5jh87q.",
+	email: "Julie@gmail.com",
+	token: "qqjiUYC3oDvvUSDFf7Pd7nb00UGcbrnV",
+	friends: [],
+	favGenres: [
+		53,
+		10770,
+		878,
+	],
+	favMovies: ["385687", "19995", "41003", "162641", "562485"],
+	__v: 0,
+	age: 29,
+	avatar:
+		"https://cdn.pixabay.com/photo/2016/09/22/16/38/avatar-1687700_1280.jpg",
+	biography:
+		"je suis julie, j'aime bcp les films lorem ipsum et je ne me souviens plus de la suite bref je divergeje suis julie, j'aime bcp les films lorem ipsum et je ne me souviens plus de la suite bref je divergeje suis julie, j'aime bcp les films lorem ipsum et je ne me souviens plus de la suite bref je diverge",
+	genre: "Alien",
+	location: {
+		name: "Marseille",
+		latitude: 43.282,
+		longitude: 5.405,
+	},
+};
 
 export default function ProfilScreen() {
+	const user = mockUser; //useSelector((state) => state.user.value);
 
-    const user = useSelector((state) => state.user.value);
-
-    const [edit, setEdit] = useState(false);
-    const dispatch = useDispatch()
-
-    const [age, setAge] = useState(user?.age || "");
-const [city, setCity] = useState(user?.city || "");
-const [genre, setGenre] = useState(user?.genre || "");
-const [genrefilm, setGenrefilm] = useState(user?.genrefilm || "");
-const [recherchefilm, setRecherchefilm] = useState(user?.recherchefilm || "");
-const [biography, setBiography] = useState(user?.biography || "");
-const [avatar, setAvatar] = useState(user?.avatar || "");
+	const [edit, setEdit] = useState(false);
+	const dispatch = useDispatch();
 
 
-    const handleEditButton = () => {
-       setEdit(true)
-    }
-    
-   const handleConfirmation = () => {
-       fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + '/users/profil/' + user.token, {
-         method: "PUT",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({
-           age: age,
-           city: city,
-           genre: genre,
-           genrefilm: genrefilm,
-           recherchefilm: recherchefilm,
-           biography: biography,
-           avatar: avatar,
-         })
-       })
-         .then(res => res.json())
-         .then(data => data.result && dispatch(setProfilUser(data.profil)));
-         setEdit(false)
-     }
-
-    return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === "ios" && "padding"}>
-                <ImageBackground
-                source={require("../assets/backgroundGradient.png")}
-                style={{
-                    flex: 1,
-                    resizeMode: "cover",
-                }}
-            >
-                <SafeAreaView>
-                    {edit ? (<EditProfilComponent 
-                    age={age} setAge={setAge}
-                    city={city} setCity={setCity}
-                    genre={genre} setGenre={setGenre}
-                    genrefilm={genrefilm} setGenrefilm={setGenrefilm}
-                    recherchefilm={recherchefilm} setRecherchefilm={setRecherchefilm}
-                    biography={biography} setBiography={setBiography}
-                    avatar={avatar} setAvatar={setAvatar}/>) : (<ProfilPageComponent />)}
-                    <View style={styles.editProfilButtonContainer} >
-                      {edit? <Button text='Terminer' onPress={() => handleConfirmation()}></Button> : <Button text='Éditer son profil' onPress={handleEditButton}></Button> }
-                    </View>
-
-                </SafeAreaView>
-                </ImageBackground >
-        </KeyboardAvoidingView>
-    )
+	return (
+		<SafeAreaView style={styles.container}>
+			<KeyboardAvoidingView behavior={Platform.OS === "ios" && "padding"}>
+		
+					{edit ? (
+						<ProfilPageEdit user={user} setEdit={()=>setEdit(!edit)}/>
+					) : (
+						<ProfilPageView user={user} setEdit={()=>setEdit(!edit)}/>
+					)}
+				
+				
+			</KeyboardAvoidingView>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        width: Dimensions.get("window").width,
-        height: Dimensions.get("window").height
-    },
-    editProfilText: {
-        color: "white",
-        fontSize: 20,
-    },
-    editProfilButton: {
-        width: 180,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 100,
-        backgroundColor: "#c94106",
-        height: 50
-    },
-    editProfilButtonContainer: {
-        marginTop: 10,
-        width: 380,
-        alignItems: "center",
-        marginBottom: 30
-    },
-})
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#1E1C1A",
+	
+	},
+
+
+});
