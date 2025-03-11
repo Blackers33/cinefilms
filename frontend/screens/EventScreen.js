@@ -42,52 +42,40 @@ const mockUser = {
   },
 };
 
-const villes = [
-  { id: "Paris", name: "Paris" },
-  { id: "Marseille", name: "Marseille" },
-  { id: "Lyon", name: "Lyon" },
-  { id: "Toulouse", name: "Toulouse" },
-  { id: "Nice", name: "Nice" },
-  { id: "Bordeaux", name: "Bordeaux" },
-  { id: "Lille", name: "Lille" },
-  { id: "Nantes", name: "Nantes" },
-  { id: "Strasbourg", name: "Strasbourg" },
-];
 
 export default function EventScreen({ navigation }) {
   const user = mockUser; //useSelector((state) => state.user.value);
   const [events, setEvents] = useState([]);
-  const [ville, setVille] = useState(null);
-  const [userNameseach, setUserNameseach] = useState("");
   const [showCommentsForEvent, setShowCommentsForEvent] = useState(null);
   const [comment, setComment] = useState('');
 
-  const userId= "AJrdD3LbgYExWqbR81vDDCwwF3xc7Qtt";
+ 
 
-  const handledSelectville = (selectedValue) => {
-    setVille(selectedValue.name);
-  };
+  const handlecreationEvent=()=>{
+    navigation.navigate('CreateEventScreen');
+  }
 
   const toggleComments = (eventId) => {
     setShowCommentsForEvent(showCommentsForEvent === eventId ? null : eventId);
   };
 
-  const ajoutcomment=(event)=>{
-    fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${event._id}/comment`, {
+
+  const ajoutcomment=(id)=>{
+    fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${id}/comment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: userId,
+        user: mockUser.token,
         content: comment, 
       }),
     })
     .then((response) => response.json())  
     .then((data) => {
       if (data.result) {
-
-        setComment('');  // Effacer le champ commentaire
+        
+        setComment('');  
       } else {
         console.log("comment not posted")
       }
@@ -96,27 +84,10 @@ export default function EventScreen({ navigation }) {
       console.error(error);
       setError('An error occurred while adding your comment');
     })
-
+    
   }
-
-  // Fonction pour rechercher les événements par nom d'utilisateur
-  const handleUsername = () => {
-    fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${userNameseach}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.result) {
-          setEvents(data.data);
-        } else {
-          console.log("No events found for this user.");
-        }
-      });
-  };
-
+  
+  
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -124,22 +95,48 @@ export default function EventScreen({ navigation }) {
           process.env.EXPO_PUBLIC_IP_ADDRESS + "/events/"
         );
         const data = await response.json();
-
+        
         setEvents(data.data);
       } catch (err) {
         console.log(err.message);
       }
     };
-
+    
     fetchEvents();
   }, []);
-
- 
-
+  
   // Define the function for handling event joining
-  const handleJoinEvent = () => {
-    console.log("Joining event...");
+  const handleJoinEvent = (event) => {
+    fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${event._id}/joingEvent`, {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json', 
+      },
+      body: JSON.stringify({
+        user: mockUser.token, 
+      }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to join event');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.result) {
+        console.log('Mise à jour de l\'événement réussie');
+        console.log('Nouveau nombre de participants:', data.participation.participantsNbr);
+        console.log('Participation de l\'utilisateur:', data.participation.isParticipate ? 'Participating' : 'Not participating');
+      } else {
+        console.error('Erreur:', data.error);
+      }
+    })
+    .catch((error) => {
+      console.error('Une erreur est survenue:', error);
+    });
   };
+  
+
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "padding"}>
@@ -153,48 +150,14 @@ export default function EventScreen({ navigation }) {
           </View>
           <View style={styles.reseachcontainer}>
             <View style={styles.reseachInput}>
-              <Inputstyled placeholder="Rechercher un film"></Inputstyled>
+              <Inputstyled placeholder="Rechercher un évènement"></Inputstyled>
             </View>
             <TouchableOpacity activeOpacity={0.7}>
               <FontAwesome name="search" size={25} color="#ec6e5b" />
             </TouchableOpacity>
-           
-          </View>
-          <View style={styles.reseachsecondcontainer}>
-            <View style={styles.reseachUserInput}>
-              <Inputstyled
-                placeholder="Recherche utilisateur"
-                onChangeText={setUserNameseach}
-                value={userNameseach}
-              ></Inputstyled>
-              <TouchableOpacity activeOpacity={0.7} onPress={handleUsername}>
-                <FontAwesome name="search" size={25} color="#ec6e5b" />
-              </TouchableOpacity>
-            </View>
-            
-
-            <Dropdown
-              style={styles.dropdowngenre}
-              selectedTextStyle={styles.selectedTextStyle}
-              containerStyle={styles.containerStyle}
-              itemTextStyle={styles.itemTextStyle}
-              activeColor="false"
-              maxHeight={300}
-              data={villes}
-              labelField="name"
-              valueField="id"
-              placeholder="choisir ta ville"
-              placeholderStyle={{
-                color: "rgba(206, 196, 188, 0.8)",
-                fontSize: 14,
-              }}
-              onChange={handledSelectville}
-              value={ville}
-            />
-    
-          </View>
+           </View>
           <View style={styles.buttoncreationEvent}>
-            <Button text="Créer un évènement"></Button>
+            <Button text="Créer un évènement" onPress={()=>handlecreationEvent()}></Button>
           </View>
           <ScrollView >
             <View style={styles.eventscontainer}>
@@ -217,6 +180,7 @@ export default function EventScreen({ navigation }) {
                   comments={event.comments}
                   comment={comment}
                   setComment={setComment}
+                  handleJoinEvent={() => handleJoinEvent(event)} 
                 />
               ))}
             </View>
@@ -261,49 +225,14 @@ const styles = StyleSheet.create({
 
   buttoncreationEvent: {
     alignItems: "center",
-  },
-  dropdowngenre: {
-    height: 20,
-    width: 100,
-    opacity: 0.7,
-    borderRadius: 20,
-    backgroundColor: "rgba(29, 29, 29,0.9)",
-    borderColor: "#C94106",
-    borderTopWidth: 1,
-    paddingLeft: 10,
+    marginBottom:20,
   },
 
-  selectedTextStyle: {
-    fontSize: 10,
-    color: "white",
-    paddingleft: 10,
-  },
-  containerStyle: {
-    backgroundColor: "black",
-    borderRadius: 10,
-    paddingleft: 10,
-  },
-  itemTextStyle: {
-    color: "#ffffff",
-    fontSize: 10,
-    paddingleft: 10,
-  },
-  reseachUserInput: {
-    height: 50,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  reseachsecondcontainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    marginTop: 10,
-    paddingRight: 20,
-  },
   eventscontainer:{
-    flexDirection:"column",
-    justifyContent:"space-between",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    paddingBottom: 10, 
+    flexGrow: 1, 
+    marginBottom:45,
   }
 });

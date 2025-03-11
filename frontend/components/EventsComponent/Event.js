@@ -18,95 +18,93 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function Event(props) {
   return (
-    
-      <View style={styles.eventContainer}>
-        <View style={styles.eventInfos}>
-          <Avatar size={40} />
-          <View style={styles.appointmentInfos}>
-            <Text style={styles.appointmentPlace}>
-              {props.location} - {props.title}
-            </Text>
-            <Text style={styles.appointmentDate}>{props.date}</Text>
-          </View>
+    <View style={styles.eventContainer}>
+      <View style={styles.eventInfos}>
+        <Avatar size={40} />
+        <View style={styles.appointmentInfos}>
+          <Text style={styles.appointmentPlace}>
+            {props.location} - {props.title}
+          </Text>
+          <Text style={styles.appointmentDate}>{props.date}</Text>
         </View>
-        <ImageBackground
-          source={require("../../assets/image-film.webp")}
-          imageStyle={{ opacity: 0.3 }}
-          style={styles.backgroundDescriptionEvent}
-        >
-          <Text style={styles.descriptionText}>{props.description}</Text>
-        </ImageBackground>
-        <View style={styles.interactionBar}>
-          <View style={styles.interactionToEventView}>
-            <View style={styles.participants}>
-              <Avatar style={styles.avatar1} size={30} />
-              <Avatar style={styles.avatar2} size={30} />
-              <Avatar style={styles.avatar3} size={30} />
-            </View>
-            <TouchableOpacity
-              onPress={props.displayComments}
-              style={styles.displayCommentsButton}
-              activeOpacity={0.8}
-            >
-              <CommentsIcon name="comments" size={30} color={"#C94106"} />
-            </TouchableOpacity>
+      </View>
+      <ImageBackground
+        source={require("../../assets/image-film.webp")}
+        imageStyle={{ opacity: 0.3 }}
+        style={styles.backgroundDescriptionEvent}
+      >
+        <Text style={styles.descriptionText}>{props.description}</Text>
+      </ImageBackground>
+      <View style={styles.interactionBar}>
+        <View style={styles.interactionToEventView}>
+          <View style={styles.participants}>
+            <Avatar style={styles.avatar1} size={30} />
+            <Avatar style={styles.avatar2} size={30} />
+            <Avatar style={styles.avatar3} size={30} />
           </View>
           <TouchableOpacity
-            onPress={props.handleJoinEvent}
-            style={styles.joingEventButton}
+            onPress={props.displayComments}
+            style={styles.displayCommentsButton}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>+ Joindre</Text>
+            <CommentsIcon name="comments" size={30} color={"#C94106"} />
           </TouchableOpacity>
         </View>
-        {props.showComments && (
-          <View style={styles.commentsSection}>
-            <Avatar></Avatar>
-            {props.comments.map((comment, index) => (
-              <Text key={index} style={styles.commentText}>
-                {comment.content}
-              </Text>
-            ))}
-        <View style={styles.inputcommentcontaire}>
-
-          <TextInput style={styles.inputcomment}
-            placeholder="écrire un commentaire"
-            value={props.comment}
-            onChangeText={props.setComment}
-
-          ></TextInput>
-          <TouchableOpacity activeOpacity={0.7} onPress={props.ajoutcomment}>
-            <FontAwesome name="send" size={25} color="#ec6e5b" />
-          </TouchableOpacity>
-        </View>
-          </View>
-        )}
+        <TouchableOpacity
+          style={styles.joingEventButton}
+          activeOpacity={0.8}
+          onPress={props.handleJoinEvent}
+        >
+          <Text style={styles.buttonText}>+ Joindre</Text>
+        </TouchableOpacity>
       </View>
-   
+      {props.showComments && (
+        <View style={styles.commentsSection}>
+          <Avatar></Avatar>
+          {props.comments.map((comment, index) => (
+            <Text key={index} style={styles.commentText}>
+              {comment.content}
+            </Text>
+          ))}
+          <View style={styles.inputcommentcontaire}>
+            <TextInput
+              style={styles.inputcomment}
+              placeholder="écrire un commentaire"
+              value={props.comment}
+              onChangeText={props.setComment}
+              placeholderTextColor="#fff"
+            ></TextInput>
+            <TouchableOpacity activeOpacity={0.7} onPress={props.ajoutcomment}>
+              <FontAwesome name="send" size={25} color="#ec6e5b" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
- 
   eventContainer: {
-    height:"auto",
-    width:"auto",
-    alignSelf: "center", // Centre horizontalement
+    width: "100%",
+    alignSelf: "center",
     borderRadius: 10,
-    elevation: 3, // Ombre pour Android
-    shadowColor: "#000", // Ombre pour iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     backgroundColor: "rgba(77, 77, 77, 0.5)",
     marginTop: 10,
     padding: 10,
+    flexDirection: "column",
   },
   eventInfos: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
   },
   appointmentInfos: {
     marginLeft: 10,
+    flex: 1,
   },
   appointmentPlace: {
     color: "white",
@@ -153,7 +151,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   commentsSection: {
-    height:50,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -166,21 +163,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "white",
   },
-  inputcommentcontaire:{
+  inputcommentcontaire: {
     display: "flex",
-    flexDirection:"row",
-    justifyContent:"space-between",
-    marginTop:10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
-  inputcomment:{
-    width:"70%",
-    height:"20%",
+  inputcomment: {
+    width: "75%",
     backgroundColor: "#333",
-    color: "#fff",
+    color: "white",
     padding: 10,
-    borderRadius: 8, 
-    fontSize: 12, 
+    borderRadius: 8,
+    fontSize: 12,
     borderWidth: 1,
     borderColor: "#555",
-  }
+  },
 });

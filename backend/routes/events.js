@@ -242,7 +242,59 @@ router.post("/:eventId/comment", async (req, res) => {
   }
 });
 
-//route put pour qu'un utilisateur puisse rejoindr un évenement 
+//Route pour joindre un événement existant selon son _id
+router.post("/:eventId/joingEvent", async (req, res) => {
+  try {
+    // Check if the required fields are present in the request body
+    if (!checkBody(req.body, ['user'])) {
+      return res.json({ result: false, error: 'Missing or empty fields' });
+    }
 
+    const eventId = req.params?.eventId;
+
+    // Retrieve the user based on the token from the request body
+    const user = await autentification(req.body.user);
+
+    if (!eventId) {
+      return res.json({ result: false, error: 'Invalid event ID' });
+    }
+
+    // Find the event by its ID
+    const event = await Event.findOne({ _id: eventId });
+
+    if (!event) {
+      return res.json({ result: false, error: 'Event not found' });
+    }
+
+    // Check if the user is already a participant
+    const isParticipating = event.participants.includes(user.userId);
+
+    if (isParticipating) {
+      // If the user is already participating, remove them
+      event.participants = event.participants.filter(
+        (participantId) => participantId.toString() !== user.userId.toString()
+      );
+    } else {
+      // If the user is not participating, add them to the participants list
+      event.participants.push(user.userId);
+    }
+
+    // Save the updated event
+    await event.save();
+
+    // Respond with the updated event participation details
+    res.json({
+      result: true,
+      participation: {
+        participantsNbr: event.participants.length,
+        isParticipate: !isParticipating, // If the user was not participating, they are now participating
+      },
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ result: false, error: 'Internal server error' });
+  }
+});
 
 module.exports = router;
