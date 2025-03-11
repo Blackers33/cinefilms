@@ -10,7 +10,10 @@ const { checkBody, autentification } = require("../modules/utils");
 
 router.get("/", async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find().populate("comments")
+    .populate("owner")          
+    .populate("participants")       
+    .populate("comments.user"); 
 
     if (events.length === 0) {
       return res.status(404).json({ message: "Aucun événement trouvé " });
@@ -47,7 +50,7 @@ router.get("/:username", async (req, res) => {
     }
 
     // Trouver les événements créés par cet utilisateur
-    const events = await Event.find({ owner: user._id });
+    const events = await Event.find({ owner: user._id }).populate("owner");
 
     if (events.length === 0) {
       return res.status(404).json({ message: "Aucun événement trouvé." });
@@ -92,9 +95,10 @@ router.get("/location/:cityname", async (req, res) => {
   }
 });
 
-//rout get qui permet de filtrer les evenement par rapport le film
-router.get("/:tmdbId/events", async (req, res) => {
+//Route qui récupère les événements selon le filmId
+router.get("/:tmdbId/:token/events", async (req, res) => {
   try {
+      const user = await User.findOne({ token: req.params.token });
       // Récupération du film correspondant au tmdbId
       const film = await Film.findOne({ tmdbId: req.params.tmdbId });
       
@@ -107,8 +111,9 @@ router.get("/:tmdbId/events", async (req, res) => {
 
       // Récupération des événements liés à ce film
       const allEvents = await Event.find({ filmId: film._id })
-          .populate("filmId")
+          .populate('filmId')
           .populate('comments.user')
+          .populate('participants')
           .populate('owner');
 
       if (allEvents.length === 0) {
@@ -117,10 +122,11 @@ router.get("/:tmdbId/events", async (req, res) => {
               message: "Aucun événement trouvé pour ce film.",
           });
       }
-
+      console.log(allEvents.length);
       // Réponse avec les événements trouvés
       const events = allEvents.map(event => {
           return {
+              _id: event._id,
               owner: {
                   username: event.owner.username,
                   avatar: event.owner.avatar
@@ -133,10 +139,11 @@ router.get("/:tmdbId/events", async (req, res) => {
                   date: comment.date,
                   content: comment.content,
               })),
-              participants: event.participants.map(participant => ({
+              participants: event.participants?.map((participant) => ({
                   username: participant.username,
                   avatar: participant.avatar,
               })),
+              isParticipate: event.participants.some((p) => p._id.toString() === user._id.toString()),
               description: event.description,
               title: event.title,
           }
@@ -164,6 +171,7 @@ router.post("/", async (req, res) => {
         "title",
         "user",
         "tmbdId",
+        "date"
       ])
     ) {
       return res
@@ -186,7 +194,7 @@ router.post("/", async (req, res) => {
     const eventData = {
       owner: user.userId,
       location: req.body.location,
-      date: new Date(),
+      date: new Date(req.body.date),
       description: req.body.description,
       title: req.body.title,
       filmId: filmId,
@@ -243,57 +251,42 @@ router.post("/:eventId/comment", async (req, res) => {
 });
 
 //Route pour joindre un événement existant selon son _id
-router.post("/:eventId/joingEvent", async (req, res) => {
+router.post("/:eventId/joingEvent", async(req, res) => {
   try {
-    // Check if the required fields are present in the request body
-    if (!checkBody(req.body, ['user'])) {
-      return res.json({ result: false, error: 'Missing or empty fields' });
-    }
+      if (!checkBody(req.body, ['user'])) {
+          res.json({ result: false, error: 'Missing or empty fields' });
+          return
+      }
+      
+      const eventId = req.params?.eventId;
+      //Récuperer l'ObjectID de l'utilisateur à partir du token
+      const user = await autentification(req.body.user);
+      let participate = false;
 
-    const eventId = req.params?.eventId;
-
-    // Retrieve the user based on the token from the request body
-    const user = await autentification(req.body.user);
-
-    if (!eventId) {
-      return res.json({ result: false, error: 'Invalid event ID' });
-    }
-
-    // Find the event by its ID
-    const event = await Event.findOne({ _id: eventId });
-
-    if (!event) {
-      return res.json({ result: false, error: 'Event not found' });
-    }
-
-    // Check if the user is already a participant
-    const isParticipating = event.participants.includes(user.userId);
-
-    if (isParticipating) {
-      // If the user is already participating, remove them
-      event.participants = event.participants.filter(
-        (participantId) => participantId.toString() !== user.userId.toString()
-      );
-    } else {
-      // If the user is not participating, add them to the participants list
-      event.participants.push(user.userId);
-    }
-
-    // Save the updated event
-    await event.save();
-
-    // Respond with the updated event participation details
-    res.json({
-      result: true,
-      participation: {
-        participantsNbr: event.participants.length,
-        isParticipate: !isParticipating, // If the user was not participating, they are now participating
-      },
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ result: false, error: 'Internal server error' });
+      if (req.params && eventId) {
+          Event.findOne({_id: eventId})
+          
+          .then(data => {
+              if (data.participants.includes(user.userId)) {
+                  const participants = data.participants.filter(el => el.toString() !== user.userId.toString());
+                  data.participants = participants;
+                  participate = false;
+              } else {
+                  data.participants.push(user.userId);
+                  participate = true;
+              }
+              data.save().then(() => {
+                  res.json({ result: true, participation: {
+                      participantsNbr: data.participants.length, 
+                      isParticipate: participate
+                  } });
+              });
+          });
+      } else {
+          res.json({ result: false, error: 'error while checking/joing event'});
+      }   
+  }  catch (error) {
+      res.status(500).json({ result: false, error: 'Internal server error' });
   }
 });
 
