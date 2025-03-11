@@ -12,11 +12,21 @@ import {
 } from "react-native";
 import { useState } from "react";
 import Avatar from "../common/Avatar";
+import Comment from "./comment";
 import CommentsIcon from "react-native-vector-icons/Fontisto";
-import Search from "react-native-vector-icons/EvilIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { formatDistanceToNow, fr } from "date-fns";
 
 export default function Event(props) {
+  const avatars = Array.from({ length: props.nbrParticipants }, (_, index) => (
+    <Avatar
+      uri={props.avatar}
+      key={index}
+      style={{ marginRight: 5 }}
+      size={30}
+    />
+  ));
+
   return (
     <View style={styles.eventContainer}>
       <View style={styles.eventInfos}>
@@ -38,9 +48,7 @@ export default function Event(props) {
       <View style={styles.interactionBar}>
         <View style={styles.interactionToEventView}>
           <View style={styles.participants}>
-            <Avatar style={styles.avatar1} size={30} />
-            <Avatar style={styles.avatar2} size={30} />
-            <Avatar style={styles.avatar3} size={30} />
+            {props.joingEventhandle && avatars}
           </View>
           <TouchableOpacity
             onPress={props.displayComments}
@@ -60,12 +68,29 @@ export default function Event(props) {
       </View>
       {props.showComments && (
         <View style={styles.commentsSection}>
-          <Avatar></Avatar>
-          {props.comments.map((comment, index) => (
-            <Text key={index} style={styles.commentText}>
-              {comment.content}
-            </Text>
-          ))}
+          {props.comments
+            .sort((a, b) => new Date(b.date) - new Date(a.date))// classement des commentaire plus recente à plus ancien
+            .map((comment) => {
+              const formattedDate = formatDistanceToNow(
+                new Date(comment.date),
+                {
+                  addSuffix: true,
+                  includeSeconds: true,
+                  locale: fr,
+                }
+              );
+
+              return (
+                <Comment
+                  uri={comment.user.avatar}
+                  username={comment.user.username}
+                  key={comment._id || comment.date}
+                  date={formattedDate} // Afficher la date formatée
+                  content={comment.content}
+                />
+              );
+            })}
+
           <View style={styles.inputcommentcontaire}>
             <TextInput
               style={styles.inputcomment}

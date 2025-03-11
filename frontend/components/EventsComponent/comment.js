@@ -1,14 +1,52 @@
 import {
-    Button,
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TouchableOpacity,
-    TextInput,
-  } from "react-native";
-  import { useState } from "react";
-  import Avatar from "../common/Avatar";
-  import CommentsIcon from "react-native-vector-icons/Fontisto";
-  import Search from "react-native-vector-icons/EvilIcons";
-  import FontAwesome from "react-native-vector-icons/FontAwesome";
+  Button,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Avatar from "../common/Avatar";
+
+
+export default function Comment(props) {
+
+
+  return (
+    <View style={styles.commentContainer}>
+      <Avatar uri={props.avatar}></Avatar>
+      <Text style={styles.usernametext}>{props.username}</Text>
+      <View style={styles.contenucomment}>
+        <Text style={styles.commentText}>{props.date}</Text>
+        <Text key={props.index} style={styles.commentText}>
+          {props.content}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  commentContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginTop: 5,
+    padding: 10,
+    backgroundColor: "#444",
+    borderRadius: 5,
+  },
+  contenucomment: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+  },
+  commentText:{
+    fontSize: 10,
+    color: "white",
+  },
+  usernametext:{
+    color:"#FFFFFF",
+    fontSize:12,
+    fontWeight:"bold",
+    alignSelf:"center",
+    textAlign:"center",
+    margin:10,
+  }
+});
