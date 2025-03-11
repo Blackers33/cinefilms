@@ -43,6 +43,13 @@ export default function EventScreen({ navigation }) {
   const [showCommentsForEvent, setShowCommentsForEvent] = useState(null);
   const [comment, setComment] = useState("");
   const [joinedEvents, setJoinedEvents] = useState({});
+  const [inputreseach,setInputreseach]=useState("");
+
+
+  //reseach input pour filtrer les evenements 
+  const handleSearchIcon=()=>{
+
+  }
 
   // vers creationEvent screen
   const handlecreationEvent = () => {
@@ -155,7 +162,11 @@ export default function EventScreen({ navigation }) {
           <View style={styles.userTopContainer}>
             <UserTopSection user={user} />
           </View>
-        <Reseachsection></Reseachsection>
+        <Reseachsection 
+            inputreseach={inputreseach}
+            setInputreseach={setInputreseach}
+            handlePressSearchIcon={handleSearchIcon}
+        ></Reseachsection>
           <View style={styles.buttoncreationEvent}>
             <Button
               text="Créer un évènement"
@@ -187,6 +198,8 @@ export default function EventScreen({ navigation }) {
                   nbrParticipants={event.participantsNbr}
                   joingEventhandle={joinedEvents[event._id] || false}
                   avatar={mockUser.avatar}
+                  titleFilm={event.filmDetails.title}
+                  backdrop={event.filmDetails.backdrop}
                 />
               ))}
             </View>

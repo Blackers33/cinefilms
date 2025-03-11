@@ -37,6 +37,13 @@ export default function Event(props) {
           </Text>
           <Text style={styles.appointmentDate}>{props.date}</Text>
         </View>
+        <Image
+          source={{
+            uri: props.backdrop,
+          }}
+      
+        />
+        <Text>{props.titleFilm}</Text>
       </View>
       <ImageBackground
         source={require("../../assets/image-film.webp")}
@@ -69,7 +76,7 @@ export default function Event(props) {
       {props.showComments && (
         <View style={styles.commentsSection}>
           {props.comments
-            .sort((a, b) => new Date(b.date) - new Date(a.date))// classement des commentaire plus recente à plus ancien
+            .sort((a, b) => new Date(b.date) - new Date(a.date)) // classement des commentaire plus recente à plus ancien
             .map((comment) => {
               const formattedDate = formatDistanceToNow(
                 new Date(comment.date),

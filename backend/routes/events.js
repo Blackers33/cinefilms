@@ -5,30 +5,70 @@ const Film = require("../models/films");
 const User = require("../models/users");
 const { checkBody, autentification } = require("../modules/utils");
 
-
 // route get qui permet de trouver tous les evenements
-
 router.get("/", async (req, res) => {
   try {
-    const events = await Event.find().populate("comments")
-    .populate("owner")          
-    .populate("participants")       
-    .populate("comments.user"); 
+    const events = await Event.find()
+      .populate("comments")
+      .populate("owner")
+      .populate("participants")
+      .populate("comments.user")
+      .populate("filmId");
 
     if (events.length === 0) {
-      return res.status(404).json({ message: "Aucun événement trouvé " });
+      return res.status(404).json({ message: "Aucun événement trouvé" });
     }
 
-    res.status(200).json({ result: true, data: events });
+    // Récupération des détails des films via TMDb
+    const updatedEvents = await Promise.all(
+      events.map(async (event) => {
+        if (!event.filmId || !event.filmId.tmdbId) {
+          return { ...event.toObject(), filmDetails: null };
+        }
+
+        const tmdbId = event.filmId.tmdbId;
+        const url = `https://api.themoviedb.org/3/movie/${tmdbId}?language=fr-FR`;
+        const options = {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NmY4ZDQxNjAyMzFiNjE3YTA2MTU3M2ZhODA4YzlmMCIsIm5iZiI6MTczODc0NDYzMi41ODksInN1YiI6IjY3YTMyMzM4NDRkNjg2M2I3NDhhNzJlZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2GmSmaJ7gWBY4f7F4QCE_TrHH95nnNwEhrqAxg655Q4",
+          },
+        };
+
+        try {
+          const response = await fetch(url, options);
+          if (!response.ok) {
+            throw new Error(`Erreur API TMDb: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          return {
+            ...event.toObject(),
+            filmDetails: {
+              title: data.title || "Titre inconnu",
+              backdrop: data.backdrop_path
+                ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
+                : "https://via.placeholder.com/1280x720?text=Image+indisponible",
+            },
+          };
+        } catch (err) {
+          console.error("Erreur API TMDb :", err.message);
+          return { ...event.toObject(), filmDetails: null };
+        }
+      })
+    );
+
+    res.status(200).json({ result: true, data: updatedEvents });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la récupération des événements",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Erreur lors de la récupération des événements",
+      error: error.message,
+    });
   }
 });
+
 
 // Route GET pour récupérer les événements d'un utilisateur
 router.get("/:username", async (req, res) => {
@@ -39,7 +79,6 @@ router.get("/:username", async (req, res) => {
         .json({ result: false, error: "Missing username parameter" });
     }
     const username = req.params.username;
-
 
     const user = await User.findOne({
       username: { $regex: new RegExp(username, "i") },
@@ -74,89 +113,85 @@ router.get("/location/:cityname", async (req, res) => {
     });
 
     if (events.length === 0) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Aucun événement trouvé sur cette localisation.",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Aucun événement trouvé sur cette localisation.",
+      });
     }
 
-  
     res.status(200).json({ success: true, events });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Erreur serveur",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+      error: error.message,
+    });
   }
 });
 
 //Route qui récupère les événements selon le filmId
 router.get("/:tmdbId/:token/events", async (req, res) => {
   try {
-      const user = await User.findOne({ token: req.params.token });
-      // Récupération du film correspondant au tmdbId
-      const film = await Film.findOne({ tmdbId: req.params.tmdbId });
-      
-      if (!film) {
-          return res.status(404).json({
-              success: false,
-              message: "Aucun film trouvé avec cet ID.",
-          });
-      }
+    const user = await User.findOne({ token: req.params.token });
+    // Récupération du film correspondant au tmdbId
+    const film = await Film.findOne({ tmdbId: req.params.tmdbId });
 
-      // Récupération des événements liés à ce film
-      const allEvents = await Event.find({ filmId: film._id })
-          .populate('filmId')
-          .populate('comments.user')
-          .populate('participants')
-          .populate('owner');
-
-      if (allEvents.length === 0) {
-          return res.status(404).json({
-              success: false,
-              message: "Aucun événement trouvé pour ce film.",
-          });
-      }
-      console.log(allEvents.length);
-      // Réponse avec les événements trouvés
-      const events = allEvents.map(event => {
-          return {
-              _id: event._id,
-              owner: {
-                  username: event.owner.username,
-                  avatar: event.owner.avatar
-              },
-              location: event.location, 
-              date: event.date,
-              comments: event.comments.map((comment) =>({
-                  username: comment.user.username,
-                  avatar: comment.user.avatar,
-                  date: comment.date,
-                  content: comment.content,
-              })),
-              participants: event.participants?.map((participant) => ({
-                  username: participant.username,
-                  avatar: participant.avatar,
-              })),
-              isParticipate: event.participants.some((p) => p._id.toString() === user._id.toString()),
-              description: event.description,
-              title: event.title,
-          }
-      })
-      res.json({ success: true, events: events });
-
-  } catch (error) {
-      console.error("Erreur serveur :", error);
-      res.status(500).json({
-          success: false,
-          message: "Erreur serveur",
-          error: error.message,
+    if (!film) {
+      return res.status(404).json({
+        success: false,
+        message: "Aucun film trouvé avec cet ID.",
       });
+    }
+
+    // Récupération des événements liés à ce film
+    const allEvents = await Event.find({ filmId: film._id })
+      .populate("filmId")
+      .populate("comments.user")
+      .populate("participants")
+      .populate("owner");
+
+    if (allEvents.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Aucun événement trouvé pour ce film.",
+      });
+    }
+    console.log(allEvents.length);
+    // Réponse avec les événements trouvés
+    const events = allEvents.map((event) => {
+      return {
+        _id: event._id,
+        owner: {
+          username: event.owner.username,
+          avatar: event.owner.avatar,
+        },
+        location: event.location,
+        date: event.date,
+        comments: event.comments.map((comment) => ({
+          username: comment.user.username,
+          avatar: comment.user.avatar,
+          date: comment.date,
+          content: comment.content,
+        })),
+        participants: event.participants?.map((participant) => ({
+          username: participant.username,
+          avatar: participant.avatar,
+        })),
+        isParticipate: event.participants.some(
+          (p) => p._id.toString() === user._id.toString()
+        ),
+        description: event.description,
+        title: event.title,
+      };
+    });
+    res.json({ success: true, events: events });
+  } catch (error) {
+    console.error("Erreur serveur :", error);
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur",
+      error: error.message,
+    });
   }
 });
 
@@ -171,7 +206,7 @@ router.post("/", async (req, res) => {
         "title",
         "user",
         "tmbdId",
-        "date"
+        "date",
       ])
     ) {
       return res
@@ -236,13 +271,15 @@ router.post("/:eventId/comment", async (req, res) => {
     event.comments.push(newComment);
     await event.save();
 
+    const updatedEvent = await Event.findById(req.params.eventId).populate(
+      "comments.user"
+    );
+
+    const lastComment = updatedEvent.comments[updatedEvent.comments.length - 1];
+
     res.json({
       result: true,
-      comment: {
-        user: newComment.user,
-        content: newComment.content,
-        date: newComment.date,
-      },
+      comment: lastComment,
     });
   } catch (error) {
     console.error(error);
@@ -251,42 +288,45 @@ router.post("/:eventId/comment", async (req, res) => {
 });
 
 //Route pour joindre un événement existant selon son _id
-router.post("/:eventId/joingEvent", async(req, res) => {
+router.post("/:eventId/joingEvent", async (req, res) => {
   try {
-      if (!checkBody(req.body, ['user'])) {
-          res.json({ result: false, error: 'Missing or empty fields' });
-          return
-      }
-      
-      const eventId = req.params?.eventId;
-      //Récuperer l'ObjectID de l'utilisateur à partir du token
-      const user = await autentification(req.body.user);
-      let participate = false;
+    if (!checkBody(req.body, ["user"])) {
+      res.json({ result: false, error: "Missing or empty fields" });
+      return;
+    }
 
-      if (req.params && eventId) {
-          Event.findOne({_id: eventId})
-          
-          .then(data => {
-              if (data.participants.includes(user.userId)) {
-                  const participants = data.participants.filter(el => el.toString() !== user.userId.toString());
-                  data.participants = participants;
-                  participate = false;
-              } else {
-                  data.participants.push(user.userId);
-                  participate = true;
-              }
-              data.save().then(() => {
-                  res.json({ result: true, participation: {
-                      participantsNbr: data.participants.length, 
-                      isParticipate: participate
-                  } });
-              });
+    const eventId = req.params?.eventId;
+    //Récuperer l'ObjectID de l'utilisateur à partir du token
+    const user = await autentification(req.body.user);
+    let participate = false;
+
+    if (req.params && eventId) {
+      Event.findOne({ _id: eventId }).then((data) => {
+        if (data.participants.includes(user.userId)) {
+          const participants = data.participants.filter(
+            (el) => el.toString() !== user.userId.toString()
+          );
+          data.participants = participants;
+          participate = false;
+        } else {
+          data.participants.push(user.userId);
+          participate = true;
+        }
+        data.save().then(() => {
+          res.json({
+            result: true,
+            participation: {
+              participantsNbr: data.participants.length,
+              isParticipate: participate,
+            },
           });
-      } else {
-          res.json({ result: false, error: 'error while checking/joing event'});
-      }   
-  }  catch (error) {
-      res.status(500).json({ result: false, error: 'Internal server error' });
+        });
+      });
+    } else {
+      res.json({ result: false, error: "error while checking/joing event" });
+    }
+  } catch (error) {
+    res.status(500).json({ result: false, error: "Internal server error" });
   }
 });
 
