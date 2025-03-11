@@ -5,6 +5,44 @@ const Film = require("../models/films");
 const User = require("../models/users");
 const { checkBody, autentification } = require("../modules/utils");
 
+// function pour creer film s'il existe pas dans collection Film, renvoi filmId
+const createFilmIfNotExists = async (tmdbId) => {
+  try {
+      const film = await Film.findOne({ tmdbId: tmdbId });
+      if (film) {
+          return film._id;  // Retourne l'_id du film s'il existe
+      }
+      const newFilm = await createFilm(tmdbId);
+      return newFilm ? newFilm._id : null;  // Retourne l'_id du film créé ou null si création échoue
+  } catch(error) {
+      console.error(error);
+      return null;  // Retourne null en cas d'erreur
+  }
+};
+
+//function pour creer un film dans la collection Film
+const createFilm = async (tmdbId) => {
+  try {
+      const newFilm = new Film({
+          tmdbId: tmdbId,
+          likes: [],
+          comments: [],
+      });
+
+      // Sauvegarder le film
+      await newFilm.save();
+
+      // Récupérer le film créé
+      const filmData = await Film.findOne({ tmdbId: tmdbId });
+
+      // Retourner l'ID du film créé ou null si le film n'a pas été trouvé
+      return filmData ? filmData._id : null;  
+  } catch (error) {
+      console.error("Error creating film:", error);
+      return null;  // Retourne null si une erreur se produit
+  }
+};
+
 // route get qui permet de trouver tous les evenements
 router.get("/", async (req, res) => {
   try {
@@ -199,6 +237,7 @@ router.get("/:tmdbId/:token/events", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    // Vérification des champs requis
     if (
       !checkBody(req.body, [
         "location",
@@ -214,6 +253,7 @@ router.post("/", async (req, res) => {
         .json({ result: false, error: "Missing or empty fields" });
     }
 
+    // Authentification de l'utilisateur
     const user = await autentification(req.body.user);
     if (!user) {
       return res
@@ -221,29 +261,43 @@ router.post("/", async (req, res) => {
         .json({ result: false, error: "Invalid user authentication" });
     }
 
-    tmbdIdennumber = parseInt(req.body.tmbdId);
-    const film = await Film.findOne({ tmdbId: tmbdIdennumber }); // Ajout de await
-    const filmId = film ? film._id : null;
-    console.log(filmId);
+    // Conversion du tmdbId en entier
+    const tmbdIdennumber = parseInt(req.body.tmbdId);
 
+    // Vérification du film et récupération de son ID
+    const filmId = await createFilmIfNotExists(tmbdIdennumber);
+
+    if (!filmId) {
+      return res
+        .status(500)
+        .json({ result: false, error: "Failed to create or find film" });
+    }
+
+    const eventDate = new Date(req.body.date.split("/").reverse().join("-"));
+    // Création des données de l'événement
     const eventData = {
       owner: user.userId,
       location: req.body.location,
-      date: new Date(req.body.date),
+      date: eventDate,
       description: req.body.description,
       title: req.body.title,
-      filmId: filmId,
+      filmId: filmId, 
     };
 
+    // Création et sauvegarde du nouvel événement
     const newEvent = new Event(eventData);
     await newEvent.save();
 
+    // Retour de la réponse avec le nouvel événement
     res.status(201).json({ result: true, event: newEvent });
   } catch (error) {
+    // Gestion des erreurs et retour d'une erreur serveur interne
     console.error(error);
     res.status(500).json({ result: false, error: "Internal server error" });
   }
 });
+
+
 
 //route post - ajouter les comment sur un event
 router.post("/:eventId/comment", async (req, res) => {

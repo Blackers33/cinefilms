@@ -3,7 +3,6 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
- 
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -43,13 +42,10 @@ export default function EventScreen({ navigation }) {
   const [showCommentsForEvent, setShowCommentsForEvent] = useState(null);
   const [comment, setComment] = useState("");
   const [joinedEvents, setJoinedEvents] = useState({});
-  const [inputreseach,setInputreseach]=useState("");
+  const [inputreseach, setInputreseach] = useState("");
 
-
-  //reseach input pour filtrer les evenements 
-  const handleSearchIcon=()=>{
-
-  }
+  //reseach input pour filtrer les evenements
+  const handleSearchIcon = () => {};
 
   // vers creationEvent screen
   const handlecreationEvent = () => {
@@ -61,7 +57,7 @@ export default function EventScreen({ navigation }) {
     setShowCommentsForEvent(showCommentsForEvent === eventId ? null : eventId);
   };
 
-  //function pour ajouter un commentaire par un utlisateur 
+  //function pour ajouter un commentaire par un utlisateur
   const ajoutcomment = (id) => {
     fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${id}/comment`, {
       method: "POST",
@@ -87,8 +83,7 @@ export default function EventScreen({ navigation }) {
       });
   };
 
-
-  //afficher toutes les events dès le chargement du eventScreen 
+  //afficher toutes les events dès le chargement du eventScreen
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -105,7 +100,7 @@ export default function EventScreen({ navigation }) {
 
     fetchEvents(events);
   }, []);
-  
+
   // Define the function for handling event joining
   const handleJoinEvent = (event) => {
     fetch(
@@ -162,11 +157,11 @@ export default function EventScreen({ navigation }) {
           <View style={styles.userTopContainer}>
             <UserTopSection user={user} />
           </View>
-        <Reseachsection 
+          <Reseachsection
             inputreseach={inputreseach}
             setInputreseach={setInputreseach}
             handlePressSearchIcon={handleSearchIcon}
-        ></Reseachsection>
+          ></Reseachsection>
           <View style={styles.buttoncreationEvent}>
             <Button
               text="Créer un évènement"

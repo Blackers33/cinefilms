@@ -37,13 +37,15 @@ export default function Event(props) {
           </Text>
           <Text style={styles.appointmentDate}>{props.date}</Text>
         </View>
-        <Image
-          source={{
-            uri: props.backdrop,
-          }}
-      
-        />
-        <Text>{props.titleFilm}</Text>
+        <View sytle={styles.filminfoContainer}>
+          <Text style={styles.titlefilm}>{props.titleFilm}</Text>
+          <Image
+            style={styles.imageFilm}
+            source={{
+              uri: props.backdrop,
+            }}
+          />
+        </View>
       </View>
       <ImageBackground
         source={require("../../assets/image-film.webp")}
@@ -210,5 +212,28 @@ const styles = StyleSheet.create({
     fontSize: 12,
     borderWidth: 1,
     borderColor: "#555",
+  },
+  titlefilm: {
+    color: "#FFFFFF",
+  },
+  filminfoContainer: {
+    textAlign:"center",
+    alignItems: "center", 
+    backgroundColor: "#f0f0f0", 
+    borderRadius: 10, 
+    
+  },
+  imageFilm: {
+    height: 100,
+    width:350, 
+    borderRadius: 10, 
+    marginBottom: 15, 
+  },
+  titleFilm: {
+    fontSize: 20, 
+    fontWeight: "bold", 
+    color: "#FFFFFF", 
+    textAlign: "center", 
+    alignSelf:"center",
   },
 });
