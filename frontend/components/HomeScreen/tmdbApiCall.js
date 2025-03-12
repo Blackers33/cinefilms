@@ -11,11 +11,7 @@ export default async function tmdbApiCall(uri) {
 		const url = `https://api.themoviedb.org/3${uri}`;
 		const fetchedData = await fetch(url, options);
 		const res = await fetchedData.json();
-		if (!res.results) {
-			console.error(res.status_message);
-			return [];
-		}
-		return res.results
+		return res;
 	} catch (error) {
 		console.error(error);
 	}
