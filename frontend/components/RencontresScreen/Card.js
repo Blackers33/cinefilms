@@ -7,11 +7,9 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { TouchableWithoutFeedback } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
-import Button from "../common/Button";
+
 
 export default function Card({ user }) {
 	const Movie = ({ data }) => {
@@ -28,8 +26,9 @@ export default function Card({ user }) {
 			</View>
 		);
 	};
-	const Genre = ({ data }) => {
-		console.log(typeof data)
+
+
+	const MovieGenresDisplay = ({ data }) => {
 		return (
 			<View>
 				<Text>{data}</Text>
@@ -37,15 +36,17 @@ export default function Card({ user }) {
 		);
 	};
 
+
+
 	return (
-		<View style={styles.card}>
+		<View style={styles.card} >
 			<View style={styles.topSection}>
 				<View style={styles.userInfo}>
 					<Avatar uri={user.avatar} size={64} />
 					<Text style={styles.title}>{user.username}</Text>
 				</View>
 				<TouchableOpacity
-					onPress={() => console.log("pressed")}
+					onPress={() => console.log('AddFriend')}
 					style={styles.addFriendButton}
 					activeOpacity={0.8}
 				>
@@ -59,14 +60,16 @@ export default function Card({ user }) {
 			<ScrollView horizontal={true}>
 				<View style={styles.favoriteList}>
 					{user.favMovies.map((movie) => (
-						<Movie data={movie} />
+						<Movie key={movie.id} data={movie} />
 					))}
 				</View>
 			</ScrollView>
-			<Text style={styles.title}>Mes genres préférés</Text>
-			{user.favGenres.map((genre) => (
-				<Genre data={genre} />
-			))}
+			<ScrollView horizontal={true}>
+			<View>
+				<Text style={styles.title}>Mes genres préférés</Text>
+				<MovieGenresDisplay list={user.favGenres} />
+			</View>
+			</ScrollView>
 		</View>
 	);
 }
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		padding: 8,
 	},
-	topSection : {
+	topSection: {
 		flexDirection: "row",
 		alignItems: "center",
 	},

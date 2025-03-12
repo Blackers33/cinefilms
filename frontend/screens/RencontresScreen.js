@@ -19,7 +19,7 @@ export default function HomeScreen({ navigation }) {
 				}}
 			>
 				<TopSection user={user} />
-				<MainSection/>
+				<MainSection user={user} />
 			</ImageBackground>
 		</SafeAreaView>
 	);

@@ -40,8 +40,8 @@ export const userSlice = createSlice({
         state.value.favGenres = favGenres;
         state.value.biography = biography;
     },
-    setProfilUser: (state, action) => {
-      state.value = action.payload
+    setUser: (state, action) => {
+      state.value = {...state.value, ...action.payload}
       
     }
   },

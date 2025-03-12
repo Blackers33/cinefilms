@@ -9,16 +9,16 @@ const User = require('../models/users');
 
 const { checkBody } = require('../modules/checkBody');
 
-  
-  //POST new user (inscription)
-  router.post('/signup', (req, res) => {
-    if (!checkBody(req.body, ['username', 'password'])) {
-      res.json({ result: false, error: 'Missing or empty fields' });
-      return;
-    }  
-    // Check if the user has not already been registered
-    User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
-      if (data === null) {
+
+//POST new user (inscription)
+router.post('/signup', (req, res) => {
+  if (!checkBody(req.body, ['username', 'password'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+  // Check if the user has not already been registered
+  User.findOne({ username: { $regex: new RegExp(req.body.username, 'i') } }).then(data => {
+    if (data === null) {
       const hash = bcrypt.hashSync(req.body.password, 10)
       const newUser = new User({
         username: req.body.username,
@@ -28,7 +28,7 @@ const { checkBody } = require('../modules/checkBody');
       });
 
       newUser.save().then(newDoc => {
-        res.json({ result: true, token : newDoc.token });
+        res.json({ result: true, token: newDoc.token });
       });
     } else {
       // User already exists in database
@@ -47,7 +47,7 @@ router.post('/signin', (req, res) => {
 
   User.findOne({ email: { $regex: new RegExp(req.body.email, 'i') } }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
-      res.json({ result: true, token : data.token });
+      res.json({ result: true, token: data.token });
     } else {
       res.json({ result: false, error: 'User not found' });
     }
@@ -57,31 +57,31 @@ router.post('/signin', (req, res) => {
 
 //PUT creation & update de profile
 router.put('/profil/:token', (req, res) => {
-User.findOne({ token: req.params.token }).then(data => {
-  if (data)
-  User.updateOne ({token: req.params.token},
-    {
-    avatar: req.body.avatar,
-    age: req.body.age,
-    genre: req.body.genre,
-    location: req.body.location,
-    favMovies: req.body.favMovies,
-    favGenres: req.body.favGenres,
-    biography: req.body.biography,
-  }).then(updatedData => {
-    res.json({ result: true, message: 'Profil updated', profil: updatedData})
-  }); else {
-    res.json({ result: false, message: 'No corresponding profil'})
-  }
-});
+  User.findOne({ token: req.params.token }).then(data => {
+    if (data)
+      User.updateOne({ token: req.params.token },
+        {
+          avatar: req.body.avatar,
+          age: req.body.age,
+          genre: req.body.genre,
+          location: req.body.location,
+          favMovies: req.body.favMovies,
+          favGenres: req.body.favGenres,
+          biography: req.body.biography,
+        }).then(updatedData => {
+          res.json({ result: true, message: 'Profil updated', profil: updatedData })
+        }); else {
+      res.json({ result: false, message: 'No corresponding profil' })
+    }
+  });
 });
 
 //GET profil de l'utilisateur
 router.get('/profil/:token', (req, res) => {
   User.findOne({ token: req.params.token }).then(data => {
     if (data) {
-      res.json({ 
-        result: true, 
+      res.json({
+        result: true,
         profil: {
           username: data.username,
           email: data.email,
@@ -95,11 +95,43 @@ router.get('/profil/:token', (req, res) => {
           friends: data.friends,
         }
       });
-      console.log(data);
     } else {
       res.json({ result: false, error: 'No corresponding profil' });
     }
   });
 })
+
+//GET all users
+router.get('/', (req, res) => {
+  User.find().then((data) => {
+    if (data.length > 0) {
+      res.json({
+        result: true,
+        userslist: data.map(user => ({
+          username: user.username,
+          favGenres: user.favGenres,
+          favMovies: user.favMovies,
+          age: user.age,
+          avatar: user.avatar,
+          biography: user.biography,
+          genre: user.genre,
+          _id: user._id,
+        }))
+      });
+      console.log(data)
+    } else {
+      res.json({ result: false, error: 'No users found' });
+    }
+  })
+});
+
+//Add new friend
+router.post('/addfriend/:_id', (req, res) => {
+ User.friends.push(req.params.user)
+ User.save()
+ res.json({result: true, message:'Friend added'})
+})
+
+
 
 module.exports = router;
