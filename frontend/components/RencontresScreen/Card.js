@@ -31,7 +31,7 @@ export default function Card({ user }) {
 	const MovieGenresDisplay = ({ data }) => {
 		return (
 			<View>
-				<Text>{data}</Text>
+				<Text>{(data)}</Text>
 			</View>
 		);
 	};
