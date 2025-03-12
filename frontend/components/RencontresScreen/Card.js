@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
-import MovieGenresDisplay from "../common/MovieGenresDisplay"
+import MovieGenresDisplay from "../common/MovieGenresDisplay";
+import MoviesScrollView from "../common/MoviesScrollView";
 
 export default function Card({ user }) {
 	const Movie = ({ data }) => {
@@ -27,10 +28,7 @@ export default function Card({ user }) {
 		);
 	};
 
-
-	console.log(user.favGenres)
-
-
+	console.log(user.favGenres);
 
 	return (
 		<View style={styles.card}>
@@ -51,19 +49,10 @@ export default function Card({ user }) {
 				<Text style={styles.text}>{user.biography}</Text>
 			</View>
 			<Text style={styles.title}>Mes films préférés</Text>
-			<ScrollView horizontal={true}>
-				<View style={styles.favoriteList}>
-					{user.favMovies.map((movie) => (
-						<Movie key={movie.id} data={movie} />
-					))}
-				</View>
-			</ScrollView>
-			<ScrollView horizontal={true}>
-				<View>
-					<Text style={styles.title}>Mes genres préférés</Text>
-					<MovieGenresDisplay list={[12]} />
-				</View>
-			</ScrollView>
+			<MoviesScrollView moviesIds={user.favMovies} />
+
+			<Text style={styles.title}>Mes genres préférés</Text>
+			<MovieGenresDisplay list={user.favGenres} />
 		</View>
 	);
 }
@@ -135,7 +124,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		borderRadius: 5,
-		height: 30
+		height: 30,
 	},
 	buttonText: {
 		textAlign: "center",

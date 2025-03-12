@@ -17,6 +17,7 @@ export default function MainSection({ navigation, user }) {
             .then((data) => {
                 setUsersData(data.userslist);
                 setFilteredData(data.userslist);
+                console.log(filteredData)
             })
     }, []);
 
