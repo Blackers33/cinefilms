@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
-
+import MovieGenresDisplay from "../common/MovieGenresDisplay"
 
 export default function Card({ user }) {
 	const Movie = ({ data }) => {
@@ -28,25 +28,19 @@ export default function Card({ user }) {
 	};
 
 
-	const MovieGenresDisplay = ({ data }) => {
-		return (
-			<View>
-				<Text>{data}</Text>
-			</View>
-		);
-	};
+	console.log(user.favGenres)
 
 
 
 	return (
-		<View style={styles.card} >
+		<View style={styles.card}>
 			<View style={styles.topSection}>
 				<View style={styles.userInfo}>
 					<Avatar uri={user.avatar} size={64} />
 					<Text style={styles.title}>{user.username}</Text>
 				</View>
 				<TouchableOpacity
-					onPress={() => console.log('AddFriend')}
+					onPress={() => console.log("AddFriend")}
 					style={styles.addFriendButton}
 					activeOpacity={0.8}
 				>
@@ -65,10 +59,10 @@ export default function Card({ user }) {
 				</View>
 			</ScrollView>
 			<ScrollView horizontal={true}>
-			<View>
-				<Text style={styles.title}>Mes genres préférés</Text>
-				<MovieGenresDisplay list={user.favGenres} />
-			</View>
+				<View>
+					<Text style={styles.title}>Mes genres préférés</Text>
+					<MovieGenresDisplay list={[12]} />
+				</View>
 			</ScrollView>
 		</View>
 	);

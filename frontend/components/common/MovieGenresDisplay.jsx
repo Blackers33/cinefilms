@@ -9,7 +9,7 @@ import genres from "./genres.json";
  */
 export default function MovieGenresDisplay({ list }) {
 	console.log(genres);
-	return (
+	if (list.length > 0) return (
 		<View style={styles.container}>
 			{list.map((el, index) => (
 				<View key={index} style={styles.view}>
