@@ -108,11 +108,6 @@ const styles = StyleSheet.create({
     margin: 10,
 
   },
-  avatar: {
-    marginBottom: 10,
-    marginRight: 10,
-    paddingLeft : 0,
-  },
   username: {
     fontFamily: 'Mulish',
     fontSize: 20,

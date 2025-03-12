@@ -4,6 +4,7 @@ const Event = require('../models/events');
 const Film = require('../models/films');
 const User = require('../models/users')
 const { checkBody, createFilmIfNotExists, autentification} = require('../modules/utils');
+const { isAllOf } = require('@reduxjs/toolkit');
 
 //Route qui permet de récupérer le film
 router.get("/:filmId/:token/film", async (req, res) => {
@@ -34,8 +35,9 @@ router.get("/:filmId/:token/film", async (req, res) => {
 });
 
 //Route qui récupère les événements selon le filmId
-router.get("/:tmdbId/events", async (req, res) => {
+router.get("/:tmdbId/:token/events", async (req, res) => {
     try {
+        const user = await User.findOne({ token: req.params.token });
         // Récupération du film correspondant au tmdbId
         const film = await Film.findOne({ tmdbId: req.params.tmdbId });
         
@@ -48,8 +50,9 @@ router.get("/:tmdbId/events", async (req, res) => {
 
         // Récupération des événements liés à ce film
         const allEvents = await Event.find({ filmId: film._id })
-            .populate("filmId")
+            .populate('filmId')
             .populate('comments.user')
+            .populate('participants')
             .populate('owner');
 
         if (allEvents.length === 0) {
@@ -58,7 +61,7 @@ router.get("/:tmdbId/events", async (req, res) => {
                 message: "Aucun événement trouvé pour ce film.",
             });
         }
-        console.log(allEvents.length);
+        
         // Réponse avec les événements trouvés
         const events = allEvents.map(event => {
             return {
@@ -75,11 +78,11 @@ router.get("/:tmdbId/events", async (req, res) => {
                     date: comment.date,
                     content: comment.content,
                 })),
-                participants: event.participants.map(participant => ({
+                participants: event.participants?.map((participant) => ({
                     username: participant.username,
                     avatar: participant.avatar,
-                    //isParticipate: event.participants.includes(participant._id)
                 })),
+                isParticipate: event.participants.some((p) => p._id.toString() === user._id.toString()),
                 description: event.description,
                 title: event.title,
             }
@@ -107,20 +110,24 @@ router.post("/:eventId/joingEvent", async(req, res) => {
         const eventId = req.params?.eventId;
         //Récuperer l'ObjectID de l'utilisateur à partir du token
         const user = await autentification(req.body.user);
+        let participate = false;
 
         if (req.params && eventId) {
             Event.findOne({_id: eventId})
+            
             .then(data => {
                 if (data.participants.includes(user.userId)) {
                     const participants = data.participants.filter(el => el.toString() !== user.userId.toString());
                     data.participants = participants;
+                    participate = false;
                 } else {
                     data.participants.push(user.userId);
+                    participate = true;
                 }
                 data.save().then(() => {
                     res.json({ result: true, participation: {
                         participantsNbr: data.participants.length, 
-                        isParticipate: !!data.participants.sort(user._id).length
+                        isParticipate: participate
                     } });
                 });
             });

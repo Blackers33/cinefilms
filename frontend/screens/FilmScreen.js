@@ -31,7 +31,7 @@ export default function FilmScreen({ navigation, route }) {
     .then(filmData => {
       setAllComments(filmData.comments);
     });
-    fetch(`${BACKEND_ADDRESS}/films/${filmId}/events`)
+    fetch(`${BACKEND_ADDRESS}/films/${filmId}/aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk/events`)
     .then(response => response.json())
     .then(eventsData => {
       setAllEvents(eventsData.events)
