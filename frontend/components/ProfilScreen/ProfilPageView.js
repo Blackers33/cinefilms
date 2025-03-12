@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import Avatar from "../common/Avatar";
 import MoviesScrollView from "../common/MoviesScrollView";
 import Button from "./Button";
-import MovieGenresDisplay from "./MovieGenresDisplay";
+import MovieGenresDisplay from "../common/MovieGenresDisplay";
 
 const Field = ({ title, info }) => {
 	return (
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
 	},
 	mainSection: {
 		gap: 20,
-		marginLeft : 15,
-	
+		marginLeft: 15,
+		marginBottom: 100,
 	},
 	buttonSection: {
 		borderTopWidth: 1,

@@ -1,8 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
-import genres from "../common/genres.json";
-
+import genres from "./genres.json";
+/**
+ * 
+ * prend en paramètre un tableau d'Ids de genres. exemple : [53,10770,878]
+ * usage : <MovieGenresDisplay list={array}/>
+ * retourne une vue cool
+ * 
+ */
 export default function MovieGenresDisplay({ list }) {
-	console.log(genres);
 	return (
 		<View style={styles.container}>
 			{list.map((el, index) => (

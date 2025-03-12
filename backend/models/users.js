@@ -16,8 +16,8 @@ const userSchema = mongoose.Schema({
   },
   biography: String,
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
-  favGenres: [String],
-  favMovies: [String],
+  favGenres: [Number],
+  favMovies: [Number],
 });
 
 const User = mongoose.model('users', userSchema);

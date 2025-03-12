@@ -13,11 +13,12 @@ import Avatar from "../common/Avatar";
 import MoviesScrollView from "../common/MoviesScrollView";
 import { useState } from "react";
 import { TextInput } from "react-native";
-import CitiesDropdown from "../common/citiesDropdown";
+import CitiesDropdown from "../common/CitiesDropdown";
 import DropdownUserGenre from "../common/DropdownUserGenre";
 import Button from "./Button";
 import { AvatarModal } from "../common/AvatarModal";
 import MovieGenresEdit from "./MovieGenresEdit";
+import { MoviesDropdown } from "../common/MoviesDropdown";
 
 const Field = ({ title, info, ...props }) => {
 	return (
@@ -32,27 +33,74 @@ export default function ProfilPageEdit({ user, setEdit }) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [age, setAge] = useState(user.age);
 	const [location, setLocation] = useState(user.location);
-	const [userGenre, setUserGenre] = useState(user.genre);
-	const [name, setName] = useState(user.username);
+	const [genre, setGenre] = useState(user.genre);
+	const [username, setUsername] = useState(user.username);
 	const [biography, setBiography] = useState(user.biography);
 	const [avatar, setAvatar] = useState(user.avatar);
-	const [favGenres, setFavGenres] = useState(user.favGenres)
+	const [favGenres, setFavGenres] = useState(user.favGenres);
+	const [favMovies, setFavMovies] = useState(user.favMovies);
 
-	function handleAvatarSelect(avatar){
+	function handleAvatarSelect(avatar) {
 		setModalVisible(!modalVisible);
 		setAvatar(avatar);
-	};
-
-	function handleSwitchGenres(id){
-		setFavGenres(prev => {
-			if (prev.includes(id)){
-				return prev.filter(genre=>genre !== id)
-			} else {
-				return [...prev, id]
-			}
-		})
 	}
 
+	function handleSetGenres(id) {
+		setFavGenres((prev) => {
+			if (prev.includes(id)) {
+				return prev.filter((genre) => genre !== id);
+			} else {
+				return [...prev, id];
+			}
+		});
+	}
+
+	function handleSetMovies(id) {
+		setFavMovies((prev) => {
+			if (prev.includes(id)) {
+				return prev.filter((idInArray) => idInArray !== id);
+			} else {
+				return [...prev, id];
+			}
+		});
+	}
+
+	async function handleSubmit() {
+		if (age !== "" || username !== "") {
+			const response = await fetch(
+				process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + user.token,
+				{
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						age,
+						location,
+						genre,
+						username,
+						biography,
+						avatar,
+						favGenres,
+						favMovies,
+					}),
+				}
+			)
+			const data = await response.json()
+			console.log(data)
+			if (data.result){
+				alert('Profil mis à jour')
+				setEdit(false)
+
+			} else {
+				alert(data.message)
+			}
+				/* .then((response) => response.json())
+				.then((data) => {
+					if (data.result);
+				}); */
+		} else {
+			alert("Veuillez remplir tous les champs");
+		}
+	}
 
 	return (
 		<>
@@ -76,12 +124,7 @@ export default function ProfilPageEdit({ user, setEdit }) {
 					keyboardShouldPersistTaps='handled'
 				>
 					<View style={styles.mainSection}>
-						<Field
-							title='Nom'
-							info={name}
-							inputMode='numeric'
-							onChangeText={setName}
-						/>
+						<Field title='Nom' info={username} onChangeText={setUsername} />
 						<Field
 							title='Age'
 							info={age}
@@ -94,15 +137,17 @@ export default function ProfilPageEdit({ user, setEdit }) {
 							setLocation={(item) => setLocation(item)}
 						/>
 						<Text style={styles.title}>Genre</Text>
-						<DropdownUserGenre
-							userGenre={userGenre}
-							setUserGenre={setUserGenre}
-						/>
+						<DropdownUserGenre userGenre={genre} setUserGenre={setGenre} />
 
 						<Text style={styles.title}>Tes films favoris</Text>
-						<MoviesScrollView moviesIds={user.favMovies} />
+						<MoviesDropdown setMovie={(id) => handleSetMovies(id)} />
+						<MoviesScrollView
+							moviesIds={favMovies}
+							mode='edit'
+							handleDelete={(id) => handleSetMovies(id)}
+						/>
 						<Text style={styles.title}>Tes genres favoris</Text>
-						<MovieGenresEdit list={favGenres} handleSwitch={handleSwitchGenres}/>
+						<MovieGenresEdit list={favGenres} handleSwitch={handleSetGenres} />
 
 						<View>
 							<Field
@@ -110,13 +155,14 @@ export default function ProfilPageEdit({ user, setEdit }) {
 								info={biography}
 								onChangeText={setBiography}
 								multiline={true}
+								maxLength={400}
 							/>
 						</View>
 					</View>
 				</ScrollView>
 			</View>
 			<View style={styles.buttonSection}>
-				<Button text='Valider' onPress={() => console.log("mammamia")}></Button>
+				<Button text='Valider' onPress={() => handleSubmit()}></Button>
 				<Button text='Annuler' onPress={setEdit} variant='ghost'></Button>
 			</View>
 		</>
@@ -151,6 +197,7 @@ const styles = StyleSheet.create({
 	mainSection: {
 		gap: 20,
 		width: "95%",
+		marginBottom: 100,
 	},
 	fadedText: {
 		position: "absolute",
@@ -169,7 +216,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-evenly",
 		gap: 5,
 	},
-	field:{
-		gap: 10
-	}
+	field: {
+		gap: 10,
+	},
 });

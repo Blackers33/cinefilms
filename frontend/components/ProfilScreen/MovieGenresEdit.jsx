@@ -6,9 +6,9 @@ export default function MovieGenresEdit({ list, handleSwitch }) {
 	return (
 		<View style={styles.container}>
 			{genres.map((el, index) => (
-				<TouchableOpacity onPress={() => handleSwitch(el.id)}>
+				<TouchableOpacity key={index} onPress={() => handleSwitch(el.id)}>
 					<View
-						key={index}
+						
 						style={list.includes(el.id) ? styles.view : styles.ghostView}
 					>
 						<Text style={list.includes(el.id) ? styles.text : styles.ghostText}>

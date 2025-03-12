@@ -22,7 +22,7 @@ export default function DropdownUserGenre({userGenre, setUserGenre}) {
 				color: "white",
 				fontSize: 14,
 			}}
-			onChange={(value) => setUserGenre(value)}
+			onChange={(value) => setUserGenre(value.name)}
 			value={userGenre}
 		/>
 	);
