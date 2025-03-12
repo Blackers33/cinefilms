@@ -51,6 +51,8 @@ export default function NewEventScreen({ navigation }) {
   const [noResultsFound, setNoResultsFound] = useState(false);
   const [tmdbidfilm, setTmdbidfilm] = useState("");
 
+
+  // formatte Date pour afficher sur input Date
   const formatDateToFrench = (date) => {
     const formattedDate = new Date(date);
     return formattedDate.toLocaleDateString("fr-FR", {
@@ -59,12 +61,15 @@ export default function NewEventScreen({ navigation }) {
       day: "numeric", // Jour
     });
   };
+
+  //selection la date sur Calendrier
   const handleDateSelect = (day) => {
     const formattedDate = formatDateToFrench(day.dateString);
     setSelectedDate(formattedDate);
     setShowCalendar(false); // Cache le calendrier après sélection
   };
 
+  // ajouter le film et appeler API film pour trouver TmdbId film
   const handleAddMovie = async () => {
     if (!movie.trim()) return;
 
@@ -85,7 +90,6 @@ export default function NewEventScreen({ navigation }) {
       setNoResultsFound(false);
       setTmdbidfilm(results[0].id);
     } catch (error) {
-      console.error("Erreur lors de la recherche du film:", error);
       setNoResultsFound(true);
       setResultmovie("");
     }
@@ -93,6 +97,8 @@ export default function NewEventScreen({ navigation }) {
     setMovie("");
   };
 
+
+  // buton creer l'evenement et appeler la route post l'evenement 
   const handleSubmitMessage = () => {
     fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/events/", {
       method: "POST",
@@ -109,10 +115,9 @@ export default function NewEventScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          console.log(data);
           navigation.navigate("Events");
         } else {
-          console.log("Erreur:", data.message); // Si `result` est faux, vous pouvez afficher un message d'erreur
+          console.log("Erreur:", data.message); 
         }
       })
       .catch((error) => {
@@ -212,6 +217,7 @@ export default function NewEventScreen({ navigation }) {
                   placeholderTextColor="white"
                   onChangeText={(value) => setDescription(value)}
                   value={description}
+                  multiline={true}
                 ></TextInput>
               </View>
             </View>
