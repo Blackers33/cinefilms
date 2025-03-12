@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 //Navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,19 +7,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import InscriptionScreen from "./screens/InscriptionScreen";
 import ConnexionScreen from "./screens/ConnexionScreen";
 import HomeScreen from "./screens/HomeScreen";
-//import EventScreen from "./screens/EventScreen";
+import EventScreen from "./screens/EventScreen";
 import FilmScreen from "./screens/FilmScreen";
+import createEventScreen from "./screens/NewEventScreen";
 
 
 //redux
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+
+
+//style
 import { StyleSheet } from 'react-native';
-import HomeScreen from "./screens/HomeScreen";
-import EventScreen from "./screens/EventScreen";
-import createEventScreen from "./screens/NewEventScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as NavigationBar from "expo-navigation-bar";
