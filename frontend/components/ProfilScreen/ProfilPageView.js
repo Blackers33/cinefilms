@@ -1,19 +1,15 @@
 //@author : Charlie
 
 import {
+	ScrollView,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
-	View,
-	Image,
-	ScrollView,
-	Dimensions,
+	View
 } from "react-native";
-import { useSelector } from "react-redux";
 import Avatar from "../common/Avatar";
+import MovieGenresDisplay from "../common/MovieGenresDisplay";
 import MoviesScrollView from "../common/MoviesScrollView";
 import Button from "./Button";
-import MovieGenresDisplay from "../common/MovieGenresDisplay";
 
 const Field = ({ title, info }) => {
 	return (
@@ -61,6 +57,7 @@ export default function ProfilPageView({ user, setEdit }) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 8,
+		minWidth: "100%"
 	},
 
 	title: {

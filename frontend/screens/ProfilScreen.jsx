@@ -1,19 +1,15 @@
 /**
- * @author Charlie
+ * @authors Charlie & Sacha
  */
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
-	View,
-	StyleSheet,
 	KeyboardAvoidingView,
 	Platform,
-	Dimensions,
-	ImageBackground,
+	StyleSheet
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { setProfilUser } from "../reducers/user";
+import { useSelector } from "react-redux";
 import ProfilPageEdit from "../components/ProfilScreen/ProfilPageEdit";
 import ProfilPageView from "../components/ProfilScreen/ProfilPageView";
 
@@ -43,10 +39,9 @@ const mockUser = {
 };
 
 export default function ProfilScreen() {
-	const user = mockUser; //useSelector((state) => state.user.value);
+	const user = useSelector((state) => state.user.value);
 
 	const [edit, setEdit] = useState(false);
-	const dispatch = useDispatch();
 
 
 	return (

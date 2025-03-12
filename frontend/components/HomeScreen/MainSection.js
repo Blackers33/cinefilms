@@ -33,10 +33,11 @@ export default function MainSection({ navigation, user }) {
 		const params = new URLSearchParams(filters).toString();
 		const url = "/discover/movie?" + params;
 
-		let movies = await tmdbApiCall(url);
+		let moviesData = await tmdbApiCall(url);
 
-		movies = await getLikesAndComments(movies);
-		setMovies(movies);
+		updatedMovies = await getLikesAndComments(moviesData.results);
+
+		setMovies(updatedMovies);
 	}
 
 	/**
@@ -55,7 +56,8 @@ export default function MainSection({ navigation, user }) {
 		let searchedMovies = await tmdbApiCall(
 			`/search/movie?query=${search}&include_adult=false&language=fr-FR&page=1`
 		);
-		searchedMovies = await getLikesAndComments(searchedMovies);
+		searchedMovies = await getLikesAndComments(searchedMovies.results);
+
 		setMovies(searchedMovies);
 	}
 
@@ -66,21 +68,25 @@ export default function MainSection({ navigation, user }) {
 		const updatedMovies = await Promise.all(
 			//await Promise.all() permet d'attendre que toutes les promesses (les await) soient résolues
 			movies.map(async (movie) => {
-				const response = await fetch(
-					`${process.env.EXPO_PUBLIC_IP_ADDRESS}/films/${movie.id}/${user.token}/film`
-				);
-				const data = await response.json();
-				if (data.result) {
-					movie.likes = data.likes;
-					movie.comments = data.comments;
-					movie.isLiked = data.isLiked;
-					movie.events = data.events
+				try {
+					const response = await fetch(
+						`${process.env.EXPO_PUBLIC_IP_ADDRESS}/films/${movie.id}/${user.token}/film`
+					);
+					const data = await response.json();
+					if (data.result) {
+						movie.likes = data.likes;
+						movie.comments = data.comments;
+						movie.isLiked = data.isLiked;
+						movie.events = data.events;
+					}
+				} catch (error) {
+					console.log(error);
 				}
-				console.log(movie);
 
 				return movie;
 			})
 		);
+
 		return updatedMovies;
 	}
 

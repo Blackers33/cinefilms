@@ -1,8 +1,8 @@
 //@author : Charlie
 
 import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
-import { useDispatch } from 'react-redux';
-import { setProfilUser } from '../reducers/user';
+import { useDispatch } from "react-redux";
+import { setUser } from "../reducers/user";
 import {
 	StyleSheet,
 	KeyboardAvoidingView,
@@ -16,8 +16,6 @@ import {
 } from "react-native";
 import { useState } from "react";
 import Button from "../components/common/Button";
-
-
 
 export default function ConnexionScreen({ navigation }) {
 	const [email, setEmail] = useState("");
@@ -37,12 +35,18 @@ export default function ConnexionScreen({ navigation }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
+
 				if (data.result) {
-					fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + data.token)
+					fetch(
+						process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + data.token
+					)
 						.then((response) => response.json())
 						.then((profileData) => {
-							dispatch(setProfilUser({...profileData.profil, token: data.token}));
-							console.log("hellzo");
+							console.log({ ...profileData.profil, token: data.token });
+
+							dispatch(
+								setUser({ ...profileData.profil, token: data.token })
+							);
 
 							navigation.navigate("TabNavigator");
 						});
@@ -51,7 +55,6 @@ export default function ConnexionScreen({ navigation }) {
 				}
 			});
 	};
-
 
 	return (
 		<KeyboardAvoidingView
@@ -62,7 +65,7 @@ export default function ConnexionScreen({ navigation }) {
 				<ImageBackground
 					source={require("../assets/wallpaper-cinefilm.jpg")}
 					style={styles.backgroundImage}
-				>	
+				>
 					<ScrollView
 						contentContainerStyle={{ flexGrow: 1 }}
 						keyboardShouldPersistTaps='handled'
@@ -74,8 +77,12 @@ export default function ConnexionScreen({ navigation }) {
 							setPassword={setPassword}
 						/>
 						<View style={styles.errorContainer}>
-						 {connexionError && (<Text style={styles.ErrorText} >Email ou Mot de Passe invalide.</Text>)}
-						 </View>
+							{connexionError && (
+								<Text style={styles.ErrorText}>
+									Email ou Mot de Passe invalide.
+								</Text>
+							)}
+						</View>
 						<View style={styles.buttonContainer}>
 							<Button text='Connexion' onPress={() => handleConnexion()} />
 							<Text style={styles.transitionText}>Pas encore inscrit ?</Text>
@@ -111,7 +118,6 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		marginTop: 60,
 		textAlign: "center",
-		
 	},
 	buttonContainer: {
 		alignItems: "center",
@@ -120,12 +126,12 @@ const styles = StyleSheet.create({
 		width: Dimensions.get("window").width,
 	},
 	ErrorText: {
-		alignItems: 'center',
+		alignItems: "center",
 		color: "#c94106",
 		fontSize: 20,
 	},
 	errorContainer: {
-		alignItems: 'center',
+		alignItems: "center",
 		backgroundColor: "#000000D9",
 	},
 });

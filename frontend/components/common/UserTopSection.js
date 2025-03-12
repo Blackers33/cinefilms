@@ -1,18 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Avatar from "./Avatar";
 
 
-export default function TopSection({ user }) {
+export default function TopSection({ user, navigation }) {
 	return (
-		<View style={styles.topSection} onPress={() => navigation.navigate("ProfilScreen")}>
-			<View style={styles.userSection}>
+		<View style={styles.topSection}>
+			<TouchableOpacity
+				style={styles.userSection}
+				onPress={()=>navigation.navigate("Profil")}
+			>
 				<Avatar uri={user.avatar} size={64} />
 				<View>
 					<Text style={styles.textHello}>Hello,</Text>
 					<Text style={styles.textUsername}>{user.username}</Text>
 				</View>
-			</View>
+			</TouchableOpacity>
 			<View>
 				<Icon name='chatbox-ellipses' size={40} color='#fff' />
 			</View>

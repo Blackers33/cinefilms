@@ -59,13 +59,21 @@ router.post("/signin", (req, res) => {
 // PUT creation & update de profil
 router.put("/profil/:token", (req, res) => {
 	User.findOne({ token: req.params.token }).then((data) => {
-		const { username, avatar, age, genre, location, favMovies, favGenres, biography } =
-			req.body;
+		const {
+			username,
+			avatar,
+			age,
+			genre,
+			location,
+			favMovies,
+			favGenres,
+			biography,
+		} = req.body;
 		if (data) {
 			User.updateOne(
 				{ token: req.params.token },
 				{
-          username,
+					username,
 					age: Number(age),
 					avatar,
 					biography,
@@ -78,15 +86,43 @@ router.put("/profil/:token", (req, res) => {
 				console.log(updatedData);
 				if (updatedData.modifiedCount > 0) {
 					User.findOne({ token: req.params.token }).then((dataUser) => {
+						const {
+							location,
+							username,
+							email,
+							token,
+							friends,
+							favGenres,
+							favMovies,
+							age,
+							avatar,
+							biography,
+							genre,
+						} = dataUser;
 						res.json({
 							result: true,
 							message: "Profil updated",
-							profil: dataUser,
+							profil: {
+								location,
+								username,
+								email,
+								token,
+								friends,
+								favGenres,
+								favMovies,
+								age,
+								avatar,
+								biography,
+								genre,
+							},
 						});
 					});
 				} else {
-          console.log(req.body)
-					res.json({ result: false, message: "Erreur : Le profil n'a pas été mis à jour." });
+					console.log(req.body);
+					res.json({
+						result: false,
+						message: "Erreur : Le profil n'a pas été mis à jour.",
+					});
 				}
 			});
 		} else {
@@ -122,17 +158,17 @@ router.get("/profil/:token", (req, res) => {
 });
 
 //Get le username d'un utilisateur à partir de son ObjectID
-router.get('/:userId', (req, res) => {
-  try {
-    User.findById(req.params?.userId.toString()).then(data => {
-      if (data) {
-        res.json({ result: true, user: {username: data.username}})
-      } else {
-        res.json({ result: false, error: 'No corresponding profil' });
-      }
-    })
-  } catch(error) {
-    res.status(500).json({ result: false, error: 'Internal server error' });
-  }
-})
+router.get("/:userId", (req, res) => {
+	try {
+		User.findById(req.params?.userId.toString()).then((data) => {
+			if (data) {
+				res.json({ result: true, user: { username: data.username } });
+			} else {
+				res.json({ result: false, error: "No corresponding profil" });
+			}
+		});
+	} catch (error) {
+		res.status(500).json({ result: false, error: "Internal server error" });
+	}
+});
 module.exports = router;

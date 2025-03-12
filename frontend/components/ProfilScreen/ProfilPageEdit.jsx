@@ -19,6 +19,8 @@ import Button from "./Button";
 import { AvatarModal } from "../common/AvatarModal";
 import MovieGenresEdit from "./MovieGenresEdit";
 import { MoviesDropdown } from "../common/MoviesDropdown";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../reducers/user";
 
 const Field = ({ title, info, ...props }) => {
 	return (
@@ -39,6 +41,7 @@ export default function ProfilPageEdit({ user, setEdit }) {
 	const [avatar, setAvatar] = useState(user.avatar);
 	const [favGenres, setFavGenres] = useState(user.favGenres);
 	const [favMovies, setFavMovies] = useState(user.favMovies);
+	const dispatch = useDispatch();
 
 	function handleAvatarSelect(avatar) {
 		setModalVisible(!modalVisible);
@@ -83,20 +86,16 @@ export default function ProfilPageEdit({ user, setEdit }) {
 						favMovies,
 					}),
 				}
-			)
-			const data = await response.json()
-			console.log(data)
-			if (data.result){
-				alert('Profil mis à jour')
-				setEdit(false)
+			);
+			const data = await response.json();
+			if (data.result) {
+				alert("Profil mis à jour");
+				dispatch(setUser(data.profil));
 
+				setEdit(false);
 			} else {
-				alert(data.message)
+				alert(data.message);
 			}
-				/* .then((response) => response.json())
-				.then((data) => {
-					if (data.result);
-				}); */
 		} else {
 			alert("Veuillez remplir tous les champs");
 		}
@@ -173,6 +172,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 8,
 		alignItems: "center",
+		minWidth: "100%",
 	},
 
 	title: {

@@ -18,7 +18,7 @@ export default function HomeScreen({ navigation }) {
 					resizeMode: "cover",
 				}}
 			>
-				<TopSection user={user} />
+				<TopSection user={user} navigation={navigation} />
 				<MainSection navigation={navigation} user={user}/>
 			</ImageBackground>
 		</SafeAreaView>
