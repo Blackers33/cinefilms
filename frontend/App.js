@@ -10,6 +10,7 @@ import HomeScreen from "./screens/HomeScreen";
 import EventScreen from "./screens/EventScreen";
 import FilmScreen from "./screens/FilmScreen";
 import createEventScreen from "./screens/NewEventScreen";
+import ProfilScreen from "./screens/ProfilScreen";
 
 
 //redux
@@ -80,6 +81,8 @@ export default function App() {
 					<Stack.Screen name='TabNavigator' component={TabNavigator} />
 					<Stack.Screen name='Film' component={FilmScreen} />
 					<Stack.Screen name='CreateEventScreen' component={createEventScreen} />
+					<Stack.Screen name='Profil' component={ProfilScreen}/>
+
 				</Stack.Navigator>
 			</NavigationContainer>
 		</Provider>

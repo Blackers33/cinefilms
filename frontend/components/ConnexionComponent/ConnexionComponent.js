@@ -43,7 +43,7 @@ import {
               secureTextEntry={true}
             ></TextInput>
           </View>
-         
+        
         </View>
       </View>
     );
@@ -68,7 +68,7 @@ import {
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 50,
+        // marginTop: 20,
       },
       buttonText: {
         color: "#ffffff",
@@ -85,7 +85,7 @@ import {
       transitionText: {
         color: "#c94106",
         fontSize: 20,
-        marginTop: 80,
+        marginTop: 20,
         textAlign: "center",
       },
       boutonInscription: {
@@ -104,19 +104,19 @@ import {
         justifyContent: "center",
         width: Dimensions.get("window").width,
       },
-      buttonContainer: {
-        width: 380,
-        marginTop: 10,
-        alignItems: "center",
-      },
-      ImageBackground: {
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        zIndex: -1,
-        width: Dimensions.get("window").width,
-		height: Dimensions.get("window").height,
-      },
+      // buttonContainer: {
+      //   width: 380,
+      //   marginTop: 10,
+      //   alignItems: "center",
+      // },
+    //   ImageBackground: {
+    //     width: '100%',
+    //     height: '100%',
+    //     position: 'absolute',
+    //     zIndex: -1,
+    //     width: Dimensions.get("window").width,
+		// height: Dimensions.get("window").height,
+    //   },
       titrecontenu: {
         color: "#c94106",
         paddingLeft: 10,
