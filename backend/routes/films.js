@@ -4,7 +4,6 @@ const Event = require('../models/events');
 const Film = require('../models/films');
 const User = require('../models/users')
 const { checkBody, createFilmIfNotExists, autentification} = require('../modules/utils');
-const { isAllOf } = require('@reduxjs/toolkit');
 
 //Route qui permet de récupérer le film
 router.get("/:tmdbId/:token/film", async (req, res) => {

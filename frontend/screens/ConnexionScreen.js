@@ -42,6 +42,8 @@ export default function ConnexionScreen({ navigation }) {
 						.then((response) => response.json())
 						.then((profileData) => {
 							dispatch(setProfilUser({...profileData.profil, token: data.token}));
+							console.log("hellzo");
+
 							navigation.navigate("TabNavigator");
 						});
 				} else {
