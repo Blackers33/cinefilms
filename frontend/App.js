@@ -16,8 +16,11 @@ import FilmScreen from "./screens/FilmScreen";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
-
-//Style
+import { StyleSheet } from 'react-native';
+import HomeScreen from "./screens/HomeScreen";
+import EventScreen from "./screens/EventScreen";
+import createEventScreen from "./screens/NewEventScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as NavigationBar from "expo-navigation-bar";
@@ -61,7 +64,7 @@ const TabNavigator = () => {
 			})}
 		>
 			<Tab.Screen name='Home' component={HomeScreen} />
-			{/* <Tab.Screen name='Events' component={EventScreen} /> */}
+			<Tab.Screen name='Events' component={EventScreen} />
 			<Tab.Screen name='Rencontres' component={HomeScreen} />
 		</Tab.Navigator>
 	);
@@ -77,6 +80,7 @@ export default function App() {
 					<Stack.Screen name='Inscription' component={InscriptionScreen} />
 					<Stack.Screen name='TabNavigator' component={TabNavigator} />
 					<Stack.Screen name='Film' component={FilmScreen} />
+					<Stack.Screen name='CreateEventScreen' component={createEventScreen} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</Provider>
