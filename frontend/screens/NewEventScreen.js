@@ -11,36 +11,17 @@ import {
   TextInput,
   StatusBar,
   ScrollView,
-  Platform
+  Platform,
 } from "react-native";
 import Inputstyled from "../components/common/TextInput";
+import Button from "../components/common/Button";
 import { useState } from "react";
 import { Calendar } from "react-native-calendars";
 import tmdbApiCall from "../components/HomeScreen/tmdbApiCall";
-
-const mockUser = {
-    _id: "67ca1d44bfc125477ece24ce",
-    username: "Lou",
-    password: "$2b$10$nPPlMDeI.NFKkZCh7Bs0e.WYyIVs3rwj6D6i.yCXlIWWXt3T8SDB6",
-    email: "Lou@gmail.com",
-    token: "_ZpeuBlpvOL6Qd1yLwyg50_GhAxA-cMl",
-    friends: [],
-    favGenres: ["447277", "812"],
-    favMovies: ["Action", "Adventure"],
-    __v: 0,
-    age: 25,
-    avatar:
-      "https://image.noelshack.com/fichiers/2015/12/1426650974-quiz-les-personnages-de-tintin-5472.jpeg",
-    biography: "je ne suis pas un robot",
-    genre: "Homme",
-    location: {
-      name: "Paris",
-      latitude: 48.859,
-      longitude: 2.347,
-    },
-  };
+import { useSelector } from "react-redux";
 
 export default function NewEventScreen({ navigation }) {
+  const user = useSelector((state) => state.user.value);
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
@@ -50,7 +31,6 @@ export default function NewEventScreen({ navigation }) {
   const [resultmovie, setResultmovie] = useState("");
   const [noResultsFound, setNoResultsFound] = useState(false);
   const [tmdbidfilm, setTmdbidfilm] = useState("");
-
 
   // formatte Date pour afficher sur input Date
   const formatDateToFrench = (date) => {
@@ -97,8 +77,7 @@ export default function NewEventScreen({ navigation }) {
     setMovie("");
   };
 
-
-  // buton creer l'evenement et appeler la route post l'evenement 
+  // buton creer l'evenement et appeler la route post de l'evenement
   const handleSubmitMessage = () => {
     fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/events/", {
       method: "POST",
@@ -107,17 +86,17 @@ export default function NewEventScreen({ navigation }) {
         location: place,
         description: description,
         title: title,
-        user: mockUser.token, 
-        tmbdId: tmdbidfilm, 
-        date: selectedDate, 
+        user: user.token,
+        tmbdId: tmdbidfilm,
+        date: selectedDate,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          navigation.navigate("Events");
+          navigation.navigate("TabNavigator");
         } else {
-          console.log("Erreur:", data.message); 
+          console.log("Erreur:", data.message);
         }
       })
       .catch((error) => {
@@ -127,10 +106,11 @@ export default function NewEventScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StatusBar hidden={true} />
       <ScrollView>
         <KeyboardAvoidingView behavior={Platform.OS === "padding"}>
           <StatusBar barStyle="dark-content" backgroundColor="white" />
-          <Text style={styles.title}>Créer son évènement</Text>
+          <Text style={styles.title}>Créer votre évènement</Text>
           <View style={styles.container}>
             <View style={styles.infos}>
               <View style={styles.inputBubble}>
@@ -218,26 +198,20 @@ export default function NewEventScreen({ navigation }) {
                   onChangeText={(value) => setDescription(value)}
                   value={description}
                   multiline={true}
+                  numberOfLines={5}
+                  maxLength={100}
                 ></TextInput>
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
+              <Button
+                text="Créer"
                 onPress={() => handleSubmitMessage()}
-                style={styles.addEvent}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.buttonText}>Créer</Text>
-              </TouchableOpacity>
+              ></Button>
 
               {/* Permet de naviguer avec la page 'Events' */}
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Events")}
-                style={styles.removeEvent}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.buttonText}>Annuler</Text>
-              </TouchableOpacity>
+              <Button text="Annuler"onPress={() => navigation.navigate("TabNavigator")}
+              ></Button>
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -249,20 +223,21 @@ export default function NewEventScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "rgb(30.28.26)",
+    backgroundColor: "#000000",
   },
   container: {
-    flex: 1,
-    backgroundColor: "rgb(30.28.26)",
+    backgroundColor: "#000000",
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
   title: {
     fontFamily: "Mulish",
     fontSize: 24,
-    color: "white",
+    color: "#c94106",
     textAlign: "center",
     marginVertical: 10,
     marginTop: 30,
-    fontWeight: 600,
+    fontWeight: "bold",
   },
 
   image: {
@@ -283,9 +258,10 @@ const styles = StyleSheet.create({
     height: "auto",
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 20,
+    flexDirection: "column",  
+  justifyContent: "center",  
+  alignItems: "center",  
+  padding: 20,  
   },
   addEvent: {
     backgroundColor: "rgb(201, 65, 6)",
@@ -309,7 +285,8 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    height: 100,
+    height: 150,  // Vous pouvez ajuster la hauteur selon votre besoin
+    width: "100%",  // Le champ prendra toute la largeur
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
@@ -320,11 +297,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     color: "white",
     fontFamily: "Mulish",
+    textAlignVertical: "top",
   },
   resultContainer: {
     marginTop: 5,
     alignItems: "center",
-    marginBottom:10,
+    marginBottom: 10,
   },
   movieTitle: {
     color: "white",

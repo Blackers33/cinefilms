@@ -16,7 +16,8 @@ export default function Comment(props) {
       <Text style={styles.usernametext}>{props.username}</Text>
       <View style={styles.contenucomment}>
         <Text style={styles.commentText}>{props.date}</Text>
-        <Text key={props.index} style={styles.commentText}>
+        <Text
+         style={styles.commentText}>
           {props.content}
         </Text>
       </View>

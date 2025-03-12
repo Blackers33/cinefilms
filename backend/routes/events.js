@@ -107,6 +107,32 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Route GET pour recuperer les commentaire d'un evenement 
+router.get("/:eventId/comments", async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    // Vérifier si l'événement existe
+    const event = await Event.findById(eventId)
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "username avatar" }, 
+      });
+
+    if (!event) {
+      return res.status(404).json({ message: "Événement non trouvé" });
+    }
+
+    res.status(200).json({ result: true, comments: event.comments });
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur lors de la récupération des commentaires",
+      error: error.message,
+    });
+  }
+});
+
+
 
 // Route GET pour récupérer les événements d'un utilisateur
 router.get("/:username", async (req, res) => {

@@ -12,32 +12,46 @@ import {
 } from "react-native";
 import { useState } from "react";
 import Avatar from "../common/Avatar";
-import Comment from "./comment";
+import Comments from "./comments";
 import CommentsIcon from "react-native-vector-icons/Fontisto";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { formatDistanceToNow, fr } from "date-fns";
 
+
 export default function Event(props) {
-  const avatars = Array.from({ length: props.nbrParticipants }, (_, index) => (
-    <Avatar
-      uri={props.avatar}
-      key={index}
-      style={{ marginRight: 5 }}
-      size={30}
-    />
-  ));
+ 
+const avatars = props.participants.map((participant, index) => (
+  <Avatar
+    uri={participant.avatar} 
+    key={index}
+    style={{ marginRight: 5 }}
+    size={30}
+  />
+));
+
+
+const avatarjoint = props.isParticipate ? (
+  <Avatar
+    uri={props.avatar} 
+    key="user-avatar"
+    style={{ marginRight: 5 }}
+    size={30}
+  />
+) : null;
+
+
 
   return (
     <View style={styles.eventContainer}>
       <View style={styles.eventInfos}>
-        <Avatar size={40} />
+        <Avatar size={40} uri={props.avatareventowner}/>
         <View style={styles.appointmentInfos}>
           <Text style={styles.appointmentPlace}>
             {props.location} - {props.title}
           </Text>
           <Text style={styles.appointmentDate}>{props.date}</Text>
         </View>
-        <View sytle={styles.filminfoContainer}>
+        <View >
           <Text style={styles.titlefilm}>{props.titleFilm}</Text>
           <Image
             style={styles.imageFilm}
@@ -57,7 +71,8 @@ export default function Event(props) {
       <View style={styles.interactionBar}>
         <View style={styles.interactionToEventView}>
           <View style={styles.participants}>
-            {props.joingEventhandle && avatars}
+            {avatars}
+            {avatarjoint}
           </View>
           <TouchableOpacity
             onPress={props.displayComments}
@@ -72,33 +87,18 @@ export default function Event(props) {
           activeOpacity={0.8}
           onPress={props.handleJoinEvent}
         >
-          <Text style={styles.buttonText}>+ Joindre</Text>
+          {props.isParticipate ? (
+            <Text style={styles.buttonText}>Quitter</Text>
+          ) : (
+            <Text style={styles.buttonText}>+ Joindre</Text>
+          )}
         </TouchableOpacity>
       </View>
       {props.showComments && (
         <View style={styles.commentsSection}>
-          {props.comments
-            .sort((a, b) => new Date(b.date) - new Date(a.date)) // classement des commentaire plus recente à plus ancien
-            .map((comment) => {
-              const formattedDate = formatDistanceToNow(
-                new Date(comment.date),
-                {
-                  addSuffix: true,
-                  includeSeconds: true,
-                  locale: fr,
-                }
-              );
-
-              return (
-                <Comment
-                  uri={comment.user.avatar}
-                  username={comment.user.username}
-                  key={comment._id || comment.date}
-                  date={formattedDate} // Afficher la date formatée
-                  content={comment.content}
-                />
-              );
-            })}
+          <Comments
+          comments={props.comments}
+          ></Comments>
 
           <View style={styles.inputcommentcontaire}>
             <TextInput
@@ -217,23 +217,22 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   filminfoContainer: {
-    textAlign:"center",
-    alignItems: "center", 
-    backgroundColor: "#f0f0f0", 
-    borderRadius: 10, 
-    
+    textAlign: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
   },
   imageFilm: {
     height: 100,
-    width:350, 
-    borderRadius: 10, 
-    marginBottom: 15, 
+    width: 350,
+    borderRadius: 10,
+    marginBottom: 15,
   },
   titleFilm: {
-    fontSize: 20, 
-    fontWeight: "bold", 
-    color: "#FFFFFF", 
-    textAlign: "center", 
-    alignSelf:"center",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
+    alignSelf: "center",
   },
 });
