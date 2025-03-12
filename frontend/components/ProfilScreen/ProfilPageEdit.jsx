@@ -7,6 +7,7 @@ import {
 	View,
 	Image,
 	ScrollView,
+	KeyboardAvoidingView,
 } from "react-native";
 
 import Avatar from "../common/Avatar";
@@ -170,7 +171,7 @@ export default function ProfilPageEdit({ user, setEdit }) {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 8,
+		flex: 9,
 		alignItems: "center",
 		minWidth: "100%",
 	},

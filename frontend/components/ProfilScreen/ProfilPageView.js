@@ -56,7 +56,7 @@ export default function ProfilPageView({ user, setEdit }) {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 8,
+		flex: 9,
 		minWidth: "100%"
 	},
 

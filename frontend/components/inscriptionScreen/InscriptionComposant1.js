@@ -37,7 +37,7 @@ function InscriptionScreen1({
         <TextInput
           onChangeText={setUsername}
           value={username}
-          placeholder="Entrez votr nom d'utilisateur"
+          placeholder="Entrez votre nom d'utilisateur"
         ></TextInput>
       </View>
       <View>

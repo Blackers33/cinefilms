@@ -73,19 +73,23 @@ const TabNavigator = () => {
 export default function App() {
 	NavigationBar.setBackgroundColorAsync("black");
 	return (
-		<Provider store={store}>
-			<NavigationContainer>
-				<Stack.Navigator screenOptions={{ headerShown: false }}>
-					<Stack.Screen name='Connexion' component={ConnexionScreen} />
-					<Stack.Screen name='TabNavigator' component={TabNavigator} />
-					<Stack.Screen name='Inscription' component={InscriptionScreen} />
-					<Stack.Screen name='CreateEventScreen' component={createEventScreen} />
-					<Stack.Screen name='Film' component={FilmScreen} />
-					<Stack.Screen name='Profil' component={ProfilScreen}/>
-
-				</Stack.Navigator>
-			</NavigationContainer>
-		</Provider>
+		
+			<Provider store={store}>
+				<NavigationContainer>
+					<Stack.Navigator screenOptions={{ headerShown: false }}>
+						<Stack.Screen name='Connexion' component={ConnexionScreen} />
+						<Stack.Screen name='TabNavigator' component={TabNavigator} />
+						<Stack.Screen name='Inscription' component={InscriptionScreen} />
+						<Stack.Screen
+							name='CreateEventScreen'
+							component={createEventScreen}
+						/>
+						<Stack.Screen name='Film' component={FilmScreen} />
+						<Stack.Screen name='Profil' component={ProfilScreen} />
+					</Stack.Navigator>
+				</NavigationContainer>
+			</Provider>
+		
 	);
 }
 

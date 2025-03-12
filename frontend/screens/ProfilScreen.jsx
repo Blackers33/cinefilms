@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import ProfilPageEdit from "../components/ProfilScreen/ProfilPageEdit";
 import ProfilPageView from "../components/ProfilScreen/ProfilPageView";
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 
 const mockUser = {
 	_id: {
@@ -45,18 +46,17 @@ export default function ProfilScreen() {
 
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<KeyboardAvoidingView behavior={Platform.OS === "ios" && "padding"}>
-		
+		<AutocompleteDropdownContextProvider>
+			<SafeAreaView style={styles.container}>
+				<KeyboardAvoidingView behavior={Platform.OS === "ios" && "padding"}>
 					{edit ? (
-						<ProfilPageEdit user={user} setEdit={()=>setEdit(!edit)}/>
+						<ProfilPageEdit user={user} setEdit={() => setEdit(!edit)} />
 					) : (
-						<ProfilPageView user={user} setEdit={()=>setEdit(!edit)}/>
+						<ProfilPageView user={user} setEdit={() => setEdit(!edit)} />
 					)}
-				
-				
-			</KeyboardAvoidingView>
-		</SafeAreaView>
+				</KeyboardAvoidingView>
+			</SafeAreaView>
+		</AutocompleteDropdownContextProvider>
 	);
 }
 
