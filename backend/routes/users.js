@@ -102,4 +102,18 @@ router.get('/profil/:token', (req, res) => {
   });
 })
 
+//Get le username d'un utilisateur à partir de son ObjectID
+router.get('/:userId', (req, res) => {
+  try {
+    User.findById(req.params?.userId.toString()).then(data => {
+      if (data) {
+        res.json({ result: true, user: {username: data.username}})
+      } else {
+        res.json({ result: false, error: 'No corresponding profil' });
+      }
+    })
+  } catch(error) {
+    res.status(500).json({ result: false, error: 'Internal server error' });
+  }
+})
 module.exports = router;

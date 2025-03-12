@@ -1,28 +1,28 @@
 import { StyleSheet, View, TextInput, Text, KeyboardAvoidingView, Platform, TouchableOpacity, ScrollView } from 'react-native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Avatar from '../common/Avatar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Send from 'react-native-vector-icons/Feather'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { formatDistanceToNow } from "date-fns";
+import { fr } from "date-fns/locale";
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
-export default function Comments({ navigation }) {
-  const user = useSelector((state) => state.user.value)
-  const [comment, setComment] = useState('');
-  const [allComments, setAllComments] = useState([]);
-  const filmId = 950396;
-
+export default function Comments({ filmId, allComments, refresh }) {
+  const user = useSelector((state) => state.user.value);
+  const [comment, setComment] = useState({});
   /**
-  * Requête permettant de poster un commentaire après que l'utilisateur a cliqué sur le bouton 'Envoyer'
+  * Requête permettant d'jouter un commentaire après que l'utilisateur a cliqué sur le bouton 'Envoyer'
   * Informations requises :
   * Token de l'utilisateur (authentification)
-  * Contenu du commentaire
+  * Contenu du commentair
   */
   const handleSubmitMessage = () => {
     //Créer un nouveau commentaire avec userId & contenu du commentaire
     const newComment = {
-      user: user.token,
+      user: 'aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk',   //user.token
       content: comment,
     }
     
@@ -33,25 +33,35 @@ export default function Comments({ navigation }) {
     })
     .then((response) => response.json())
     .then((data) => {
-      setAllComments(prevComments => [...prevComments, data.film]);
-      setComment('');
+      if (data) {
+        // `refresh` est une fonction qui met `refreshData` à `true`, déclenchant ainsi l'exécution du `useEffect` pour rafraîchir les données
+        //  En mettant à jour l'état `allComments` apres l'ajout d'un commentaire. 
+        refresh();
+        setComment('');
+      }
     });
   }
-  console.log(user)
-  const comments = allComments.map((data, i) => {
+  //Afficher tout les commentaires
+  const comments = allComments?.map((data, i) => {
+    const date = formatDistanceToNow(data.date, {
+      addSuffix: true, 
+      includeSeconds: true,
+      locale: fr,
+    });
     return (
       <View key={i} style={styles.commentContainer}>
       <View style={styles.commentInfo}>
-        <Avatar style={styles.avatar} />
-        <Text style={styles.username}>{user.username}</Text>
+        <Avatar uri={data?.avatar} style={styles.avatar} />
+        <Text style={styles.username}>{data.username}</Text>
       </View>
       <Text style={styles.content}>{data.content}</Text>
-      <Text style={styles.time}>{data.date}</Text>
+      <Text style={styles.time}>{date}</Text>
     </View>
     )  
   });
   return (
-    <View style={styles.commentsContainer}>
+    <KeyboardAvoidingView enabled={true} behavior='padding' style={styles.flexStyle}>
+      <View style={styles.commentsContainer}>
       <ScrollView style={styles.containerComments}>
         {comments}
       </ScrollView>
@@ -65,18 +75,21 @@ export default function Comments({ navigation }) {
           placeholderTextColor="black"
           onChangeText={(value) => setComment(value)}
           value={comment}
+          keyboardType='web-search'
         />
         <TouchableOpacity onPress={() => handleSubmitMessage()} style={styles.addFilterButton} activeOpacity={0.8}>
           <Send name='send' size={30} color={'#C94106'} />
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </View>
+    </KeyboardAvoidingView>
+    
   );
 }
 
 const styles = StyleSheet.create({
   commentsContainer: {
-    height: '79%'
+    height: '85%'
   },
   commentInfo: {
     flexDirection: 'row',
@@ -85,7 +98,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   containerComments: {
-    flex: 1,
+    flex: 1
   },
   commentContainer: {
     padding: 5,
@@ -94,11 +107,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
 
-  },
-  avatar: {
-    marginBottom: 10,
-    marginRight: 10,
-    paddingLeft : 0,
   },
   username: {
     fontFamily: 'Mulish',
