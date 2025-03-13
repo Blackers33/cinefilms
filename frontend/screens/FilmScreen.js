@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, Modal, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import LikeIcon from 'react-native-vector-icons/AntDesign';
 import InfoIcon from 'react-native-vector-icons/Entypo';
@@ -11,49 +11,56 @@ const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 export default function FilmScreen({ navigation, route }) {
   const [activeTab, setActiveTab] = useState('events');
   const [refreshData, setRefreshData] = useState(false);
+  const [refreshEvents, setRefreshEvents] = useState(false);
+  const [refreshComments, setRefreshComments] = useState(false);
   const [allComments, setAllComments] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [likes, setLikes] = useState(0);
   const [isLike, setIsLike] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const filmId = route.params.id;
   
   //Récupérer tout les commentaires déja éxistants ansi que les likes depuis la BDD sur un film en utilisant son ID
   useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/films/${filmId}/aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk/film`)
+    fetch(`${BACKEND_ADDRESS}/films/${filmId}/aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS/film`)
     .then(response => response.json())
     .then(filmData => {
       setLikes(filmData.likes);
       setIsLike(filmData.isLiked);
     });
+    setRefreshData(false);
+  } ,[refreshData]);
+
+  useEffect(() => {
     fetch(`${BACKEND_ADDRESS}/films/${filmId}/comments`)
     .then(response => response.json())
     .then(filmData => {
       setAllComments(filmData.comments);
     });
-    fetch(`${BACKEND_ADDRESS}/films/${filmId}/aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk/events`)
+    setRefreshComments(false);
+  } ,[refreshComments]);
+
+  useEffect(() => {
+    fetch(`${BACKEND_ADDRESS}/events/${filmId}/aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS/events`)
     .then(response => response.json())
     .then(eventsData => {
       setAllEvents(eventsData.events)
     })
-    setRefreshData(false);
-  } ,[refreshData]);
-
-  const refresh = () => {
-    setRefreshData(true);
-  }
+    setRefreshEvents(false);
+  } ,[refreshEvents]);
 
   //requete post like
   const toggleLike = () => {
     fetch(`${BACKEND_ADDRESS}/films/${filmId}/like`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({user : 'aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk'})
+      body: JSON.stringify({user : 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS'})
     })
     .then((response) => response.json())
     .then((data) => {
       if (data) {
-        refresh();
+        setRefreshData(true);
       }
     });
   }
@@ -67,7 +74,7 @@ export default function FilmScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={{backgroundColor: '#1E1C1A', flex:1}}>
-      <View style={styles.containerFilm}>
+      <View style={[styles.containerFilm, Platform.OS === 'android' && { marginTop: 30 }]}>
         <Text style={styles.titleFilm}>{route.params.title}</Text>
         <Image source={{ uri: `https://image.tmdb.org/t/p/w500/${route.params.backdrop_path}`}} style={styles.imageFilm} />
         <View style={styles.containerIconsFilm}>
@@ -78,13 +85,31 @@ export default function FilmScreen({ navigation, route }) {
               color={isLike ? 'red' : 'white'} 
               onPress={() => toggleLike()}
             />
-            <Text style={styles.likeCount} onPress={() => toggleLike()}>{(likes === 1 || likes === 0) ? `${likes} like` : `${likes} likes`}</Text>
+            <Text style={styles.likeCount} onPress={() => toggleLike()}>
+              {likes === 1 ? `${likes} like` : (likes === undefined || likes === 0 )? "0 like" : `${likes} likes`}
+            </Text>
           </View>
-          <View style={styles.infoIcon}>
-            <InfoIcon name='info' size={20} color={'white'} ></InfoIcon>
-          </View>
+          <TouchableOpacity onPress={() => setVisible(!visible)} style={styles.infoIcon}>
+            <InfoIcon name='info' size={20} color={'white'} />
+          </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        visible={visible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setVisible(false)} // Permet de fermer avec le bouton retour
+      >
+        <View style={styles.overlay}>
+          <View style={styles.popup}>
+            <Text style={styles.title}>{route.params.title}</Text>
+            <Text style={styles.description}>{route.params.overview}</Text>
+            <TouchableOpacity onPress={() => setVisible(false)} style={styles.closeButton}>
+              <Text style={styles.closeText}>Fermer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.navigationContainer}>
         <TouchableOpacity onPress={() => redirectedToEvents()} style={styles.buttonRedirectEvents} activeOpacity={0.8}>
           <Text style={activeTab === 'events' ? styles.buttonOn : styles.buttonOff}>Evénements</Text>
@@ -93,18 +118,18 @@ export default function FilmScreen({ navigation, route }) {
           <Text style={activeTab === 'comments'? styles.buttonOn : styles.buttonOff}>Commentaires</Text>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={{ flex :1}}>
           {activeTab === "events" ? (
             <Events 
             filmId={filmId}
             allEvents={allEvents}
-            refresh={refresh}
+            refresh={() => setRefreshEvents(true)}
             />
           ) : (
             <Comments 
               filmId={filmId}
               allComments={allComments}
-              refresh={refresh}
+              refresh={() => setRefreshComments(true)}
             />
           )}
       </View>
@@ -188,5 +213,35 @@ const styles = StyleSheet.create({
   buttonRedirectComments: {
     justifyContent: 'center',
     alignItems: "center",
+  },
+  overlay: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    backgroundColor: "rgba(0,0,0,0.5)" 
+  },
+  popup: { 
+    backgroundColor: "#fff", 
+    padding: 20, borderRadius: 10, 
+    width: '77%' 
+  },
+  title: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginBottom: 10 
+  },
+  description: { 
+    fontSize: 16, 
+    marginBottom: 20 
+  },
+  closeButton: { 
+    backgroundColor: "#FF5733", 
+    padding: 10, 
+    borderRadius: 5, 
+    alignItems: "center" 
+  },
+  closeText: { 
+    color: "#fff", 
+    fontWeight: "bold" 
   }
 });

@@ -12,13 +12,15 @@ export default function Comment(props) {
 
   return (
     <View style={styles.commentContainer}>
-      <Avatar uri={props.avatar}></Avatar>
-      <Text style={styles.usernametext}>{props.username}</Text>
+      <View style={styles.userInfos}>
+        <Avatar uri={props.avatar}></Avatar>
+        <Text style={styles.usernametext}>{props.username}</Text>
+      </View>
       <View style={styles.contenucomment}>
-        <Text style={styles.commentText}>{props.date}</Text>
-        <Text key={props.index} style={styles.commentText}>
+      <Text key={props.index} style={styles.commentText}>
           {props.content}
         </Text>
+        <Text style={styles.commentDate}>{props.date}</Text>
       </View>
     </View>
   );
@@ -26,27 +28,38 @@ export default function Comment(props) {
 
 const styles = StyleSheet.create({
   commentContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
+    padding: 5,
+    backgroundColor: 'rgba(77, 77, 77, 0.2)',
+    opacity: 1,
     marginTop: 5,
-    padding: 10,
-    backgroundColor: "#444",
+    //backgroundColor: "#444",
     borderRadius: 5,
   },
-  contenucomment: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
+  userInfos: {
+    flexDirection: 'row',
+    justifyContent: 'start',
+    padding: 0,
+    margin: 0,
+  },
+  contenucomment: { 
+    marginLeft: 35
   },
   commentText:{
-    fontSize: 10,
     color: "white",
+    fontSize: 15,
+    color: 'white',
+  },
+  commentDate: {
+    fontSize: 12,
+    color : 'white',
+    fontWeight: 200,
   },
   usernametext:{
-    color:"#FFFFFF",
-    fontSize:12,
-    fontWeight:"bold",
+    fontWeight: 500,
     alignSelf:"center",
-    textAlign:"center",
-    margin:10,
-  }
+    fontSize: 14,
+    color: 'rgb(201, 65, 6)',
+    marginTop: 2,
+    marginLeft: 5,
+  },
 });

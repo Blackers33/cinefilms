@@ -1,22 +1,31 @@
-import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, ImageBackground, ScrollView } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, ImageBackground, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useState, useEffect } from 'react';
 import Avatar from '../common/Avatar';
+import Comment from '../EventsComponent/comment';
 import AutoCompleteSelector from '../common/AutoCompleteSelector';
 import CommentsIcon from 'react-native-vector-icons/Fontisto';
-import Search from 'react-native-vector-icons/EvilIcons'
+import Back from 'react-native-vector-icons/Ionicons';
+import Send from 'react-native-vector-icons/Feather'
 import formatDate from '../../utils/utils';
+import { formatDistanceToNow } from "date-fns";
+import { fr } from "date-fns/locale";
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_IP_ADDRESS;
 
 export default function Events({ filmId, allEvents, refresh }) {
     const [selectedCity, setSelectedCity] = useState("")
     const [eventsToShow, setEventsToShow] = useState(allEvents);
+    const [displayComments, setDisplayComments] = useState(false);
+    const [eventCommentsToShow, setEventCommentsToShow] = useState(null);
+    const [eventComments, setEventComments] = useState([])
+    const [comment, setComment] = useState({});
+    const [eventsFound, setEventsFound] = useState(false);
 
     const handleJoinEvent = (eventId) => {
-        fetch(`${BACKEND_ADDRESS}/films/${eventId}/joingEvent`, {
+        fetch(`${BACKEND_ADDRESS}/events/${eventId}/joingEvent`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({user: 'aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk'})
+            body: JSON.stringify({user: 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS'})
           })
           .then((response) => response.json())
           .then((data) => {
@@ -36,20 +45,78 @@ export default function Events({ filmId, allEvents, refresh }) {
         }
     };
 
+    //Afficher ou masquer les commentaires au clique sur le boutton 'commentaires'
+    const toggleComments = (eventId) => {
+        if (eventCommentsToShow !== eventId) {
+            fetch(`${BACKEND_ADDRESS}/films/${eventId}/commentaires`)
+            .then(response => response.json())
+            .then(dataComments => {
+                if (dataComments) {
+                    setEventComments(dataComments.comments);
+                }
+            });
+            setEventCommentsToShow(eventId);
+            setDisplayComments(true);
+        } else {
+            setDisplayComments(!displayComments);
+        }
+    };
+
+    //Ajouter un commentaire 
+    const handleSubmitComment = (eventId) => {
+        const newComment = {
+            user: 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS',   //user.token
+            content: comment,
+          }
+        fetch(`${BACKEND_ADDRESS}/events/${eventId}/comment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newComment)
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) {
+            setEventComments((prev) => [...prev, data.comment]);
+            setComment('');
+          }
+        });
+    }
+    
     useEffect(() => {
         if (selectedCity && selectedCity !== "") {
             const eventsForCity = allEvents.filter((event) => 
                 event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())
             );
             setEventsToShow(eventsForCity);
+            setEventsFound(eventsToShow.some(event => event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())));
         }
         else {
             setEventsToShow(allEvents);
-        }
-    }, [selectedCity, allEvents])
+        }  
+       
+        /*if (selectedCity && selectedCity !== "") {
+            // Filtrer les événements par ville
+            const eventsForCity = allEvents.filter((event) => 
+                event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())
+            );
+            
+            // Si aucun événement ne correspond à la ville, affichez le message "Aucun événement"
+            if (eventsForCity.length === 0) {
+                setEventsToShow([]); // Aucune donnée à afficher
+                setSelectedCity('');
+                setTimeout(() => {
+                    setEventsToShow(allEvents); // Remettre tous les événements après 2 secondes
+                }, 2000); // 2 secondes
+            } else {
+                setEventsToShow(eventsForCity); // Afficher les événements filtrés
+            }
+        } else {
+            setEventsToShow(allEvents); // Si aucune ville n'est sélectionnée, réinitialiser à tous les événements
+        }*/
+    }, [selectedCity, allEvents]);
     
     //Affichet tout les événements avec map
-    const events = eventsToShow?.map((event) => {
+    const events = eventsToShow?.map((event, i) => {
         //Mettre date en format jj/mm/aaaa hh:mm avec formatDate
         const date = formatDate(event.date);
         
@@ -58,84 +125,133 @@ export default function Events({ filmId, allEvents, refresh }) {
         * - Si le nombre de participants est inférieur à 3, utilise `participantsLessThanThree` pour l'affichage.
         * - Sinon, affiche les 3 premiers avatars suivis de `+X` indiquant le nombre de participants restants.
         */
-        const participantsLessThanThree = event?.participants?.map((participant, i)=> (
-            <Avatar size={25} uri={participant.avatar} />
+        
+        const participantsLessThanThree = event?.participants?.map((participant, i) => (
+            <Avatar key={i} size={25} uri={participant.avatar} />
         ));
         
         const participants = event?.participants.length > 3 ? 
-            <View style={styles.participants}>  
-                <Avatar size={25} uri={event.participants[0].avatar}/>
-                <Avatar size={25} uri={event.participants[1].avatar}/>
-                <Avatar size={25} uri={event.participants[2].avatar}/>
-                <Text style={styles.participantsNumber}>{`+ ${event.participants.length - 3}`}</Text>
-            </View> 
-            :
-            <View style={styles.participants}>  
-                {participantsLessThanThree}
-            </View>;
+        <View style={styles.participants}>  
+            <Avatar size={25} uri={event.participants[0].avatar}/>
+            <Avatar size={25} uri={event.participants[1].avatar}/>
+            <Avatar size={25} uri={event.participants[2].avatar}/>
+            <Text style={styles.participantsNumber}>{`+ ${event.participants.length - 3}`}</Text>
+        </View> 
+        :
+        <View style={styles.participants}>  
+            {participantsLessThanThree}
+        </View>;
+
+        //Afficher les commentaires d'un événement 
+        const comments = eventComments?.map((comment) => {
+            const date = formatDistanceToNow(comment.date, {
+                  addSuffix: true, 
+                  includeSeconds: true,
+                  locale: fr,
+                });
+            return <Comment
+                uri={comment.user.avatar}
+                username={comment.user.username}
+                key={comment._id || comment.date}
+                date={date}
+                content={comment.content}
+            />
+        });
         
         return(
-            <View  style={styles.eventContainer}>
-                <View style={styles.eventInfos}>
-                    <Avatar size={40} uri={event.owner.avatar} style={styles.avatar}/>
-                    <View style={styles.appointmentInfos}>
-                        <Text style={styles.appointmentPlace}>{event.location} - {event.title}</Text>
-                        <Text style={styles.appointmentDate}>{date}</Text>
+            <View key={i} style={styles.container}>
+                <View style={styles.eventContainer}>
+                    <View style={styles.eventInfos}>
+                        <Avatar size={40} uri={event.owner.avatar} style={styles.avatar}/>
+                        <View style={styles.appointmentInfos}>
+                            <Text style={styles.appointmentPlace}>{event.location} - {event.title}</Text>
+                            <Text style={styles.appointmentDate}>{date}</Text>
+                        </View>
                     </View>
-                </View>
-                <ImageBackground source={require('../../assets/image-film.webp')} imageStyle={{ opacity: 0.3 }} style={styles.backgroundDescriptionEvent}>
-                    <Text style={styles.descriptionText}>{event.description}</Text>
-                </ImageBackground>
-                <View style={styles.interactionBar}>
-                    {participants}
-                    <View style={styles.commentJongBar}>
-                        <View style={styles.interactionToEventView}>
-                            <TouchableOpacity onPress={() => displayComments()} style={styles.displayCommentsButton} activeOpacity={0.8}>
-                                <CommentsIcon name='comments' size={30} color={'#C94106'} />
+                    <ScrollView style={{flex:1}}>
+                        <ImageBackground source={require('../../assets/image-film.webp')} imageStyle={{ opacity: 0.3 }} style={styles.backgroundDescriptionEvent}>
+                            <Text style={styles.descriptionText}>{event.description}</Text>
+                        </ImageBackground>
+                    </ScrollView>
+                    <View style={styles.interactionBar}>
+                        {participants}
+                        <View style={styles.commentJongBar}>
+                            <View style={styles.interactionToEventView}>
+                                <TouchableOpacity onPress={() => toggleComments(event._id)} style={styles.displayCommentsButton} activeOpacity={0.8}>
+                                    <CommentsIcon name='comments' size={30} color={'#C94106'} />
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity onPress={() => handleJoinEvent(event._id)} style={styles.joingEventButton} activeOpacity={0.8}>
+                                {event.isParticipate ? 
+                                    <Text style={styles.buttonText}>Quitter</Text> 
+                                    : 
+                                    <Text style={styles.buttonText}>+ Joindre</Text>
+                                }
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity onPress={() => handleJoinEvent(event._id)} style={styles.joingEventButton} activeOpacity={0.8}>
-                            {event.isParticipate ? 
-                                <Text style={styles.buttonText}>Quitter</Text> 
-                                : 
-                                <Text style={styles.buttonText}>+ Joindre</Text>
-                            }
-                        </TouchableOpacity>
                     </View>
                 </View>
+                {displayComments && eventCommentsToShow === event._id && <View style={styles.commentsSection}>
+                    {comments}
+                    <View style={styles.inputcommentcontaire}>
+                        <TextInput
+                            style={styles.inputcomment}
+                            placeholder="écrire un commentaire"
+                            placeholderTextColor="#fff"
+                            onChangeText={(value) => setComment(value)}
+                            value={comment}
+                            keyboardType='web-search'
+                        ></TextInput>
+                        <TouchableOpacity activeOpacity={0.7} onPress={() => handleSubmitComment(event._id)}>
+                          <Send name='send' size={30} color={'#C94106'} />
+                        </TouchableOpacity>
+                    </View>
+                </View>}
             </View>
         )
     })
+    
     return(
-        <View style={styles.events}>
-            <View style={styles.filterBar}>
-                <AutoCompleteSelector
-                    type="city"
-                    onSubmitEditing={handleCitySearchSubmit}
-                />
-                <TouchableOpacity onPress={() => handleSubmitFilter()} style={styles.addFilterButton} activeOpacity={0.8}>
-                    <Search name='search' size={34} color={'#C94106'} />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.eventsContainer}>
-                <ScrollView style={styles.containerevents}>
-                    {events}    
-                </ScrollView>
-                
-            </View>
-        </View>
+        <KeyboardAvoidingView style={styles.events}>
+            {eventsFound && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
+                <Back name='arrow-back-outline' size={20} color={'white'}/>
+            </TouchableOpacity>}
+            {!!eventsToShow && eventsToShow.length > 0 ? ( 
+                <>
+                    <View style={styles.filterBar}>
+                        <AutoCompleteSelector
+                            type="city"
+                            onSubmitEditing={handleCitySearchSubmit}
+                        />
+                    </View>
+
+                    <ScrollView style={styles.containerevents}>
+                        {events}
+                    </ScrollView>
+                </>
+            ) : (
+                <> 
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
+                        <Back name='arrow-back-outline' size={20} color={'white'}/>
+                    </TouchableOpacity>
+                    <Text style={styles.textNoEventToShow}>
+                        Aucun événement en cours pour ce film.
+                    </Text>
+                </>
+            )}
+        </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
-    events: {
-
-    },
-    eventContainer: {
-       
+    container: {
+        marginBottom: 10,
     },
     containerevents: {
-        
+        marginTop: 10
+    },
+    events: {
+        flex :1  
     },
     inputFilter: {
         backgroundColor: 'rgba(77, 77, 77, 0.1)',
@@ -158,16 +274,15 @@ const styles = StyleSheet.create({
     eventContainer: {
         width: "90%",       
         alignSelf: "center",   // Centre horizontalement
-        borderRadius: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         elevation: 3,          // Ombre pour Android
         shadowColor: "#000",   // Ombre pour iOS
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
         backgroundColor: 'rgba(77, 77, 77, 0.5)',
-        marginTop: 10,
         padding: 10,
-        height: 250, 
     },
     eventInfos: {
         flexDirection: 'row',
@@ -188,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundDescriptionEvent: {
         resizeMode: "cover", 
         marginTop: 10,
-        height: '50%'
+        height: '100%'
     },
     descriptionText: {
         color: 'white',
@@ -196,9 +311,9 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     interactionBar: {
+        marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20
     },
     interactionToEventView: {
         
@@ -206,7 +321,7 @@ const styles = StyleSheet.create({
     commentJongBar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '60%'
+        width: '60%',
     },
     participants: {
         flexDirection: 'row',
@@ -229,4 +344,36 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '500'
     }, 
+    commentsSection: {
+        width: "90%",
+        backgroundColor: 'rgba(77, 77, 77, 0.5)',
+        borderRadius: 5,
+        alignSelf: "center", 
+    },
+    inputcommentcontaire: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: "100%",
+        marginTop: 5,
+        borderRadius: 5,
+        alignSelf: "center", 
+    },
+    inputcomment: {
+        flex: 1,
+        height: 40,
+        borderColor: 'rgb(201, 65, 6)',
+        borderWidth: 1,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        marginRight: 10,
+        color: 'white',
+        backgroundColor:'rgba(77, 77, 77, 0.2)'    
+    },
+    textNoEventToShow: {
+        textAlign: 'center',
+        marginTop: 20, 
+        color: 'white', 
+        fontSize: 18, 
+        marginTop: 50 
+    }
 })

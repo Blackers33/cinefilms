@@ -43,9 +43,14 @@ const createFilm = async (tmdbId) => {
   }
 };
 
-// route get qui permet de trouver tous les evenements
 router.get("/", async (req, res) => {
   try {
+    const now = new Date();
+
+    // Supprimer les événements passés avant de récupérer les événements à jour
+    //Avec l'opérateur MongoDB "$lt" qui signifie "less than"
+    await Event.deleteMany({ date: { $lt: now } });
+
     const events = await Event.find()
       .populate("comments")
       .populate("owner")
@@ -54,7 +59,7 @@ router.get("/", async (req, res) => {
       .populate("filmId");
 
     if (events.length === 0) {
-      return res.status(404).json({ message: "Aucun événement trouvé" });
+      return res.status(404).json({ message: "Aucun événement en cours" });
     }
 
     // Récupération des détails des films via TMDb
@@ -70,7 +75,7 @@ router.get("/", async (req, res) => {
           method: "GET",
           headers: {
             accept: "application/json",
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NmY4ZDQxNjAyMzFiNjE3YTA2MTU3M2ZhODA4YzlmMCIsIm5iZiI6MTczODc0NDYzMi41ODksInN1YiI6IjY3YTMyMzM4NDRkNjg2M2I3NDhhNzJlZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2GmSmaJ7gWBY4f7F4QCE_TrHH95nnNwEhrqAxg655Q4",
+            Authorization: "Bearer TON_TOKEN_TMDb",
           },
         };
 
