@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function Card({ profile, isFriend, handleAddButton }) {
-console.log(profile)
+	
 	return (
 		<View style={styles.card}>
 			<View style={styles.topSection}>

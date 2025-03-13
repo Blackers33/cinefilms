@@ -71,13 +71,14 @@ router.get("/", async (req, res) => {
 
         const tmdbId = event.filmId.tmdbId;
         const url = `https://api.themoviedb.org/3/movie/${tmdbId}?language=fr-FR`;
+        console.log(process.env.TMDB_API);
         const options = {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: "Bearer TON_TOKEN_TMDb",
-          },
-        };
+					method: "GET",
+					headers: {
+						accept: "application/json",
+						Authorization: process.env.TMDB_API,
+					},
+				};
 
         try {
           const response = await fetch(url, options);
