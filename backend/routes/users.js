@@ -125,13 +125,28 @@ router.get('/', (req, res) => {
   })
 });
 
-//Add new friend
-router.post('/addfriend/:_id', (req, res) => {
- User.friends.push(req.params.user)
- User.save()
- res.json({result: true, message:'Friend added'})
-})
+// //Add new friend
+// router.post('/addfriend/:_id', (req, res) => {
+//  User.friends.push(req.params.user)
+//  User.save()
+//  res.json({result: true, message:'Friend added'})
+// })
 
+router.post("/addFriend", async (req, res) => {
+  const { userId, friendId } = req.body;
 
+      const user = await User.findById(userId);
+      const friend = await User.findById(friendId);
+
+      // Vérifier si l'ami est déjà ajouté
+      if (user.friends.includes(friendId)) {
+          return res.status(400).json({ success: false, message: "Ami déjà ajouté" });
+      }
+
+      user.friends.push(friendId);
+      await user.save();
+
+      res.json({ success: true, message: "Ami ajouté avec succès !" });
+  });
 
 module.exports = router;
