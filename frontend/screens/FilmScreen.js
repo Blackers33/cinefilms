@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import LikeIcon from 'react-native-vector-icons/AntDesign';
 import InfoIcon from 'react-native-vector-icons/Entypo';
 import { StatusBar } from 'expo-status-bar';
+import { useSelector } from 'react-redux';
 import  Events from '../components/filmScreen/Events';
 import  Comments from '../components/filmScreen/Comments';
 
@@ -19,11 +20,12 @@ export default function FilmScreen({ navigation, route }) {
   const [isLike, setIsLike] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  const user = useSelector((state) => state.user.value);
   const filmId = route.params.id;
   
   //Récupérer tout les commentaires déja éxistants ansi que les likes depuis la BDD sur un film en utilisant son ID
   useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/films/${filmId}/aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS/film`)
+    fetch(`${BACKEND_ADDRESS}/films/${filmId}/${user.token}/film`)
     .then(response => response.json())
     .then(filmData => {
       setLikes(filmData.likes);
@@ -42,7 +44,7 @@ export default function FilmScreen({ navigation, route }) {
   } ,[refreshComments]);
 
   useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/events/${filmId}/aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS/events`)
+    fetch(`${BACKEND_ADDRESS}/events/${filmId}/${user.token}/events`)
     .then(response => response.json())
     .then(eventsData => {
       setAllEvents(eventsData.events)
@@ -55,7 +57,7 @@ export default function FilmScreen({ navigation, route }) {
     fetch(`${BACKEND_ADDRESS}/films/${filmId}/like`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({user : 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS'})
+      body: JSON.stringify({user : user.token})
     })
     .then((response) => response.json())
     .then((data) => {
@@ -74,7 +76,7 @@ export default function FilmScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={{backgroundColor: '#1E1C1A', flex:1}}>
-      <View style={[styles.containerFilm, Platform.OS === 'android' && { marginTop: 30 }]}>
+      <View style={[styles.containerFilm, Platform.OS !== 'ios' && { marginTop: 30 } ]}>
         <Text style={styles.titleFilm}>{route.params.title}</Text>
         <Image source={{ uri: `https://image.tmdb.org/t/p/w500/${route.params.backdrop_path}`}} style={styles.imageFilm} />
         <View style={styles.containerIconsFilm}>

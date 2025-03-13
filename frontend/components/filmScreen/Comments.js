@@ -22,7 +22,7 @@ export default function Comments({ filmId, allComments, refresh }) {
   const handleSubmitMessage = () => {
     //Créer un nouveau commentaire avec userId & contenu du commentaire
     const newComment = {
-      user: 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS',   //user.token
+      user: user.token,
       content: comment,
     }
     
