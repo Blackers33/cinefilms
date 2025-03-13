@@ -4,11 +4,10 @@ import Avatar from "../common/Avatar";
 import MovieGenresDisplay from "../common/MovieGenresDisplay";
 import MoviesScrollView from "../common/MoviesScrollView";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-export default function Card({ profile, isFriend }) {
-
-	console.log(isFriend);
-
+export default function Card({ profile, isFriend, handleAddButton }) {
+console.log(profile)
 	return (
 		<View style={styles.card}>
 			<View style={styles.topSection}>
@@ -17,12 +16,15 @@ export default function Card({ profile, isFriend }) {
 					<Text style={styles.title}>{profile.username}</Text>
 				</View>
 				<TouchableOpacity
-					onPress={() => console.log(profile._id)}
 					style={isFriend ? styles.ghostFriendButton : styles.addFriendButton}
 					activeOpacity={0.8}
+					onPress={() => handleAddButton(profile._id)}
 				>
 					<Text style={isFriend ? styles.ghostText : styles.buttonText}>{isFriend ? "Supprimer" : "Ajouter"}</Text>
 				</TouchableOpacity>
+			</View>
+			<View style={styles.biography}>
+				<Text style={styles.cityText}>{profile?.location?.name ? profile?.location?.name : "Ville introuvable"}</Text>
 			</View>
 			<View style={styles.biography}>
 				<Text style={styles.text}>{profile.biography}</Text>
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
 	},
 	biography: {
 		marginTop: 10,
-		marginBottom: 15,
+		// marginBottom: 15,
 	},
 	addFriendButton: {
 		backgroundColor: "rgb(201, 65, 6)",
@@ -97,5 +99,9 @@ const styles = StyleSheet.create({
 		color: "rgb(201, 65, 6)",
 		fontSize: 18,
 		fontWeight: "500",
+	},
+	cityText: {
+		color: "rgb(201, 65, 6)",
+		fontSize: 16,
 	},
 });

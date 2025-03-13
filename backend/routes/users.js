@@ -124,6 +124,7 @@ router.get("/", (req, res) => {
 					biography: user.biography,
 					genre: user.genre,
 					_id: user._id,
+          location: user.location
 				})),
 			});
 			console.log(data);
@@ -135,17 +136,33 @@ router.get("/", (req, res) => {
 
 //Switch friend
 //Si la personne est déjà amie, elle est enlevée
-router.post("/addfriend/:_id", (req, res) => {
-	const { _id } = req.params;
-	const { token } = req.body;
-  console.log(_id, token)
-	User.findOne({ token }).then((data) => {
-		if (data.friends.includes(Number(_id))) {
-			console.log("already a friend");
-		} else {
-			console.log("not a friend");
-		}
-	});
+router.post("/addfriend/:_id", async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const { token } = req.body;
+
+    const user = await User.findOne({ token });
+
+    if (!user) {
+      return res.status(404).json({ result: false, error: "Utilisateur non trouvé" });
+    }
+
+    const friendId = String(_id);
+    const friendIndex = user.friends.indexOf(friendId);
+
+    if (friendIndex !== -1) {
+      // Supprimer l'ami s'il est déjà dans la liste
+      user.friends.splice(friendIndex, 1);
+    } else {
+      // Ajouter l'ami s'il n'est pas encore dans la liste
+      user.friends.push(friendId);
+    }
+    await user.save();
+    res.json({ result: true, friends: user.friends });
+  } catch (error) {
+    res.status(500).json({ result: false, error: "Erreur interne du serveur" });
+  }
 });
+
 
 module.exports = router;

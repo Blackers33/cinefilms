@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Card from "./Card";
 import SearchAndFilterSection from "./SearchAndFilterSection";
 
-export default function MainSection({ navigation, user }) {
+export default function MainSection({ navigation, user, handleAddButton }) {
     const [usersData, setUsersData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
 
@@ -32,7 +32,6 @@ export default function MainSection({ navigation, user }) {
         }
     };
 
-    console.log(user.friends)
 
     return (
         <View>
@@ -41,7 +40,10 @@ export default function MainSection({ navigation, user }) {
                 <View style={styles.cards}>
                     {filteredData.map((profile) => (
                         profile._id !== user.friends._id && (
-                            <Card key={profile._id} profile={profile} isFriend={user.friends.includes(profile._id)}/>
+                            <Card key={profile._id} 
+                            profile={profile} 
+                            isFriend={user.friends.includes(profile._id)}
+                            handleAddButton={handleAddButton}/>
                         )
                     ))}
                 </View>

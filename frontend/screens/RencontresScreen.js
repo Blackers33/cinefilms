@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopSection from "../components/common/UserTopSection";
 import { ImageBackground } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import MainSection from "../components/RencontresScreen/MainSection";
 
 const mockUser = {
@@ -13,7 +13,7 @@ const mockUser = {
 	email: "gringo@gmail.com",
 	token: "1gj-mH1869b-OCvhkroWmCDHOZbXhuJY",
 	friends: [
-	"67d169084d2c595bfbc647d8",],
+		"67d169084d2c595bfbc647d8", "67cff19d8a931e104c9fd319"],
 	favGenres: [28, 12, 10751, 14],
 	favMovies: [385687, 385128, 10603, 16930, 637],
 	__v: 0,
@@ -31,8 +31,25 @@ const mockUser = {
 };
 
 export default function RencontresScreen({ navigation }) {
-	const user = mockUser //useSelector((state) => state.user.value);
-	
+	const user = mockUser
+	// const user = useSelector((state) => state.user.value);
+	const dispatch = useDispatch();
+
+	const handleAddButton = (id) => {
+		console.log(id)
+		fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/users/addfriend/${id}`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				token: user.token
+			})
+		})
+			.then((res) => res.json())
+			.then((updatedUser) => {
+				console.log("Utilisateur mis à jour :", updatedUser);
+				dispatch(setUser(updatedUser))
+			})
+	};
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
@@ -44,7 +61,7 @@ export default function RencontresScreen({ navigation }) {
 				}}
 			>
 				<TopSection user={user} />
-				<MainSection user={user} />
+				<MainSection user={user} handleAddButton={handleAddButton} />
 			</ImageBackground>
 		</SafeAreaView>
 	);
