@@ -2,13 +2,14 @@ import { Button, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import TextInputStyled from "../common/TextInput";
 import Icon from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function reseachsection(props) {
   return (
     <View style={styles.reseachcontainer}>
       <View style={styles.reseachInput}>
         <TextInputStyled
-          placeholder="Rechercher un film ou un utilisateur"
+          placeholder="Rechercher sur votre ville"
           onChangeText={props.setInputreseach}
           value={props.inputreseach}
         ></TextInputStyled>
@@ -16,6 +17,11 @@ export default function reseachsection(props) {
       <TouchableOpacity onPress={props.handlePressSearchIcon}>
         <View style={styles.button}>
           <Icon name="search-sharp" size={24} color="#bbb" />
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={props.handlerefreshIcon}>
+        <View style={styles.button}>
+        <FontAwesome name="refresh" size={24} color="#bbb" />
         </View>
       </TouchableOpacity>
     </View>
@@ -29,6 +35,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   reseachcontainer: {
+    width: "100%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -37,7 +44,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   reseachInput: {
-    width: "65%",
+    width: "75%",
     height: 40,
   },
 });

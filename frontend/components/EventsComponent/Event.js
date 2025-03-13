@@ -4,46 +4,75 @@ import {
   Text,
   View,
   Image,
-  SafeAreaView,
   TouchableOpacity,
   TextInput,
   ImageBackground,
-  FlatList,
 } from "react-native";
-import { useState } from "react";
+
 import Avatar from "../common/Avatar";
-import Comment from "./comment";
+import Comments from "./comments";
 import CommentsIcon from "react-native-vector-icons/Fontisto";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { formatDistanceToNow, fr } from "date-fns";
+import { useSelector } from "react-redux";
+
+
+
 
 export default function Event(props) {
-  const avatars = Array.from({ length: props.nbrParticipants }, (_, index) => (
-    <Avatar
-      uri={props.avatar}
-      key={index}
-      style={{ marginRight: 5 }}
-      size={30}
-    />
-  ));
+  const user = useSelector((state) => state.user.value);
+
+
+
+  const isCreator = props.creatorUsername === user.username;
+
+  const avatars = props.participants
+    .filter((participant) => participant.username !== user.username) 
+    .map((participant, index) => (
+      <Avatar
+        uri={participant.avatar}
+        key={index}
+        style={{ marginRight: 5 }}
+        size={30}
+      />
+    ));
+
+  const isUserInParticipants = props.participants.some(
+    (participant) => participant.username === user.username
+  );
+
+  const buttonText =
+    isUserInParticipants ||!!props.isParticipate ? "Quitter" : "+ Joindre";
+
+  const avatarjoint =
+    props.isParticipate && !isCreator ? (
+      <Avatar
+        uri={props.avatar}
+        key="user-avatar"
+        style={{ marginRight: 5 }}
+        size={30}
+      />
+    ) : null;
 
   return (
     <View style={styles.eventContainer}>
       <View style={styles.eventInfos}>
-        <Avatar size={40} />
+        <Avatar size={40} uri={props.avatareventowner} />
         <View style={styles.appointmentInfos}>
           <Text style={styles.appointmentPlace}>
             {props.location} - {props.title}
           </Text>
           <Text style={styles.appointmentDate}>{props.date}</Text>
         </View>
-        <View sytle={styles.filminfoContainer}>
+        <View>
           <Text style={styles.titlefilm}>{props.titleFilm}</Text>
+
           <Image
             style={styles.imageFilm}
-            source={{
-              uri: props.backdrop,
-            }}
+            source={
+              props.backdrop
+                ? { uri: props.backdrop }
+                : require("../../assets/logo/placeholder/poster.png")
+            }
           />
         </View>
       </View>
@@ -57,7 +86,8 @@ export default function Event(props) {
       <View style={styles.interactionBar}>
         <View style={styles.interactionToEventView}>
           <View style={styles.participants}>
-            {props.joingEventhandle && avatars}
+            {avatars}
+            {avatarjoint}
           </View>
           <TouchableOpacity
             onPress={props.displayComments}
@@ -68,37 +98,19 @@ export default function Event(props) {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={styles.joingEventButton}
+          style={[styles.joingEventButton, isCreator && styles.creatorButton]}
           activeOpacity={0.8}
           onPress={props.handleJoinEvent}
+          disabled={isCreator} // Désactive le bouton si c'est le créateur
         >
-          <Text style={styles.buttonText}>+ Joindre</Text>
+          <Text style={styles.buttonText}>
+            {isCreator ? "Créateur de l'événement" : buttonText}
+          </Text>
         </TouchableOpacity>
       </View>
       {props.showComments && (
         <View style={styles.commentsSection}>
-          {props.comments
-            .sort((a, b) => new Date(b.date) - new Date(a.date)) // classement des commentaire plus recente à plus ancien
-            .map((comment) => {
-              const formattedDate = formatDistanceToNow(
-                new Date(comment.date),
-                {
-                  addSuffix: true,
-                  includeSeconds: true,
-                  locale: fr,
-                }
-              );
-
-              return (
-                <Comment
-                  uri={comment.user.avatar}
-                  username={comment.user.username}
-                  key={comment._id || comment.date}
-                  date={formattedDate} // Afficher la date formatée
-                  content={comment.content}
-                />
-              );
-            })}
+          <Comments comments={props.comments}></Comments>
 
           <View style={styles.inputcommentcontaire}>
             <TextInput
@@ -217,23 +229,27 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   filminfoContainer: {
-    textAlign:"center",
-    alignItems: "center", 
-    backgroundColor: "#f0f0f0", 
-    borderRadius: 10, 
-    
+    textAlign: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
   },
   imageFilm: {
-    height: 100,
-    width:350, 
-    borderRadius: 10, 
-    marginBottom: 15, 
+    height: 180,
+    width: 350,
+    borderRadius: 10,
+    marginBottom: 15,
+    objectFit: "contain",
   },
   titleFilm: {
-    fontSize: 20, 
-    fontWeight: "bold", 
-    color: "#FFFFFF", 
-    textAlign: "center", 
-    alignSelf:"center",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
+    alignSelf: "center",
+  },
+  creatorButton: {
+    backgroundColor: "#a0a0a0", 
+    opacity: 0.6, 
   },
 });

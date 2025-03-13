@@ -7,45 +7,87 @@ import {
   KeyboardAvoidingView,
   Platform,
   ImageBackground,
+  Text,
 } from "react-native";
 import { useState, useEffect } from "react";
 import UserTopSection from "../components/common/UserTopSection";
 import Event from "../components/EventsComponent/Event";
 import Reseachsection from "../components/EventsComponent/reseachfiltreSection";
 import Button from "../components/common/Button";
-
-const mockUser = {
-  _id: "67ca1d44bfc125477ece24ce",
-  username: "Lou",
-  password: "$2b$10$nPPlMDeI.NFKkZCh7Bs0e.WYyIVs3rwj6D6i.yCXlIWWXt3T8SDB6",
-  email: "Lou@gmail.com",
-  token: "_ZpeuBlpvOL6Qd1yLwyg50_GhAxA-cMl",
-  friends: [],
-  favGenres: ["447277", "812"],
-  favMovies: ["Action", "Adventure"],
-  __v: 0,
-  age: 25,
-  avatar:
-    "https://image.noelshack.com/fichiers/2015/12/1426650974-quiz-les-personnages-de-tintin-5472.jpeg",
-  biography: "je ne suis pas un robot",
-  genre: "Homme",
-  location: {
-    name: "Paris",
-    latitude: 48.859,
-    longitude: 2.347,
-  },
-};
+import { useSelector } from "react-redux";
 
 export default function EventScreen({ navigation }) {
-  const user = mockUser; //useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value);
   const [events, setEvents] = useState([]);
   const [showCommentsForEvent, setShowCommentsForEvent] = useState(null);
   const [comment, setComment] = useState("");
+  const [eventComments, setEventComments] = useState({});
   const [joinedEvents, setJoinedEvents] = useState({});
   const [inputreseach, setInputreseach] = useState("");
+  const [filtreredEvents, setFiltreredEvents] = useState([]);
+  const [filtrednonfound,setFiltrednonfound]=useState(false);
 
-  //reseach input pour filtrer les evenements
-  const handleSearchIcon = () => {};
+    
+
+  const fetchEvents = async (setEvents, setJoinedEvents) => {
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/`);
+      const data = await response.json();
+  
+      setEvents(data.data);
+  
+      const initialJoinedEvents = {};
+      data.data.forEach((event) => {
+        initialJoinedEvents[event._id] = event.isParticipate;
+      });
+  
+      setJoinedEvents(initialJoinedEvents);
+    } catch (err) {
+      console.log("Erreur lors de la récupération des événements:", err.message);
+    }
+  };
+  
+  const fetchCommentsForEvents = async (events, fetchComments) => {
+    if (events.length === 0) return;
+  
+    try {
+      await Promise.all(events.map((event) => fetchComments(event._id)));
+    } catch (err) {
+      console.log("Erreur lors de la récupération des commentaires:", err.message);
+    }
+  };
+  // afficher tous les evenement à la chargement du eventScreen
+  useEffect(() => {
+    fetchEvents(setEvents, setJoinedEvents);
+  }, []);
+
+  useEffect(() => {
+    fetchCommentsForEvents(events, fetchComments);
+  }, [events]);
+
+
+
+  const handleSearchIcon = () => {
+    const filtered = events.filter(
+      (event) =>
+        event.location.toLowerCase().trim() === inputreseach.toLowerCase().trim()
+    );
+  
+    if (filtered.length === 0) {
+      setFiltrednonfound(true);
+      setFiltreredEvents("");
+
+    }
+  
+    setFiltreredEvents(filtered);
+  };
+
+// clean les filtre pour afficher toutes les evenement 
+  const handleClearFilter = () => {
+    setFiltreredEvents([]); 
+    setInputreseach("");  
+    setFiltrednonfound(false);
+  };
 
   // vers creationEvent screen
   const handlecreationEvent = () => {
@@ -65,7 +107,7 @@ export default function EventScreen({ navigation }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user: mockUser.token,
+        user: user.token,
         content: comment,
       }),
     })
@@ -73,36 +115,41 @@ export default function EventScreen({ navigation }) {
       .then((data) => {
         if (data.result) {
           setComment("");
+          fetchComments(id);
         } else {
-          console.log("comment not posted");
+          console.log("Comment not posted");
         }
       })
       .catch((error) => {
         console.error(error);
-        setError("An error occurred while adding your comment");
       });
   };
 
-  //afficher toutes les events dès le chargement du eventScreen
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(
-          process.env.EXPO_PUBLIC_IP_ADDRESS + "/events/"
-        );
-        const data = await response.json();
+  //fetch les comments sur la route get commentaires
+  const fetchComments = (id) => {
+    fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${id}/comments`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setEventComments((prev) => ({
+            ...prev,
+            [id]: data.comments,
+          }));
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
-        setEvents(data.data);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-
-    fetchEvents(events);
-  }, []);
 
   // Define the function for handling event joining
   const handleJoinEvent = (event) => {
+
+    if (event.participants.some((participant) => participant._id === user._id)) {
+      console.log("L'utilisateur participe déjà à cet événement !");
+      return; // Empêche d'ajouter à nouveau l'utilisateur
+    }
     fetch(
       `${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${event._id}/joingEvent`,
       {
@@ -111,30 +158,38 @@ export default function EventScreen({ navigation }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user: mockUser.token,
+          user: user.token,
         }),
       }
     )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to join event");
+         new Error("Failed to join event");
         }
         return response.json();
       })
       .then((data) => {
         if (data.result) {
-          console.log("Mise à jour réussie pour l'événement:", event._id);
-
-          // Mettre à jour uniquement l'événement spécifique
+          console.log(
+            "Mise à jour réussie pour l'événement:",
+            event._id,
+            "isParticipate:",
+            data.participation.isParticipate
+          );
+  
           setJoinedEvents((prev) => ({
             ...prev,
-            [event._id]: true, // Marquer cet événement comme "rejoint"
+            [event._id]: data.participation.isParticipate,
           }));
-
+  
           setEvents((prevEvents) =>
             prevEvents.map((e) =>
               e._id === event._id
-                ? { ...e, participantsNbr: data.participation.participantsNbr }
+                ? {
+                    ...e,
+                    participantsNbr: data.participation.participantsNbr,
+                    isParticipate: data.participation.isParticipate,
+                  }
                 : e
             )
           );
@@ -146,6 +201,18 @@ export default function EventScreen({ navigation }) {
         console.error("Une erreur est survenue:", error);
       });
   };
+
+  //formatee la chiane de date pour afficher sur card event
+  function formatDateString(dateString) {
+   
+    const [datePart, timePart] = dateString.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+  
+    // Retourner le format souhaité
+    return `${day}/${month}/${year} à ${hour}:${minute}`;
+  }
+  
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "padding"}>
@@ -161,6 +228,7 @@ export default function EventScreen({ navigation }) {
             inputreseach={inputreseach}
             setInputreseach={setInputreseach}
             handlePressSearchIcon={handleSearchIcon}
+            handlerefreshIcon={handleClearFilter}
           ></Reseachsection>
           <View style={styles.buttoncreationEvent}>
             <Button
@@ -170,33 +238,40 @@ export default function EventScreen({ navigation }) {
           </View>
           <ScrollView>
             <View style={styles.eventscontainer}>
-              {events.map((event) => (
-                <Event
-                  key={event._id}
-                  title={event.title}
-                  description={event.description}
-                  location={event.location}
-                  date={new Date(event.date).toLocaleString("fr-FR", {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                  showComments={showCommentsForEvent === event._id}
-                  displayComments={() => toggleComments(event._id)}
-                  ajoutcomment={() => ajoutcomment(event._id)}
-                  comments={event.comments}
-                  comment={comment}
-                  setComment={setComment}
-                  handleJoinEvent={() => handleJoinEvent(event)}
-                  nbrParticipants={event.participantsNbr}
-                  joingEventhandle={joinedEvents[event._id] || false}
-                  avatar={mockUser.avatar}
-                  titleFilm={event.filmDetails.title}
-                  backdrop={event.filmDetails.backdrop}
-                />
-              ))}
+              {filtrednonfound ? (
+                <Text style={styles.textnonEventfound}>Aucun événement trouvé pour cette ville. Pourquoi ne pas ajouter le vôtre ? 😊</Text>
+              ) : (
+                (filtreredEvents.length > 0 ? filtreredEvents : events).map(
+                  (event) => (
+                    <Event
+                      key={event._id}
+                      creatorUsername={event.owner.username}
+                      title={event.title}
+                      description={event.description}
+                      location={event.location}
+                      date={formatDateString(event.date)}
+                      showComments={showCommentsForEvent === event._id}
+                      displayComments={() => toggleComments(event._id)}
+                      ajoutcomment={() => ajoutcomment(event._id)}
+                      comments={eventComments[event._id] || []}
+                      comment={comment}
+                      setComment={setComment}
+                      handleJoinEvent={() => handleJoinEvent(event)}
+                      participants={event.participants}
+                      nbrParticipants={event.participantsNbr}
+                      joingEventhandle={joinedEvents[event._id] || false}
+                      avatareventowner={event.owner.avatar}
+                      avatar={user.avatar}
+                      titleFilm={event.filmDetails.title}
+                      backdrop={event.filmDetails.backdrop}
+                      isParticipate={
+                        joinedEvents[event._id] ?? event.isParticipate
+                      }
+                      _id={user._id}
+                    />
+                  )
+                )
+              )}
             </View>
           </ScrollView>
         </ImageBackground>
@@ -249,4 +324,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     marginBottom: 45,
   },
+  textnonEventfound:{
+    color: "white",
+    textAlign:"center",
+    marginTop:150,
+
+  }
 });

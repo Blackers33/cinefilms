@@ -88,7 +88,7 @@ router.get("/", async (req, res) => {
               title: data.title || "Titre inconnu",
               backdrop: data.backdrop_path
                 ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
-                : "https://via.placeholder.com/1280x720?text=Image+indisponible",
+                : "",
             },
           };
         } catch (err) {
@@ -106,6 +106,32 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+//Route GET pour recuperer les commentaire d'un evenement 
+router.get("/:eventId/comments", async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    // Vérifier si l'événement existe
+    const event = await Event.findById(eventId)
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "username avatar" }, 
+      });
+
+    if (!event) {
+      return res.status(404).json({ message: "Événement non trouvé" });
+    }
+
+    res.status(200).json({ result: true, comments: event.comments });
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur lors de la récupération des commentaires",
+      error: error.message,
+    });
+  }
+});
+
 
 
 // Route GET pour récupérer les événements d'un utilisateur
@@ -253,6 +279,8 @@ router.post("/", async (req, res) => {
         .json({ result: false, error: "Missing or empty fields" });
     }
 
+    console.log("Données reçues du front:", req.body);
+
     // Authentification de l'utilisateur
     const user = await autentification(req.body.user);
     if (!user) {
@@ -273,12 +301,12 @@ router.post("/", async (req, res) => {
         .json({ result: false, error: "Failed to create or find film" });
     }
 
-    const eventDate = new Date(req.body.date.split("/").reverse().join("-"));
+    
     // Création des données de l'événement
     const eventData = {
       owner: user.userId,
       location: req.body.location,
-      date: eventDate,
+      date: req.body.date,
       description: req.body.description,
       title: req.body.title,
       filmId: filmId, 
