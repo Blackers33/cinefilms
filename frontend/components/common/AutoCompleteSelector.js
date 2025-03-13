@@ -13,7 +13,6 @@ const paths = (text) => {
 };
 
 export default function AutoCompleteSelector( props ) {
-    const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
     const [choices, setChoices] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -45,18 +44,17 @@ export default function AutoCompleteSelector( props ) {
     };
 
     const handleSelect = (item) => {
-        setSearch(item.value);
+        props?.setSearch(item.value);
         setOpen(false);
         props?.onSubmitEditing(item.value);
-        setSearch('');
     };
 
     return (
         <View style={{ flex: 5,  position: "relative" }}>
             <TextInputStyled
-                value={search}
+                value={props?.search}
                 onChangeText={(text) => {
-                    setSearch(text);
+                    props?.setSearch(text);
                     fetchData(text);
                 }}
                 placeholder={placeholders[props.type]}

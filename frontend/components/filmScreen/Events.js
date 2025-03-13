@@ -7,6 +7,7 @@ import AutoCompleteSelector from '../common/AutoCompleteSelector';
 import CommentsIcon from 'react-native-vector-icons/Fontisto';
 import Back from 'react-native-vector-icons/Ionicons';
 import Send from 'react-native-vector-icons/Feather'
+import Icon from "react-native-vector-icons/Ionicons";
 import formatDate from '../../utils/utils';
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -20,7 +21,7 @@ export default function Events({ filmId, allEvents, refresh }) {
     const [eventCommentsToShow, setEventCommentsToShow] = useState(null);
     const [eventComments, setEventComments] = useState([])
     const [comment, setComment] = useState({});
-    const [eventsFound, setEventsFound] = useState(0);
+    const [search, setSearch] = useState("");
 
     const user = useSelector((state) => state.user.value);
 
@@ -45,6 +46,7 @@ export default function Events({ filmId, allEvents, refresh }) {
             setSelectedCity(selectedCity.trim());
         } else {
             setSelectedCity(""); // Cas où l'utilisateur efface la ville
+            setSearch("");
         }
     };
 
@@ -91,36 +93,11 @@ export default function Events({ filmId, allEvents, refresh }) {
                 event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())
             );
             setEventsToShow(eventsForCity);
-            
-            setEventsFound(
-                eventsToShow.filter(event => 
-                    event.location.toLowerCase() !== selectedCity.toLowerCase()
-                )
-            );
         }
         else {
             setEventsToShow(allEvents);
         }  
        
-        /*if (selectedCity && selectedCity !== "") {
-            // Filtrer les événements par ville
-            const eventsForCity = allEvents.filter((event) => 
-                event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())
-            );
-            
-            // Si aucun événement ne correspond à la ville, affichez le message "Aucun événement"
-            if (eventsForCity.length === 0) {
-                setEventsToShow([]); // Aucune donnée à afficher
-                setSelectedCity('');
-                setTimeout(() => {
-                    setEventsToShow(allEvents); // Remettre tous les événements après 2 secondes
-                }, 2000); // 2 secondes
-            } else {
-                setEventsToShow(eventsForCity); // Afficher les événements filtrés
-            }
-        } else {
-            setEventsToShow(allEvents); // Si aucune ville n'est sélectionnée, réinitialiser à tous les événements
-        }*/
     }, [selectedCity, allEvents]);
     //Affichet tout les événements avec map
     const events = eventsToShow?.map((event, i) => {
@@ -157,14 +134,14 @@ export default function Events({ filmId, allEvents, refresh }) {
                   locale: fr,
                 });
             return <Comment
-                uri={comment.user.avatar}
+                avatar={comment.user.avatar}
                 username={comment.user.username}
                 key={comment._id || comment.date}
                 date={date}
                 content={comment.content}
             />
         });
-        
+
         return(
             <View key={i} style={styles.container}>
                 <View style={styles.eventContainer}>
@@ -225,8 +202,32 @@ export default function Events({ filmId, allEvents, refresh }) {
                     <View style={styles.filterBar}>
                         <AutoCompleteSelector
                             type="city"
+                            search={search}
+                            setSearch={setSearch}
                             onSubmitEditing={handleCitySearchSubmit}
                         />
+                        {selectedCity && selectedCity !== "" && (
+                            <TouchableOpacity onPress={() => handleCitySearchSubmit("")}>
+                                <View 
+                                    style={{
+                                        marginLeft: 10,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        width: 40,
+                                        height: 40,
+                                        borderWidth: 1,
+                                        borderColor: "#bbb",
+                                        borderRadius: 100,
+                                    }}
+                                >
+                                    <Icon
+                                        name={"close"}
+                                        size={24}
+                                        color='#bbb'
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     </View>
 
                     <ScrollView style={styles.containerevents}>
@@ -235,7 +236,7 @@ export default function Events({ filmId, allEvents, refresh }) {
                 </>
             ) : (
                 <>  
-                    {!!eventsToShow && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
+                    {!!eventsToShow && <TouchableOpacity activeOpacity={0.7} onPress={() => handleCitySearchSubmit("")} style={styles.backIcon}>
                         <Back name='arrow-back-outline' size={30} color={'white'}/>
                     </TouchableOpacity>}
                     <Text style={styles.textNoEventToShow}>

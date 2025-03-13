@@ -225,7 +225,7 @@ router.post("/:filmId/like", async (req, res) => {
 				Film.findOne({ tmdbId: filmId }).then((data) => {
 					if (data.likes.includes(user.userId)) {
 						const likes = data.likes.filter(
-							(el) => el.toString() !== user.userId.toString()
+							(el) => el?.toString() !== user.userId?.toString()
 						);
 						data.likes = likes;
 					} else {
