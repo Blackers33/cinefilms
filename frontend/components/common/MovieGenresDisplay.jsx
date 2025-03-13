@@ -8,7 +8,6 @@ import genres from "./genres.json";
  * 
  */
 export default function MovieGenresDisplay({ list }) {
-	console.log(genres);
 	if (list.length > 0) return (
 		<View style={styles.container}>
 			{list.map((el, index) => (
@@ -25,6 +24,7 @@ const styles = StyleSheet.create({
         flexDirection :"row",
         flexWrap : "wrap",
         gap: 10,
+        marginTop: 10
     },
     view: {
         borderWidth:1,
