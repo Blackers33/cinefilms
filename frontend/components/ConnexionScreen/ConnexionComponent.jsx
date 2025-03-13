@@ -8,13 +8,23 @@ import {
 	TouchableOpacity,
 	View,
 	Dimensions,
+	Image,
 } from "react-native";
 import { useState } from "react";
 
 function connexionScreen({ email, setEmail, password, setPassword }) {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.titrelogo}>Bienvenue sur Cinefilm !</Text>
+			<Image
+				source={require("../../assets/logo/cinefilm_red_text_top.png")}
+				style={{
+					width: 150,
+					height: 150,
+					marginTop: 30,
+					resizeMode: "contain"
+				}}
+			/>
+			<Text style={styles.titrelogo}>Bienvenue !</Text>
 			<Text style={styles.titrecontenu}>
 				Retrouvez les meilleurs films, événements et échanges entre passionnés
 				de cinéma. Rejoignez la communauté et vivez votre passion à fond !{"\n"}
@@ -46,7 +56,7 @@ function connexionScreen({ email, setEmail, password, setPassword }) {
 const styles = StyleSheet.create({
 	inputContainer: {
 		width: 380,
-		marginTop: 50,
+		marginTop: 20,
 	},
 	Input: {
 		padding: 12,
@@ -54,40 +64,11 @@ const styles = StyleSheet.create({
 		color: "white",
 		paddingLeft: 30,
 	},
-	bouton: {
-		backgroundColor: "#C94106",
-		paddingVertical: 12,
-		paddingHorizontal: 20,
-		borderRadius: 10,
-		alignItems: "center",
-		justifyContent: "center",
-		// marginTop: 20,
-	},
-	buttonText: {
-		color: "#ffffff",
-		fontSize: 16,
-		fontWeight: "bold",
-	},
 	titrelogo: {
 		color: "#c94106",
 		fontSize: 35,
 		padding: 10,
 		textAlign: "center",
-	},
-	transitionText: {
-		color: "#c94106",
-		fontSize: 20,
-		marginTop: 20,
-		textAlign: "center",
-	},
-	boutonInscription: {
-		backgroundColor: "#C94106",
-		paddingVertical: 12,
-		paddingHorizontal: 20,
-		borderRadius: 10,
-		alignItems: "center",
-		justifyContent: "center",
-		marginTop: 10,
 	},
 	container: {
 		flex: 1,
@@ -96,19 +77,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		width: Dimensions.get("window").width,
 	},
-	// buttonContainer: {
-	//   width: 380,
-	//   marginTop: 10,
-	//   alignItems: "center",
-	// },
-	//   ImageBackground: {
-	//     width: '100%',
-	//     height: '100%',
-	//     position: 'absolute',
-	//     zIndex: -1,
-	//     width: Dimensions.get("window").width,
-	// height: Dimensions.get("window").height,
-	//   },
 	titrecontenu: {
 		color: "#c94106",
 		paddingLeft: 10,

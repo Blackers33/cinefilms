@@ -11,13 +11,13 @@ const { checkBody } = require("../modules/checkBody");
 
 //POST new user (inscription)
 router.post("/signup", (req, res) => {
-	if (!checkBody(req.body, ["username", "password"])) {
-		res.json({ result: false, error: "Missing or empty fields" });
+	if (!checkBody(req.body, ["username", "password", "email"])) {
+		res.json({ result: false, error: "Certains champs sont vides." });
 		return;
 	}
 	// Check if the user has not already been registered
 	User.findOne({
-		username: { $regex: new RegExp(req.body.username, "i") },
+		email: { $regex: new RegExp(req.body.email, "i") },
 	}).then((data) => {
 		if (data === null) {
 			const hash = bcrypt.hashSync(req.body.password, 10);
@@ -26,6 +26,7 @@ router.post("/signup", (req, res) => {
 				password: hash,
 				email: req.body.email,
 				token: uid2(32),
+				age: 0 //Donne un age de 0 par défaut, pour éviter d'avoir null en BDD.
 			});
 
 			newUser.save().then((newDoc) => {
@@ -33,7 +34,7 @@ router.post("/signup", (req, res) => {
 			});
 		} else {
 			// User already exists in database
-			res.json({ result: false, error: "User already exists" });
+			res.json({ result: false, error: "L'utilisateur existe déjà" });
 		}
 	});
 });
@@ -41,7 +42,7 @@ router.post("/signup", (req, res) => {
 //POST user signin (connexion)
 router.post("/signin", (req, res) => {
 	if (!checkBody(req.body, ["email", "password"])) {
-		res.json({ result: false, error: "Missing or empty fields" });
+		res.json({ result: false, error: "Certains champs sont vides." });
 		return;
 	}
 

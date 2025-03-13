@@ -1,6 +1,6 @@
 //Navigation
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 //Screens
@@ -14,20 +14,18 @@ import ProfilScreen from "./screens/ProfilScreen";
 import RencontresScreen from "./screens/RencontresScreen";
 
 
-
 //redux
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 
-
 //style
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as NavigationBar from "expo-navigation-bar";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
@@ -75,30 +73,20 @@ const TabNavigator = () => {
 export default function App() {
 	NavigationBar.setBackgroundColorAsync("black");
 	return (
-		
+		<NavigationContainer>
 			<Provider store={store}>
-				<NavigationContainer>
-					<Stack.Navigator screenOptions={{ headerShown: false }}>
-						<Stack.Screen name='Connexion' component={ConnexionScreen} />
-						<Stack.Screen name='TabNavigator' component={TabNavigator} />
-						<Stack.Screen name='Inscription' component={InscriptionScreen} />
-						<Stack.Screen
-							name='CreateEventScreen'
-							component={createEventScreen}
-						/>
-						<Stack.Screen name='Film' component={FilmScreen} />
-						<Stack.Screen name='Profil' component={ProfilScreen} />
-					</Stack.Navigator>
-				</NavigationContainer>
+				<Stack.Navigator screenOptions={{ headerShown: false }}>
+					<Stack.Screen name='Connexion' component={ConnexionScreen} />
+					<Stack.Screen name='TabNavigator' component={TabNavigator} />
+					<Stack.Screen name='Inscription' component={InscriptionScreen} />
+					<Stack.Screen
+						name='CreateEventScreen'
+						component={createEventScreen}
+					/>
+					<Stack.Screen name='Film' component={FilmScreen} />
+					<Stack.Screen name='Profil' component={ProfilScreen} />
+				</Stack.Navigator>
 			</Provider>
-		
+		</NavigationContainer>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: "#fff",
-
-	},
-});
-
