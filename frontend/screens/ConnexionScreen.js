@@ -42,7 +42,6 @@ export default function ConnexionScreen({ navigation }) {
 					)
 						.then((response) => response.json())
 						.then((profileData) => {
-							console.log({ ...profileData.profil, token: data.token });
 
 							dispatch(
 								setUser({ ...profileData.profil, token: data.token })

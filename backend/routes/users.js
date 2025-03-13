@@ -150,12 +150,67 @@ router.get("/profil/:token", (req, res) => {
 					friends: data.friends,
 				},
 			});
-			console.log(data);
 		} else {
 			res.json({ result: false, error: "No corresponding profil" });
 		}
 	});
 });
+
+//GET all users
+router.get("/", (req, res) => {
+	User.find().then((data) => {
+		if (data.length > 0) {
+			res.json({
+				result: true,
+				userslist: data.map((user) => ({
+					username: user.username,
+					favGenres: user.favGenres,
+					favMovies: user.favMovies,
+					age: user.age,
+					avatar: user.avatar,
+					biography: user.biography,
+					genre: user.genre,
+					_id: user._id,
+          location: user.location
+				})),
+			});
+			console.log(data);
+		} else {
+			res.json({ result: false, error: "No users found" });
+		}
+	});
+});
+
+//Switch friend
+//Si la personne est déjà amie, elle est enlevée
+router.post("/addfriend/:_id", async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const { token } = req.body;
+
+    const user = await User.findOne({ token });
+
+    if (!user) {
+      return res.status(404).json({ result: false, error: "Utilisateur non trouvé" });
+    }
+
+    const friendId = String(_id);
+    const friendIndex = user.friends.indexOf(friendId);
+
+    if (friendIndex !== -1) {
+      // Supprimer l'ami s'il est déjà dans la liste
+      user.friends.splice(friendIndex, 1);
+    } else {
+      // Ajouter l'ami s'il n'est pas encore dans la liste
+      user.friends.push(friendId);
+    }
+    await user.save();
+    res.json({ result: true, friends: user.friends });
+  } catch (error) {
+    res.status(500).json({ result: false, error: "Erreur interne du serveur" });
+  }
+});
+
 
 //Get le username d'un utilisateur à partir de son ObjectID
 router.get("/:userId", (req, res) => {

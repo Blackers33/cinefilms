@@ -11,6 +11,8 @@ import EventScreen from "./screens/EventScreen";
 import FilmScreen from "./screens/FilmScreen";
 import createEventScreen from "./screens/NewEventScreen";
 import ProfilScreen from "./screens/ProfilScreen";
+import RencontresScreen from "./screens/RencontresScreen";
+
 
 
 //redux
@@ -65,7 +67,7 @@ const TabNavigator = () => {
 		>
 			<Tab.Screen name='Home' component={HomeScreen} />
 			<Tab.Screen name='Events' component={EventScreen} />
-			<Tab.Screen name='Rencontres' component={HomeScreen} />
+			<Tab.Screen name='Rencontres' component={RencontresScreen} />
 		</Tab.Navigator>
 	);
 };
