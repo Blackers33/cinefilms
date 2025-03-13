@@ -122,7 +122,6 @@ export default function Events({ filmId, allEvents, refresh }) {
             setEventsToShow(allEvents); // Si aucune ville n'est sélectionnée, réinitialiser à tous les événements
         }*/
     }, [selectedCity, allEvents]);
-    console.log(eventsToShow?.length)
     //Affichet tout les événements avec map
     const events = eventsToShow?.map((event, i) => {
         //Mettre date en format jj/mm/aaaa hh:mm avec formatDate
@@ -133,7 +132,7 @@ export default function Events({ filmId, allEvents, refresh }) {
         * - Si le nombre de participants est inférieur à 3, utilise `participantsLessThanThree` pour l'affichage.
         * - Sinon, affiche les 3 premiers avatars suivis de `+X` indiquant le nombre de participants restants.
         */
-        
+
         const participantsLessThanThree = event?.participants?.map((participant, i) => (
             <Avatar key={i} size={25} uri={participant.avatar} />
         ));
@@ -223,10 +222,6 @@ export default function Events({ filmId, allEvents, refresh }) {
         <KeyboardAvoidingView style={styles.events}>
             {eventsToShow?.length > 0 ? ( 
                 <>
-                    {eventsFound?.length > 0 && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
-                        <Back name='arrow-back-outline' size={20} color={'white'}/>
-                    </TouchableOpacity>}
-
                     <View style={styles.filterBar}>
                         <AutoCompleteSelector
                             type="city"
@@ -239,10 +234,10 @@ export default function Events({ filmId, allEvents, refresh }) {
                     </ScrollView>
                 </>
             ) : (
-                <> 
-                    { eventsToShow?.length > 0 && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
+                <>  
+                    {!!eventsToShow && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
                         <Back name='arrow-back-outline' size={30} color={'white'}/>
-                    </TouchableOpacity> }
+                    </TouchableOpacity>}
                     <Text style={styles.textNoEventToShow}>
                         Aucun événement en cours pour ce film.
                     </Text>
@@ -387,6 +382,5 @@ const styles = StyleSheet.create({
     },
     backIcon: {
         margin: 30,
-
     }
 })
