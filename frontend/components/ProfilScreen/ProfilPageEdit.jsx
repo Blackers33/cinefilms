@@ -1,36 +1,25 @@
 //@author : Charlie
 
 import {
+	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	View,
-	Image,
-	ScrollView,
-	KeyboardAvoidingView,
+	View
 } from "react-native";
 
-import Avatar from "../common/Avatar";
-import MoviesScrollView from "../common/MoviesScrollView";
 import { useState } from "react";
 import { TextInput } from "react-native";
-import CitiesDropdown from "../common/CitiesDropdown";
-import DropdownUserGenre from "../common/DropdownUserGenre";
-import Button from "./Button";
-import { AvatarModal } from "../common/AvatarModal";
-import MovieGenresEdit from "./MovieGenresEdit";
-import { MoviesDropdown } from "../common/MoviesDropdown";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../reducers/user";
-
-const Field = ({ title, info, ...props }) => {
-	return (
-		<View style={styles.field}>
-			<Text style={styles.title}>{title}</Text>
-			<TextInput {...props} style={styles.text} value={String(info)} />
-		</View>
-	);
-};
+import Avatar from "../common/Avatar";
+import { AvatarModal } from "../common/AvatarModal";
+import CitiesDropdown from "../common/CitiesDropdown";
+import DropdownUserGenre from "../common/DropdownUserGenre";
+import { MoviesDropdown } from "../common/MoviesDropdown";
+import MoviesScrollView from "../common/MoviesScrollView";
+import Button from "./Button";
+import MovieGenresEdit from "./MovieGenresEdit";
 
 export default function ProfilPageEdit({ user, setEdit }) {
 	const [modalVisible, setModalVisible] = useState(false);
@@ -68,6 +57,14 @@ export default function ProfilPageEdit({ user, setEdit }) {
 			}
 		});
 	}
+	const Field = ({ title, info, ...props }) => {
+		return (
+			<View style={styles.field}>
+				<Text style={styles.title}>{title}</Text>
+				<TextInput {...props} style={styles.text} value={String(info)} />
+			</View>
+		);
+	};
 
 	async function handleSubmit() {
 		if (age !== "" || username !== "") {
