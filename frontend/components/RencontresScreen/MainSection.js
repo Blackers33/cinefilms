@@ -17,7 +17,6 @@ export default function MainSection({ navigation, user }) {
             .then((data) => {
                 setUsersData(data.userslist);
                 setFilteredData(data.userslist);
-                console.log(filteredData)
             })
     }, []);
 
@@ -33,14 +32,16 @@ export default function MainSection({ navigation, user }) {
         }
     };
 
+    console.log(user.friends)
+
     return (
         <View>
             <SearchAndFilterSection onSearch={handleSearch} />
             <ScrollView keyboardShouldPersistTaps={"handled"}>
                 <View style={styles.cards}>
-                    {filteredData.map((people) => (
-                        people._id !== user.friends._id && (
-                            <Card key={people._id} user={people} />
+                    {filteredData.map((profile) => (
+                        profile._id !== user.friends._id && (
+                            <Card key={profile._id} profile={profile} isFriend={user.friends.includes(profile._id)}/>
                         )
                     ))}
                 </View>
