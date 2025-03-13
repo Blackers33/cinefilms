@@ -172,6 +172,8 @@ router.get("/", (req, res) => {
 					biography: user.biography,
 					genre: user.genre,
 					_id: user._id,
+					token: user.token,
+
           location: user.location
 				})),
 			});

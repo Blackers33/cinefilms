@@ -15,11 +15,14 @@ export default function MainSection({ navigation, user, handleAddButton }) {
         })
             .then((res) => res.json())
             .then((data) => {
-                setUsersData(data.userslist);
-                setFilteredData(data.userslist);
+               if(data.result) {
+                setUsersData(data.userslist.filter(friend=>friend.token !== user.token))
+                setFilteredData(data.userslist.filter(friend=>friend.token !== user.token))
+            }
             })
-    }, []);
-
+        }, []);
+        
+        
     // Fonction exécutée lorsque l'utilisateur effectue une recherche
     const handleSearch = (search) => {
 
