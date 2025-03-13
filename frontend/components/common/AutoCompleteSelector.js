@@ -48,6 +48,7 @@ export default function AutoCompleteSelector( props ) {
         setSearch(item.value);
         setOpen(false);
         props?.onSubmitEditing(item.value);
+        setSearch('');
     };
 
     return (

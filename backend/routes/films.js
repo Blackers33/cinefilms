@@ -5,6 +5,30 @@ const Film = require('../models/films');
 const User = require('../models/users')
 const { checkBody, createFilmIfNotExists, autentification} = require('../modules/utils');
 
+//Route GET pour recuperer les commentaire d'un evenement 
+router.get("/:eventId/commentaires", async (req, res) => {
+	try {
+	  const { eventId } = req.params;
+	  const display = true;
+  // Vérifier si l'événement existe
+  const event = await Event.findById(eventId)
+	.populate({
+	  path: "comments",
+	  populate: { path: "user", select: "username avatar" }, 
+	});
+  
+  if (!event) {
+	return res.status(404).json({ message: "Événement non trouvé" });
+  }
+  res.status(200).json({ result: true, comments: event.comments});
+	} catch (error) {
+	  res.status(500).json({
+		message: "Erreur lors de la récupération des commentaires",
+		error: error.message,
+	  });
+	}
+  });
+
 //Route qui permet de récupérer le film
 router.get("/:tmdbId/:token/film", async (req, res) => {
 	try {
@@ -149,7 +173,6 @@ router.post("/:filmId/comment", async (req, res) => {
 		const filmId = Number(req.params?.filmId);
 		//
 		const user = await autentification(req.body.user);
-		console.log(user);
 		if (req.params && filmId) {
 			const isFilmExists = await createFilmIfNotExists(filmId);
 			if (isFilmExists) {

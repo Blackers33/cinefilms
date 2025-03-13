@@ -3,7 +3,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Avatar from '../common/Avatar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Send from 'react-native-vector-icons/Feather'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -22,7 +22,7 @@ export default function Comments({ filmId, allComments, refresh }) {
   const handleSubmitMessage = () => {
     //Créer un nouveau commentaire avec userId & contenu du commentaire
     const newComment = {
-      user: 'aIXUWwSgQ2b4ifIPhk8F8r5wJSPJYuJk',   //user.token
+      user: 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS',   //user.token
       content: comment,
     }
     
@@ -54,19 +54,19 @@ export default function Comments({ filmId, allComments, refresh }) {
         <Avatar uri={data?.avatar} style={styles.avatar} />
         <Text style={styles.username}>{data.username}</Text>
       </View>
-      <Text style={styles.content}>{data.content}</Text>
-      <Text style={styles.time}>{date}</Text>
+      <View style={styles.commentContent}>
+        <Text style={styles.content}>{data.content}</Text>
+        <Text style={styles.time}>{date}</Text>
+      </View>
     </View>
     )  
   });
   return (
-    <KeyboardAvoidingView enabled={true} behavior='padding' style={styles.flexStyle}>
-      <View style={styles.commentsContainer}>
+      <KeyboardAvoidingView enabled={true}  keyboardVerticalOffset={200} behavior='padding' style={styles.commentsContainer}>
       <ScrollView style={styles.containerComments}>
         {comments}
       </ScrollView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <View
         style={styles.inputContainer}
       >
         <TextInput
@@ -80,16 +80,17 @@ export default function Comments({ filmId, allComments, refresh }) {
         <TouchableOpacity onPress={() => handleSubmitMessage()} style={styles.addFilterButton} activeOpacity={0.8}>
           <Send name='send' size={30} color={'#C94106'} />
         </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
     </KeyboardAvoidingView>
     
   );
 }
 
 const styles = StyleSheet.create({
+
   commentsContainer: {
-    height: '85%'
+    flex: 1,
+    height: '100%'
   },
   commentInfo: {
     flexDirection: 'row',
@@ -111,7 +112,8 @@ const styles = StyleSheet.create({
   username: {
     fontFamily: 'Mulish',
     fontSize: 20,
-    color: 'white',
+    color: 'rgb(201, 65, 6)',
+    fontWeight: 500,
     marginBottom: 5,
     marginLeft: 10,
   },
@@ -123,6 +125,9 @@ const styles = StyleSheet.create({
   time: {
     color : 'white',
     fontWeight: 200,
+  },
+  commentContent: {
+    marginLeft: 41
   },
   inputContainer: {
     flexDirection: 'row',
