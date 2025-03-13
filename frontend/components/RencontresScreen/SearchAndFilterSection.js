@@ -16,12 +16,6 @@ export default function SearchAndFilterSection({ onSearch }) {
         }
     };
 
-    const handleSearchButton = () => {
-        if (onSearch) {
-            onSearch(search);
-        }
-    }
-
     return (
         <View style={styles.searchSection}>
             <View style={{ flex: 5 }}>
@@ -29,7 +23,6 @@ export default function SearchAndFilterSection({ onSearch }) {
                     value={search}
                     onChangeText={handleSearchChange}
                     placeholder='rechercher un utilisateur...'
-                    onSubmitEditing={handleSearchButton}
                 />
             </View>
         </View>

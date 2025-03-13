@@ -9,67 +9,57 @@ import {
 } from "react-native";
 import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
+import MovieGenresDisplay from "../common/MovieGenresDisplay";
+import MoviesScrollView from "../common/MoviesScrollView";
+import { useState } from "react";
 
+export default function Card({ user, currentUserId }) {
 
-export default function Card({ user }) {
-	const Movie = ({ data }) => {
-		return (
-			<View key={data.id} style={styles.movieItem}>
-				<Image
-					source={
-						data.poster_path
-							? { uri: "https://image.tmdb.org/t/p/w200" + data.poster_path }
-							: require("../../assets/logo/placeholder/poster.png")
-					}
-					style={styles.poster}
-				/>
-			</View>
-		);
-	};
+	const [isFriend, setIsFriend] = useState()
 
+	const handleAddFriend = async () => {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/users/addFriend`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: currentUserId,
+                    friendId: user._id,
+                }),
+            });
 
-	const MovieGenresDisplay = ({ data }) => {
-		return (
-			<View>
-				<Text>{(data)}</Text>
-			</View>
-		);
-	};
-
-
+            const data = await response.json();
+            if (data) {
+                setIsFriend(true);
+            } else {
+                console.error("Erreur lors de l'ajout de l'ami");
+            }
+        };
 
 	return (
-		<View style={styles.card} >
+		<View style={styles.card}>
 			<View style={styles.topSection}>
 				<View style={styles.userInfo}>
 					<Avatar uri={user.avatar} size={64} />
 					<Text style={styles.title}>{user.username}</Text>
 				</View>
 				<TouchableOpacity
-					onPress={() => console.log('AddFriend')}
 					style={styles.addFriendButton}
 					activeOpacity={0.8}
+					onPress={handleAddFriend}
 				>
-					<Text style={styles.buttonText}>+ Ajouter</Text>
+					 <Text style={styles.buttonText}>+ Ajouter</Text>
 				</TouchableOpacity>
 			</View>
 			<View style={styles.biography}>
 				<Text style={styles.text}>{user.biography}</Text>
 			</View>
 			<Text style={styles.title}>Mes films préférés</Text>
-			<ScrollView horizontal={true}>
-				<View style={styles.favoriteList}>
-					{user.favMovies.map((movie) => (
-						<Movie key={movie.id} data={movie} />
-					))}
-				</View>
-			</ScrollView>
-			<ScrollView horizontal={true}>
-			<View>
-				<Text style={styles.title}>Mes genres préférés</Text>
-				<MovieGenresDisplay list={user.favGenres} />
-			</View>
-			</ScrollView>
+			<MoviesScrollView moviesIds={user.favMovies} />
+
+			<Text style={styles.title}>Mes genres préférés</Text>
+			<MovieGenresDisplay list={user.favGenres} />
 		</View>
 	);
 }
@@ -141,7 +131,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		borderRadius: 5,
-		height: 30
+		height: 30,
 	},
 	buttonText: {
 		textAlign: "center",
