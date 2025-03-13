@@ -1,5 +1,6 @@
 import { Button, StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, ImageBackground, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Avatar from '../common/Avatar';
 import Comment from '../EventsComponent/comment';
 import AutoCompleteSelector from '../common/AutoCompleteSelector';
@@ -19,13 +20,15 @@ export default function Events({ filmId, allEvents, refresh }) {
     const [eventCommentsToShow, setEventCommentsToShow] = useState(null);
     const [eventComments, setEventComments] = useState([])
     const [comment, setComment] = useState({});
-    const [eventsFound, setEventsFound] = useState(false);
+    const [eventsFound, setEventsFound] = useState(0);
+
+    const user = useSelector((state) => state.user.value);
 
     const handleJoinEvent = (eventId) => {
         fetch(`${BACKEND_ADDRESS}/events/${eventId}/joingEvent`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({user: 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS'})
+            body: JSON.stringify({user: user.token})
           })
           .then((response) => response.json())
           .then((data) => {
@@ -65,7 +68,7 @@ export default function Events({ filmId, allEvents, refresh }) {
     //Ajouter un commentaire 
     const handleSubmitComment = (eventId) => {
         const newComment = {
-            user: 'aI1uxpjWcW_rdrHptNr6Wzw2zFVghqnS',   //user.token
+            user: user.token,
             content: comment,
           }
         fetch(`${BACKEND_ADDRESS}/events/${eventId}/comment`, {
@@ -88,7 +91,12 @@ export default function Events({ filmId, allEvents, refresh }) {
                 event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())
             );
             setEventsToShow(eventsForCity);
-            setEventsFound(eventsToShow.some(event => event.location && event.location.toLowerCase().includes(selectedCity.toLowerCase())));
+            
+            setEventsFound(
+                eventsToShow.filter(event => 
+                    event.location.toLowerCase() !== selectedCity.toLowerCase()
+                )
+            );
         }
         else {
             setEventsToShow(allEvents);
@@ -114,7 +122,7 @@ export default function Events({ filmId, allEvents, refresh }) {
             setEventsToShow(allEvents); // Si aucune ville n'est sélectionnée, réinitialiser à tous les événements
         }*/
     }, [selectedCity, allEvents]);
-    
+    console.log(eventsToShow?.length)
     //Affichet tout les événements avec map
     const events = eventsToShow?.map((event, i) => {
         //Mettre date en format jj/mm/aaaa hh:mm avec formatDate
@@ -213,11 +221,12 @@ export default function Events({ filmId, allEvents, refresh }) {
     
     return(
         <KeyboardAvoidingView style={styles.events}>
-            {eventsFound && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
-                <Back name='arrow-back-outline' size={20} color={'white'}/>
-            </TouchableOpacity>}
-            {!!eventsToShow && eventsToShow.length > 0 ? ( 
+            {eventsToShow?.length > 0 ? ( 
                 <>
+                    {eventsFound?.length > 0 && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
+                        <Back name='arrow-back-outline' size={20} color={'white'}/>
+                    </TouchableOpacity>}
+
                     <View style={styles.filterBar}>
                         <AutoCompleteSelector
                             type="city"
@@ -231,9 +240,9 @@ export default function Events({ filmId, allEvents, refresh }) {
                 </>
             ) : (
                 <> 
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
-                        <Back name='arrow-back-outline' size={20} color={'white'}/>
-                    </TouchableOpacity>
+                    { eventsToShow?.length > 0 && <TouchableOpacity activeOpacity={0.7} onPress={() => setEventsToShow(allEvents)} style={styles.backIcon}>
+                        <Back name='arrow-back-outline' size={30} color={'white'}/>
+                    </TouchableOpacity> }
                     <Text style={styles.textNoEventToShow}>
                         Aucun événement en cours pour ce film.
                     </Text>
@@ -375,5 +384,9 @@ const styles = StyleSheet.create({
         color: 'white', 
         fontSize: 18, 
         marginTop: 50 
+    },
+    backIcon: {
+        margin: 30,
+
     }
 })
