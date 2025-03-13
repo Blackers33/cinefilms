@@ -1,6 +1,6 @@
 //@author : Charlie
 
-import ConnexionComponent from "../components/ConnexionComponent/ConnexionComponent";
+import ConnexionComponent from "../components/ConnexionScreen/ConnexionComponent";
 import { useDispatch } from "react-redux";
 import { setUser } from "../reducers/user";
 import {
@@ -24,7 +24,6 @@ export default function ConnexionScreen({ navigation }) {
 	const dispatch = useDispatch();
 
 	const handleConnexion = () => {
-
 		fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/signin", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -35,18 +34,14 @@ export default function ConnexionScreen({ navigation }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-
 				if (data.result) {
 					fetch(
 						process.env.EXPO_PUBLIC_IP_ADDRESS + "/users/profil/" + data.token
 					)
 						.then((response) => response.json())
 						.then((profileData) => {
-							console.log({ ...profileData.profil, token: data.token });
 
-							dispatch(
-								setUser({ ...profileData.profil, token: data.token })
-							);
+							dispatch(setUser({ ...profileData.profil, token: data.token }));
 
 							navigation.navigate("TabNavigator");
 						});
@@ -88,7 +83,7 @@ export default function ConnexionScreen({ navigation }) {
 							<Text style={styles.transitionText}>Pas encore inscrit ?</Text>
 							<Button
 								text='Inscrivez-vous'
-								onPress={() => navigation.navigate("Inscription")}
+								onPress={() => navigation.navigate("Inscription", { step: 1 })}
 							/>
 						</View>
 					</ScrollView>
