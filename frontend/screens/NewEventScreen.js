@@ -62,7 +62,8 @@ export default function NewEventScreen({ navigation }) {
         movie
       )}&language=fr-FR`;
       console.log(uri);
-      const results = await tmdbApiCall(uri);
+      const data = await tmdbApiCall(uri);
+      const results = data.results
 
       if (results.length === 0) {
         setNoResultsFound(true);
@@ -291,6 +292,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000000",
     flexDirection: "column",
     justifyContent: "space-between",
+    marginBottom: 50
   },
   title: {
     fontFamily: "Mulish",
@@ -312,8 +314,7 @@ const styles = StyleSheet.create({
 
   inputBubble: {
     borderRadius: 20,
-    padding: 10,
-    margin: 10,
+    padding: 15,
   },
 
   calendarcontainer: {

@@ -71,7 +71,7 @@ export default function Event(props) {
             source={
               props.backdrop
                 ? { uri: props.backdrop }
-                : require("../../assets/logo/placeholder/poster.png")
+                : require("../../assets/logo/placeholder/backdrop.png")
             }
           />
         </View>

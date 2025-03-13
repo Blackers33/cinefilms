@@ -215,69 +215,73 @@ export default function EventScreen({ navigation }) {
   
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "padding"}>
-      <SafeAreaView style={styles.container}>
-        <ImageBackground
-          style={styles.backgroundImage}
-          source={require("../assets/backgroundGradient.png")}
-        >
-          <View style={styles.userTopContainer}>
-            <UserTopSection user={user} />
-          </View>
-          <Reseachsection
-            inputreseach={inputreseach}
-            setInputreseach={setInputreseach}
-            handlePressSearchIcon={handleSearchIcon}
-            handlerefreshIcon={handleClearFilter}
-          ></Reseachsection>
-          <View style={styles.buttoncreationEvent}>
-            <Button
-              text="Créer un évènement"
-              onPress={() => handlecreationEvent()}
-            ></Button>
-          </View>
-          <ScrollView>
-            <View style={styles.eventscontainer}>
-              {filtrednonfound ? (
-                <Text style={styles.textnonEventfound}>Aucun événement trouvé pour cette ville. Pourquoi ne pas ajouter le vôtre ? 😊</Text>
-              ) : (
-                (filtreredEvents.length > 0 ? filtreredEvents : events).map(
-                  (event) => (
-                    <Event
-                      key={event._id}
-                      creatorUsername={event.owner.username}
-                      title={event.title}
-                      description={event.description}
-                      location={event.location}
-                      date={formatDateString(event.date)}
-                      showComments={showCommentsForEvent === event._id}
-                      displayComments={() => toggleComments(event._id)}
-                      ajoutcomment={() => ajoutcomment(event._id)}
-                      comments={eventComments[event._id] || []}
-                      comment={comment}
-                      setComment={setComment}
-                      handleJoinEvent={() => handleJoinEvent(event)}
-                      participants={event.participants}
-                      nbrParticipants={event.participantsNbr}
-                      joingEventhandle={joinedEvents[event._id] || false}
-                      avatareventowner={event.owner.avatar}
-                      avatar={user.avatar}
-                      titleFilm={event.filmDetails.title}
-                      backdrop={event.filmDetails.backdrop}
-                      isParticipate={
-                        joinedEvents[event._id] ?? event.isParticipate
-                      }
-                      _id={user._id}
-                    />
-                  )
-                )
-              )}
-            </View>
-          </ScrollView>
-        </ImageBackground>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
-  );
+		<KeyboardAvoidingView behavior={Platform.OS === "padding"}>
+			<SafeAreaView style={styles.container}>
+				<ImageBackground
+					style={styles.backgroundImage}
+					source={require("../assets/backgroundGradient.png")}
+				>
+					<UserTopSection user={user} navigation={navigation} />
+
+					<View>
+					  <Reseachsection
+  						inputreseach={inputreseach}
+  						setInputreseach={setInputreseach}
+  						handlePressSearchIcon={handleSearchIcon}
+  						handlerefreshIcon={handleClearFilter}
+  					></Reseachsection>
+  					<View style={styles.buttoncreationEvent}>
+  						<Button
+  							text='Créer un évènement'
+  							onPress={() => handlecreationEvent()}
+  						></Button>
+  					</View>
+  					<ScrollView>
+  						<View style={styles.eventscontainer}>
+  							{filtrednonfound ? (
+  								<Text style={styles.textnonEventfound}>
+  									Aucun événement trouvé pour cette ville. Pourquoi ne pas
+  									ajouter le vôtre ? 😊
+  								</Text>
+  							) : (
+  								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
+  									(event) => (
+  										<Event
+  											key={event._id}
+  											creatorUsername={event.owner.username}
+  											title={event.title}
+  											description={event.description}
+  											location={event.location}
+  											date={formatDateString(event.date)}
+  											showComments={showCommentsForEvent === event._id}
+  											displayComments={() => toggleComments(event._id)}
+  											ajoutcomment={() => ajoutcomment(event._id)}
+  											comments={eventComments[event._id] || []}
+  											comment={comment}
+  											setComment={setComment}
+  											handleJoinEvent={() => handleJoinEvent(event)}
+  											participants={event.participants}
+  											nbrParticipants={event.participantsNbr}
+  											joingEventhandle={joinedEvents[event._id] || false}
+  											avatareventowner={event.owner.avatar}
+  											avatar={user.avatar}
+  											titleFilm={event.filmDetails.title}
+  											backdrop={event.filmDetails.backdrop}
+  											isParticipate={
+  												joinedEvents[event._id] ?? event.isParticipate
+  											}
+  											_id={user._id}
+  										/>
+  									)
+  								)
+  							)}
+  						</View>
+  					</ScrollView>
+					</View>
+				</ImageBackground>
+			</SafeAreaView>
+		</KeyboardAvoidingView>
+	);
 }
 
 const styles = StyleSheet.create({
@@ -322,7 +326,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     flexGrow: 1,
-    marginBottom: 45,
+    marginBottom: 100,
   },
   textnonEventfound:{
     color: "white",
