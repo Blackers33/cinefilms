@@ -25,22 +25,68 @@ export default function EventScreen({ navigation }) {
   const [joinedEvents, setJoinedEvents] = useState({});
   const [inputreseach, setInputreseach] = useState("");
   const [filtreredEvents, setFiltreredEvents] = useState([]);
+  const [filtrednonfound,setFiltrednonfound]=useState(false);
 
-  //reseach input pour filtrer les evenements
+    
+
+  const fetchEvents = async (setEvents, setJoinedEvents) => {
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/`);
+      const data = await response.json();
+  
+      setEvents(data.data);
+  
+      const initialJoinedEvents = {};
+      data.data.forEach((event) => {
+        initialJoinedEvents[event._id] = event.isParticipate;
+      });
+  
+      setJoinedEvents(initialJoinedEvents);
+    } catch (err) {
+      console.log("Erreur lors de la récupération des événements:", err.message);
+    }
+  };
+  
+  const fetchCommentsForEvents = async (events, fetchComments) => {
+    if (events.length === 0) return;
+  
+    try {
+      await Promise.all(events.map((event) => fetchComments(event._id)));
+    } catch (err) {
+      console.log("Erreur lors de la récupération des commentaires:", err.message);
+    }
+  };
+  // afficher tous les evenement à la chargement du eventScreen
+  useEffect(() => {
+    fetchEvents(setEvents, setJoinedEvents);
+  }, []);
+
+  useEffect(() => {
+    fetchCommentsForEvents(events, fetchComments);
+  }, [events]);
+
+
+
   const handleSearchIcon = () => {
     const filtered = events.filter(
       (event) =>
-        event.location.toLowerCase().trim() ===
-        inputreseach.toLowerCase().trim()
+        event.location.toLowerCase().trim() === inputreseach.toLowerCase().trim()
     );
+  
+    if (filtered.length === 0) {
+      setFiltrednonfound(true);
+      setFiltreredEvents("");
+
+    }
+  
     setFiltreredEvents(filtered);
-    
   };
 
 // clean les filtre pour afficher toutes les evenement 
   const handleClearFilter = () => {
     setFiltreredEvents([]); 
     setInputreseach("");  
+    setFiltrednonfound(false);
   };
 
   // vers creationEvent screen
@@ -96,34 +142,14 @@ export default function EventScreen({ navigation }) {
       });
   };
 
-  // afficher tous les evenement à la chargement du eventScreen
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(
-          process.env.EXPO_PUBLIC_IP_ADDRESS + "/events/"
-        );
-        const data = await response.json();
-
-        setEvents(data.data);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    fetchEvents();
-  }, []);
-
-  // à jour les commentaires dès il y a un ajout
-  useEffect(() => {
-    if (events.length > 0) {
-      events.forEach((event) => {
-        fetchComments(event._id);
-      });
-    }
-  }, [events]);
 
   // Define the function for handling event joining
   const handleJoinEvent = (event) => {
+
+    if (event.participants.some((participant) => participant._id === user._id)) {
+      console.log("L'utilisateur participe déjà à cet événement !");
+      return; // Empêche d'ajouter à nouveau l'utilisateur
+    }
     fetch(
       `${process.env.EXPO_PUBLIC_IP_ADDRESS}/events/${event._id}/joingEvent`,
       {
@@ -138,7 +164,7 @@ export default function EventScreen({ navigation }) {
     )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to join event");
+         new Error("Failed to join event");
         }
         return response.json();
       })
@@ -150,20 +176,19 @@ export default function EventScreen({ navigation }) {
             "isParticipate:",
             data.participation.isParticipate
           );
-
-          // Met à jour l'état des événements et la participation
+  
           setJoinedEvents((prev) => ({
             ...prev,
-            [event._id]: data.participation.isParticipate, // Mise à jour ici
+            [event._id]: data.participation.isParticipate,
           }));
-
+  
           setEvents((prevEvents) =>
             prevEvents.map((e) =>
               e._id === event._id
                 ? {
                     ...e,
                     participantsNbr: data.participation.participantsNbr,
-                    isParticipate: data.participation.isParticipate, // Mise à jour ici
+                    isParticipate: data.participation.isParticipate,
                   }
                 : e
             )
@@ -176,6 +201,18 @@ export default function EventScreen({ navigation }) {
         console.error("Une erreur est survenue:", error);
       });
   };
+
+  //formatee la chiane de date pour afficher sur card event
+  function formatDateString(dateString) {
+   
+    const [datePart, timePart] = dateString.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+  
+    // Retourner le format souhaité
+    return `${day}/${month}/${year} à ${hour}:${minute}`;
+  }
+  
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "padding"}>
@@ -201,23 +238,18 @@ export default function EventScreen({ navigation }) {
           </View>
           <ScrollView>
             <View style={styles.eventscontainer}>
-              {filtreredEvents.length === 0 && inputreseach.trim() !== "" ? (
-                <Text style={styles.textnonEventfound}>Aucun événement trouvé</Text>
+              {filtrednonfound ? (
+                <Text style={styles.textnonEventfound}>Aucun événement trouvé pour cette ville. Pourquoi ne pas ajouter le vôtre ? 😊</Text>
               ) : (
                 (filtreredEvents.length > 0 ? filtreredEvents : events).map(
                   (event) => (
                     <Event
                       key={event._id}
+                      creatorUsername={event.owner.username}
                       title={event.title}
                       description={event.description}
                       location={event.location}
-                      date={new Date(event.date).toLocaleString("fr-FR", {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      date={formatDateString(event.date)}
                       showComments={showCommentsForEvent === event._id}
                       displayComments={() => toggleComments(event._id)}
                       ajoutcomment={() => ajoutcomment(event._id)}
@@ -235,6 +267,7 @@ export default function EventScreen({ navigation }) {
                       isParticipate={
                         joinedEvents[event._id] ?? event.isParticipate
                       }
+                      _id={user._id}
                     />
                   )
                 )
@@ -293,5 +326,8 @@ const styles = StyleSheet.create({
   },
   textnonEventfound:{
     color: "white",
+    textAlign:"center",
+    marginTop:150,
+
   }
 });

@@ -5153,6 +5153,11 @@ react-native-swipe-gestures@^1.0.5:
   resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz#a172cb0f3e7478ccd681fd36b8bfbcdd098bde7c"
   integrity sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==
 
+react-native-timer-picker@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-timer-picker/-/react-native-timer-picker-2.1.0.tgz#f1ad4f9ffa528a99f817c2d0424aea775b26c57e"
+  integrity sha512-pK/LWiB0jLW8Put1NfQG3QYcQf5L0HoF4zSVh9k1vAX6ov6Bj4RfW8HHUZJEic7f8OVOUU+kOJT4c1NRhD2fGw==
+
 react-native-vector-icons@^10.2.0:
   version "10.2.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-10.2.0.tgz#f438f2ca16f7d6be658fd6ec8f0d2b7e2132b91c"

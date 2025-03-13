@@ -4,60 +4,75 @@ import {
   Text,
   View,
   Image,
-  SafeAreaView,
   TouchableOpacity,
   TextInput,
   ImageBackground,
-  FlatList,
 } from "react-native";
-import { useState } from "react";
+
 import Avatar from "../common/Avatar";
 import Comments from "./comments";
 import CommentsIcon from "react-native-vector-icons/Fontisto";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { formatDistanceToNow, fr } from "date-fns";
+import { useSelector } from "react-redux";
+
+
 
 
 export default function Event(props) {
- 
-const avatars = props.participants.map((participant, index) => (
-  <Avatar
-    uri={participant.avatar} 
-    key={index}
-    style={{ marginRight: 5 }}
-    size={30}
-  />
-));
+  const user = useSelector((state) => state.user.value);
 
 
-const avatarjoint = props.isParticipate ? (
-  <Avatar
-    uri={props.avatar} 
-    key="user-avatar"
-    style={{ marginRight: 5 }}
-    size={30}
-  />
-) : null;
 
+  const isCreator = props.creatorUsername === user.username;
 
+  const avatars = props.participants
+    .filter((participant) => participant.username !== user.username) 
+    .map((participant, index) => (
+      <Avatar
+        uri={participant.avatar}
+        key={index}
+        style={{ marginRight: 5 }}
+        size={30}
+      />
+    ));
+
+  const isUserInParticipants = props.participants.some(
+    (participant) => participant.username === user.username
+  );
+
+  const buttonText =
+    isUserInParticipants ||!!props.isParticipate ? "Quitter" : "+ Joindre";
+
+  const avatarjoint =
+    props.isParticipate && !isCreator ? (
+      <Avatar
+        uri={props.avatar}
+        key="user-avatar"
+        style={{ marginRight: 5 }}
+        size={30}
+      />
+    ) : null;
 
   return (
     <View style={styles.eventContainer}>
       <View style={styles.eventInfos}>
-        <Avatar size={40} uri={props.avatareventowner}/>
+        <Avatar size={40} uri={props.avatareventowner} />
         <View style={styles.appointmentInfos}>
           <Text style={styles.appointmentPlace}>
             {props.location} - {props.title}
           </Text>
           <Text style={styles.appointmentDate}>{props.date}</Text>
         </View>
-        <View >
+        <View>
           <Text style={styles.titlefilm}>{props.titleFilm}</Text>
+
           <Image
             style={styles.imageFilm}
-            source={{
-              uri: props.backdrop,
-            }}
+            source={
+              props.backdrop
+                ? { uri: props.backdrop }
+                : require("../../assets/logo/placeholder/poster.png")
+            }
           />
         </View>
       </View>
@@ -83,22 +98,19 @@ const avatarjoint = props.isParticipate ? (
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={styles.joingEventButton}
+          style={[styles.joingEventButton, isCreator && styles.creatorButton]}
           activeOpacity={0.8}
           onPress={props.handleJoinEvent}
+          disabled={isCreator} // Désactive le bouton si c'est le créateur
         >
-          {props.isParticipate ? (
-            <Text style={styles.buttonText}>Quitter</Text>
-          ) : (
-            <Text style={styles.buttonText}>+ Joindre</Text>
-          )}
+          <Text style={styles.buttonText}>
+            {isCreator ? "Créateur de l'événement" : buttonText}
+          </Text>
         </TouchableOpacity>
       </View>
       {props.showComments && (
         <View style={styles.commentsSection}>
-          <Comments
-          comments={props.comments}
-          ></Comments>
+          <Comments comments={props.comments}></Comments>
 
           <View style={styles.inputcommentcontaire}>
             <TextInput
@@ -223,10 +235,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   imageFilm: {
-    height: 100,
+    height: 180,
     width: 350,
     borderRadius: 10,
     marginBottom: 15,
+    objectFit: "contain",
   },
   titleFilm: {
     fontSize: 20,
@@ -234,5 +247,9 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     textAlign: "center",
     alignSelf: "center",
+  },
+  creatorButton: {
+    backgroundColor: "#a0a0a0", 
+    opacity: 0.6, 
   },
 });

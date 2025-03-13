@@ -88,7 +88,7 @@ router.get("/", async (req, res) => {
               title: data.title || "Titre inconnu",
               backdrop: data.backdrop_path
                 ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`
-                : "https://via.placeholder.com/1280x720?text=Image+indisponible",
+                : "",
             },
           };
         } catch (err) {
@@ -279,6 +279,8 @@ router.post("/", async (req, res) => {
         .json({ result: false, error: "Missing or empty fields" });
     }
 
+    console.log("Données reçues du front:", req.body);
+
     // Authentification de l'utilisateur
     const user = await autentification(req.body.user);
     if (!user) {
@@ -299,12 +301,12 @@ router.post("/", async (req, res) => {
         .json({ result: false, error: "Failed to create or find film" });
     }
 
-    const eventDate = new Date(req.body.date.split("/").reverse().join("-"));
+    
     // Création des données de l'événement
     const eventData = {
       owner: user.userId,
       location: req.body.location,
-      date: eventDate,
+      date: req.body.date,
       description: req.body.description,
       title: req.body.title,
       filmId: filmId, 

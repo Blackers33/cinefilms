@@ -19,14 +19,18 @@ import { useState } from "react";
 import { Calendar } from "react-native-calendars";
 import tmdbApiCall from "../components/HomeScreen/tmdbApiCall";
 import { useSelector } from "react-redux";
+import { TimerPickerModal } from "react-native-timer-picker";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function NewEventScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedHeure, setSelecteHeure] = useState(null);
   const [description, setDescription] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [movie, setMovie] = useState("");
   const [resultmovie, setResultmovie] = useState("");
   const [noResultsFound, setNoResultsFound] = useState(false);
@@ -79,6 +83,11 @@ export default function NewEventScreen({ navigation }) {
 
   // buton creer l'evenement et appeler la route post de l'evenement
   const handleSubmitMessage = () => {
+
+    const [hours, minutes] = selectedHeure.split(":");
+    const [day, month, year] = selectedDate.split("/");
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:00.000Z`;
+
     fetch(process.env.EXPO_PUBLIC_IP_ADDRESS + "/events/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -88,13 +97,14 @@ export default function NewEventScreen({ navigation }) {
         title: title,
         user: user.token,
         tmbdId: tmdbidfilm,
-        date: selectedDate,
+        date: formattedDate,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          navigation.navigate("TabNavigator");
+          console.log(data);
+          navigation.navigate("TabNavigator", { screen: "Events" });
         } else {
           console.log("Erreur:", data.message);
         }
@@ -102,6 +112,10 @@ export default function NewEventScreen({ navigation }) {
       .catch((error) => {
         console.error("Erreur lors de l'envoi de la requête:", error);
       });
+  };
+
+  const hanldeAnnulerButton = () => {
+    navigation.navigate("TabNavigator", { screen: "Events" });
   };
 
   return (
@@ -161,6 +175,52 @@ export default function NewEventScreen({ navigation }) {
                   />
                 )}
               </View>
+              <View style={styles.inputBubble}>
+                <TouchableOpacity
+                  onPress={() => setShowTimePicker(!showTimePicker)}
+                >
+                  <Inputstyled
+                    placeholder="Sélectionner l'heure de l'événement"
+                    placeholderTextColor="white"
+                    value={selectedHeure}
+                    editable={false}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <TimerPickerModal
+                    visible={showTimePicker}
+                    setIsVisible={setShowTimePicker}
+                    onConfirm={(pickedDuration) => {
+                      // Formater uniquement heure et minute, ignorer les secondes
+                      const formattedTime = `${String(
+                        pickedDuration.hours
+                      ).padStart(2, "0")}:${String(
+                        pickedDuration.minutes
+                      ).padStart(2, "0")}`;
+                      setSelecteHeure(formattedTime);
+                      setShowTimePicker(false);
+                    }}
+                    modalTitle="Choisir votre heure "
+                    onCancel={() => setShowTimePicker(false)}
+                    closeOnOverlayPress
+                    use24HourPicker
+                    LinearGradient={LinearGradient}
+                    styles={{
+                      theme: "dark",
+                      pickerLabelContainer: {
+                        right: -20,
+                        top: 0,
+                        bottom: 6,
+                        width: 40,
+                        alignItems: "center",
+                      },
+                    }}
+                    confirmButtonText="Confirmer"
+                    cancelButtonText="Annuler"
+                    secondsPickerIsDisabled={true}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View>
@@ -199,7 +259,7 @@ export default function NewEventScreen({ navigation }) {
                   value={description}
                   multiline={true}
                   numberOfLines={5}
-                  maxLength={100}
+                  maxLength={400}
                 ></TextInput>
               </View>
             </View>
@@ -210,7 +270,9 @@ export default function NewEventScreen({ navigation }) {
               ></Button>
 
               {/* Permet de naviguer avec la page 'Events' */}
-              <Button text="Annuler"onPress={() => navigation.navigate("TabNavigator")}
+              <Button
+                text="Annuler"
+                onPress={() => hanldeAnnulerButton()}
               ></Button>
             </View>
           </View>
@@ -258,10 +320,10 @@ const styles = StyleSheet.create({
     height: "auto",
   },
   buttonContainer: {
-    flexDirection: "column",  
-  justifyContent: "center",  
-  alignItems: "center",  
-  padding: 20,  
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
   addEvent: {
     backgroundColor: "rgb(201, 65, 6)",
@@ -285,8 +347,8 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    height: 150,  // Vous pouvez ajuster la hauteur selon votre besoin
-    width: "100%",  // Le champ prendra toute la largeur
+    height: 150, // Vous pouvez ajuster la hauteur selon votre besoin
+    width: "100%", // Le champ prendra toute la largeur
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 10,
