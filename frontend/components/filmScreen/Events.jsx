@@ -249,139 +249,138 @@ export default function Events({ filmId, allEvents, refresh }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        marginBottom: 10,
-    },
-    containerevents: {
-        marginTop: 10
-    },
-    events: {
-        flex :1  
-    },
-    inputFilter: {
-        backgroundColor: 'rgba(77, 77, 77, 0.1)',
-        width: '80%',
-        height: 35,
-        borderColor: 'rgb(201, 65, 6)',
-        borderWidth: 1,
-        borderRadius: 30,
-        marginRight: 5,
-        color : 'white',
-    },
-    
-    filterBar: {
-        marginTop: 10,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        width: "90%",
-        alignSelf: "center",   // Centre horizontalement,
-    },
-    eventContainer: {
-        width: "90%",       
-        alignSelf: "center",   // Centre horizontalement
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        elevation: 3,          // Ombre pour Android
-        shadowColor: "#000",   // Ombre pour iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        backgroundColor: 'rgba(77, 77, 77, 0.5)',
-        padding: 10,
-    },
-    eventInfos: {
-        flexDirection: 'row',
-    },
-    appointmentInfos: {
-        marginLeft: 10,
-    },
-    appointmentPlace: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: '500'
-    },
-    appointmentDate: {
-        color: 'white',
-        fontWeight: 300,
-        fontSize: 16,
-    },
-    backgroundDescriptionEvent: {
-        resizeMode: "cover", 
-        marginTop: 10,
-        height: '100%'
-    },
-    descriptionText: {
-        color: 'white',
-        fontSize: 18,
-        padding: 10,
-    },
-    interactionBar: {
-        marginTop: 10,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    interactionToEventView: {
-        
-    },
-    commentJongBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '60%',
-    },
-    participants: {
-        flexDirection: 'row',
-    },
-    participantsNumber: {
-        color: 'white',
-        fontSize: 20, 
-        marginLeft: 5
-    },
-    joingEventButton: {
-        backgroundColor: 'rgb(201, 65, 6)',
-        width: 130,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 5,
-    },
-    buttonText: {
-        textAlign: 'center',
-        color: 'white',
-        fontSize: 18,
-        fontWeight: '500'
-    }, 
-    commentsSection: {
-        width: "90%",
-        backgroundColor: 'rgba(77, 77, 77, 0.5)',
-        borderRadius: 5,
-        alignSelf: "center", 
-    },
-    inputcommentcontaire: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        width: "100%",
-        marginTop: 5,
-        borderRadius: 5,
-        alignSelf: "center", 
-    },
-    inputcomment: {
-        flex: 1,
-        height: 40,
-        borderColor: 'rgb(201, 65, 6)',
-        borderWidth: 1,
-        borderRadius: 20,
-        paddingHorizontal: 10,
-        marginRight: 10,
-        color: 'white',
-        backgroundColor:'rgba(77, 77, 77, 0.2)'    
-    },
-    textNoEventToShow: {
-        textAlign: 'center',
-        marginTop: 20, 
-        color: 'white', 
-        fontSize: 18, 
-        marginTop: 50 
-    },
-    backIcon: {
-        margin: 30,
-    }
-})
+	container: {
+		marginBottom: 10,
+	},
+	containerevents: {
+		marginTop: 10,
+	},
+	events: {
+		flex: 1,
+	},
+	inputFilter: {
+		backgroundColor: "rgba(77, 77, 77, 0.1)",
+		width: "80%",
+		height: 35,
+		borderColor: "rgb(201, 65, 6)",
+		borderWidth: 1,
+		borderRadius: 30,
+		marginRight: 5,
+		color: "white",
+	},
+
+	filterBar: {
+		marginTop: 10,
+		flexDirection: "row",
+		justifyContent: "center",
+		width: "90%",
+		alignSelf: "center", // Centre horizontalement,
+	},
+	eventContainer: {
+		width: "90%",
+		alignSelf: "center", // Centre horizontalement
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		elevation: 3, // Ombre pour Android
+		shadowColor: "#000", // Ombre pour iOS
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.2,
+		shadowRadius: 4,
+		backgroundColor: "rgba(77, 77, 77, 0.5)",
+		padding: 10,
+	},
+	eventInfos: {
+		flexDirection: "row",
+	},
+	appointmentInfos: {
+		marginLeft: 10,
+		flexShrink: 1,
+	},
+	appointmentPlace: {
+		color: "white",
+		fontSize: 18,
+		fontWeight: "500",
+	},
+	appointmentDate: {
+		color: "white",
+		fontWeight: 300,
+		fontSize: 16,
+	},
+	backgroundDescriptionEvent: {
+		resizeMode: "cover",
+		marginTop: 10,
+		height: "100%",
+	},
+	descriptionText: {
+		color: "white",
+		fontSize: 18,
+		padding: 10,
+	},
+	interactionBar: {
+		marginTop: 10,
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	interactionToEventView: {},
+	commentJongBar: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		width: "60%",
+	},
+	participants: {
+		flexDirection: "row",
+	},
+	participantsNumber: {
+		color: "white",
+		fontSize: 20,
+		marginLeft: 5,
+	},
+	joingEventButton: {
+		backgroundColor: "rgb(201, 65, 6)",
+		width: 130,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 5,
+	},
+	buttonText: {
+		textAlign: "center",
+		color: "white",
+		fontSize: 18,
+		fontWeight: "500",
+	},
+	commentsSection: {
+		width: "90%",
+		backgroundColor: "rgba(77, 77, 77, 0.5)",
+		borderRadius: 5,
+		alignSelf: "center",
+	},
+	inputcommentcontaire: {
+		flexDirection: "row",
+		justifyContent: "center",
+		width: "100%",
+		marginTop: 5,
+		borderRadius: 5,
+		alignSelf: "center",
+	},
+	inputcomment: {
+		flex: 1,
+		height: 40,
+		borderColor: "rgb(201, 65, 6)",
+		borderWidth: 1,
+		borderRadius: 20,
+		paddingHorizontal: 10,
+		marginRight: 10,
+		color: "white",
+		backgroundColor: "rgba(77, 77, 77, 0.2)",
+	},
+	textNoEventToShow: {
+		textAlign: "center",
+		marginTop: 20,
+		color: "white",
+		fontSize: 18,
+		marginTop: 50,
+	},
+	backIcon: {
+		margin: 30,
+	},
+});
