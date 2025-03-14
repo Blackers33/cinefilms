@@ -54,7 +54,7 @@ export default function Event(props) {
         uri={props.avatar}
         key="user-avatar"
         style={{ marginRight: 5 }}
-        size={30}
+        size={25}
       />
     ) : null;
 
