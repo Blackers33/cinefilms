@@ -62,6 +62,7 @@ export default function ConnexionScreen({ navigation }) {
 					source={require("../assets/wallpaper-cinefilm.jpg")}
 					style={styles.backgroundImage}
 				>
+					
 					<ScrollView
 						contentContainerStyle={{ flexGrow: 1 }}
 						keyboardShouldPersistTaps='handled'
