@@ -241,7 +241,7 @@ export default function EventScreen({ navigation }) {
   							{filtrednonfound ? (
   								<Text style={styles.textnonEventfound}>
   									Aucun événement trouvé pour cette ville. Pourquoi ne pas
-  									ajouter le vôtre ? 😊
+  									créer le tiens ? 😊
   								</Text>
   							) : (
   								(filtreredEvents.length > 0 ? filtreredEvents : events).map(

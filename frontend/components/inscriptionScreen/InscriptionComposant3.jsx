@@ -63,7 +63,7 @@ function InscriptionScreen3({
 					style={styles.biographyInput}
 					onChangeText={(value) => setBiography(value)}
 					value={biography}
-					placeholder='à vous de jouer !'
+					placeholder='à toi de jouer !'
 					autoCorrect={true}
 					textContentType='text'
 					multiline={true}

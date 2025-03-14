@@ -55,8 +55,9 @@ export default function ConnexionScreen({ navigation }) {
 		<KeyboardAvoidingView
 			style={styles.container}
 			behavior={Platform.OS === "ios" && "padding"}
+			keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
 		>
-			<SafeAreaView>
+			<SafeAreaView style={{ flex: 1 }}>
 				<ImageBackground
 					source={require("../assets/wallpaper-cinefilm.jpg")}
 					style={styles.backgroundImage}

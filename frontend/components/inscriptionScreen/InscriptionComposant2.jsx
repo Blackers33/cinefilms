@@ -49,7 +49,7 @@ function InscriptionScreen2({
   					<Avatar uri={avatar} size={150} />
   				</TouchableOpacity>
   				<Text style={styles.avatarinstructiontext}>
-  					Cliquer pour choisir votre avatar
+  					Clique pour choisir ton avatar
   				</Text>
   			</View>
   			<View style={{ flex: 1 }}>
@@ -60,13 +60,13 @@ function InscriptionScreen2({
   						placeholderTextColor='grey'
   						onChangeText={setAge}
   						value={age}
-  						placeholder='Entrez votre âge'
+  						placeholder='Entre ton âge'
   						inputMode='numeric'
   						style={styles.textInput}
   					/>
   				</View>
   				<View>
-  					<Text style={styles.text}>Votre localisation </Text>
+  					<Text style={styles.text}>Ta localisation </Text>
   				</View>
   				<CitiesDropdown
   					city={location.name}

@@ -46,7 +46,7 @@ function InscriptionScreen1({ handleNext }) {
 	return (
 		<View>
 			<Text style={styles.titrelogo}>
-				Commencer votre inscription sur Cinefilms
+				Commence ton inscription sur Cinefilm
 			</Text>
 
 			<View>
@@ -55,7 +55,7 @@ function InscriptionScreen1({ handleNext }) {
 				<TextInput
 					onChangeText={setUsername}
 					value={username}
-					placeholder="Entrez votre nom d'utilisateur"
+					placeholder="Entre ton nom d'utilisateur"
 				></TextInput>
 			</View>
 			<View>
@@ -63,7 +63,7 @@ function InscriptionScreen1({ handleNext }) {
 				<TextInput
 					onChangeText={setEmail}
 					value={email}
-					placeholder='Entrez votre email'
+					placeholder='Entre ton email'
 					autoCorrect={false}
 				></TextInput>
 			</View>
@@ -72,7 +72,7 @@ function InscriptionScreen1({ handleNext }) {
 				<TextInput
 					onChangeText={setPassword}
 					value={password}
-					placeholder='Créez votre mot de passe'
+					placeholder='Créé ton mot de passe'
 					secureTextEntry={true}
 					autoCorrect={false}
 					textContentType='password'

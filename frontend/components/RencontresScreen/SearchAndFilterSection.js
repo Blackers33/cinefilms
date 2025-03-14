@@ -22,7 +22,7 @@ export default function SearchAndFilterSection({ onSearch }) {
                 <TextInputStyled
                     value={search}
                     onChangeText={handleSearchChange}
-                    placeholder='rechercher un utilisateur...'
+                    placeholder='Recherche un utilisateur'
                 />
             </View>
         </View>
