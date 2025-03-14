@@ -3,8 +3,7 @@ import { Dimensions } from "react-native";
 import Avatar from "../common/Avatar";
 import MovieGenresDisplay from "../common/MovieGenresDisplay";
 import MoviesScrollView from "../common/MoviesScrollView";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+
 
 export default function Card({ profile, isFriend, handleAddButton }) {
 	
@@ -33,6 +32,7 @@ export default function Card({ profile, isFriend, handleAddButton }) {
 			<MoviesScrollView moviesIds={profile.favMovies} />
 
 			<Text style={styles.title}>Mes genres préférés</Text>
+			<View style={{height: 15}}/>
 			<MovieGenresDisplay list={profile.favGenres} />
 		</View>
 	);
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
 		color: "#FFF",
 		fontWeight: 600,
 		fontSize: 20,
+		marginTop: 10
 	},
 	text: {
 		color: "#FFF",

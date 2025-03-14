@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   ImageBackground,
+  Keyboard,
   ScrollView,
   StyleSheet,
   Text,
