@@ -2,12 +2,12 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
-  TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   ImageBackground,
   Text,
+  StatusBar
 } from "react-native";
 import { useState, useEffect } from "react";
 import UserTopSection from "../components/common/UserTopSection";
@@ -217,6 +217,7 @@ export default function EventScreen({ navigation }) {
   return (
 		<KeyboardAvoidingView behavior={Platform.OS === "padding"}>
 			<SafeAreaView style={styles.container}>
+      <StatusBar hidden={false} />
 				<ImageBackground
 					style={styles.backgroundImage}
 					source={require("../assets/backgroundGradient.png")}
@@ -241,7 +242,7 @@ export default function EventScreen({ navigation }) {
   							{filtrednonfound ? (
   								<Text style={styles.textnonEventfound}>
   									Aucun événement trouvé pour cette ville. Pourquoi ne pas
-  									ajouter le vôtre ? 😊
+  									ajouter le tient ? 😊
   								</Text>
   							) : (
   								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
@@ -326,7 +327,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     flexGrow: 1,
-    marginBottom: 100,
+    marginBottom: 280,
   },
   textnonEventfound:{
     color: "white",
