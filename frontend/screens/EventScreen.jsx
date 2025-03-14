@@ -13,7 +13,7 @@ import UserTopSection from "../components/common/UserTopSection";
 import Event from "../components/EventsComponent/Event";
 import Reseachsection from "../components/EventsComponent/reseachfiltreSection";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useIsFocused } from "@react-navigation/native";
 
 export default function EventScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -25,6 +25,7 @@ export default function EventScreen({ navigation }) {
   const [inputreseach, setInputreseach] = useState("");
   const [filtreredEvents, setFiltreredEvents] = useState([]);
   const [filtrednonfound,setFiltrednonfound]=useState(false);
+  const isFocused = useIsFocused();
 
     
 
@@ -62,7 +63,7 @@ export default function EventScreen({ navigation }) {
 
   useEffect(() => {
     fetchCommentsForEvents(events, fetchComments);
-  }, [events]);
+  }, [events, isFocused]);
 
 
 
