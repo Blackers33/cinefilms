@@ -1,20 +1,18 @@
+import { useEffect, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   ImageBackground,
+  ScrollView,
+  StyleSheet,
   Text,
-  StatusBar
+  View
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import Button from "../components/common/Button";
 import UserTopSection from "../components/common/UserTopSection";
 import Event from "../components/EventsComponent/Event";
 import Reseachsection from "../components/EventsComponent/reseachfiltreSection";
-import Button from "../components/common/Button";
-import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function EventScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -215,107 +213,80 @@ export default function EventScreen({ navigation }) {
   
 
   return (
-		<KeyboardAvoidingView behavior={Platform.OS === "padding"}>
-			<SafeAreaView style={styles.container}>
-      <StatusBar hidden={false} />
-				<ImageBackground
-					style={styles.backgroundImage}
-					source={require("../assets/backgroundGradient.png")}
-				>
-					<UserTopSection user={user} navigation={navigation} />
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+			<ImageBackground
+				style={styles.backgroundImage}
+				source={require("../assets/backgroundGradient.png")}
+			>
+				<UserTopSection user={user} navigation={navigation} />
 
-					<View>
-					  <Reseachsection
-  						inputreseach={inputreseach}
-  						setInputreseach={setInputreseach}
-  						handlePressSearchIcon={handleSearchIcon}
-  						handlerefreshIcon={handleClearFilter}
-  					></Reseachsection>
-  					<View style={styles.buttoncreationEvent}>
-  						<Button
-  							text='Créer un évènement'
-  							onPress={() => handlecreationEvent()}
-  						></Button>
-  					</View>
-  					<ScrollView>
-  						<View style={styles.eventscontainer}>
-  							{filtrednonfound ? (
-  								<Text style={styles.textnonEventfound}>
-  									Aucun événement trouvé pour cette ville. Pourquoi ne pas
-  									ajouter le tient ? 😊
-  								</Text>
-  							) : (
-  								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
-  									(event) => (
-  										<Event
-  											key={event._id}
-  											creatorUsername={event.owner.username}
-  											title={event.title}
-  											description={event.description}
-  											location={event.location}
-  											date={formatDateString(event.date)}
-  											showComments={showCommentsForEvent === event._id}
-  											displayComments={() => toggleComments(event._id)}
-  											ajoutcomment={() => ajoutcomment(event._id)}
-  											comments={eventComments[event._id] || []}
-  											comment={comment}
-  											setComment={setComment}
-  											handleJoinEvent={() => handleJoinEvent(event)}
-  											participants={event.participants}
-  											nbrParticipants={event.participantsNbr}
-  											joingEventhandle={joinedEvents[event._id] || false}
-  											avatareventowner={event.owner.avatar}
-  											avatar={user.avatar}
-  											titleFilm={event.filmDetails.title}
-  											backdrop={event.filmDetails.backdrop}
-  											isParticipate={
-  												joinedEvents[event._id] ?? event.isParticipate
-  											}
-  											_id={user._id}
-  										/>
-  									)
-  								)
-  							)}
-  						</View>
-  					</ScrollView>
+				<View>
+					<Reseachsection
+						inputreseach={inputreseach}
+						setInputreseach={setInputreseach}
+						handlePressSearchIcon={handleSearchIcon}
+						handlerefreshIcon={handleClearFilter}
+					></Reseachsection>
+					<View style={styles.buttoncreationEvent}>
+						<Button
+							text='Créer un évènement'
+							onPress={() => handlecreationEvent()}
+						></Button>
 					</View>
-				</ImageBackground>
-			</SafeAreaView>
-		</KeyboardAvoidingView>
+					<ScrollView>
+						<View style={styles.eventscontainer}>
+							{filtrednonfound ? (
+								<Text style={styles.textnonEventfound}>
+									Aucun événement trouvé pour cette ville. Pourquoi ne pas
+									ajouter le tient ? 😊
+								</Text>
+							) : (
+								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
+									(event) => (
+										<Event
+											key={event._id}
+											creatorUsername={event.owner.username}
+											title={event.title}
+											description={event.description}
+											location={event.location}
+											date={formatDateString(event.date)}
+											showComments={showCommentsForEvent === event._id}
+											displayComments={() => toggleComments(event._id)}
+											ajoutcomment={() => ajoutcomment(event._id)}
+											comments={eventComments[event._id] || []}
+											comment={comment}
+											setComment={setComment}
+											handleJoinEvent={() => handleJoinEvent(event)}
+											participants={event.participants}
+											nbrParticipants={event.participantsNbr}
+											joingEventhandle={joinedEvents[event._id] || false}
+											avatareventowner={event.owner.avatar}
+											avatar={user.avatar}
+											titleFilm={event.filmDetails.title}
+											backdrop={event.filmDetails.backdrop}
+											isParticipate={
+												joinedEvents[event._id] ?? event.isParticipate
+											}
+											_id={user._id}
+										/>
+									)
+								)
+							)}
+						</View>
+					</ScrollView>
+				</View>
+			</ImageBackground>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#000000",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
+
   backgroundImage: {
     width: "100%",
     height: "100%",
   },
-  userTopContainer: {
-    marginTop: 20,
-    width: "100%",
-  },
-  textInputrseach: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    width: "100%",
-  },
-  reseachcontainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    marginTop: 10,
-    paddingRight: 20,
-  },
-  reseachInput: {
-    width: "80%",
-    height: 40,
-  },
+
 
   buttoncreationEvent: {
     alignItems: "center",
