@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopSection from "../components/common/UserTopSection";
+import UserTopSection from "../components/common/UserTopSection";
 import { ImageBackground } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import MainSection from "../components/RencontresScreen/MainSection";
@@ -33,7 +33,7 @@ export default function RencontresScreen({ navigation }) {
 					resizeMode: "cover",
 				}}
 			>
-				<TopSection user={user} />
+				<UserTopSection user={user} navigation={navigation} />
 				<MainSection user={user} handleAddButton={handleAddButton} />
 			</ImageBackground>
 		</SafeAreaView>

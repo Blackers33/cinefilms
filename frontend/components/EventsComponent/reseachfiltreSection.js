@@ -9,7 +9,7 @@ export default function reseachsection(props) {
     <View style={styles.reseachcontainer}>
       <View style={styles.reseachInput}>
         <TextInputStyled
-          placeholder="Rechercher sur votre ville"
+          placeholder="Recherche par ville"
           onChangeText={props.setInputreseach}
           value={props.inputreseach}
           onSubmitEditing={props.handlePressSearchIcon}
