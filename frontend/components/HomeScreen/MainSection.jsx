@@ -4,7 +4,7 @@ import CardSmall from "./CardSmall";
 import CardLarge from "./CardLarge";
 import SearchSection from "./SearchSection";
 import FiltersSection from "./FiltersSection";
-import tmdbApiCall from "../../components/HomeScreen/tmdbApiCall";
+import tmdbApiCall from "./tmdbApiCall";
 
 export default function MainSection({ navigation, user, isFocused }) {
 	const [cardsLarge, setCardsLarge] = useState(false);
