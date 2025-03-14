@@ -142,6 +142,7 @@ export default function NewEventScreen({ navigation }) {
 											placeholderTextColor='white'
 											value={selectedDate}
 											editable={false}
+											pointerEvents='none'
 										/>
 									</TouchableOpacity>
 
@@ -177,6 +178,7 @@ export default function NewEventScreen({ navigation }) {
 											placeholderTextColor='white'
 											value={selectedHeure}
 											editable={false}
+											pointerEvents='none'
 										/>
 									</TouchableOpacity>
 									<TouchableOpacity>
@@ -224,12 +226,12 @@ export default function NewEventScreen({ navigation }) {
 									<View style={styles.resultContainer}>
 										<Text style={styles.movieTitle}>{movie.title}</Text>
 										<Image
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
-                    }}
-                    style={styles.moviePoster}
-                    resizeMode="contain"
-                  />
+											source={{
+												uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
+											}}
+											style={styles.moviePoster}
+											resizeMode='contain'
+										/>
 									</View>
 								)}
 
