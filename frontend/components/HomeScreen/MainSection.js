@@ -6,7 +6,7 @@ import SearchSection from "./SearchSection";
 import FiltersSection from "./FiltersSection";
 import tmdbApiCall from "../../components/HomeScreen/tmdbApiCall";
 
-export default function MainSection({ navigation, user }) {
+export default function MainSection({ navigation, user, isFocused }) {
 	const [cardsLarge, setCardsLarge] = useState(false);
 	const [movies, setMovies] = useState([]);
 	const [search, setSearch] = useState("");
@@ -45,7 +45,7 @@ export default function MainSection({ navigation, user }) {
 	 */
 	useEffect(() => {
 		loadMovies();
-	}, [filters]);
+	}, [filters, isFocused]);
 
 	/**
 	 * Fonction servant à gérer la recherche

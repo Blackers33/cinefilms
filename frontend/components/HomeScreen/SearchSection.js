@@ -10,7 +10,7 @@ export default function SearchSection({search, setSearch, onSubmitSearch, cardsL
 				<TextInputStyled
 					value={search}
 					onChangeText={setSearch}
-					placeholder='search'
+					placeholder='Recherche un film'
 					onSubmitEditing={onSubmitSearch}
 				/>
 			</View>

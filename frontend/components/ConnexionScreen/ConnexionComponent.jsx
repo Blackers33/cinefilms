@@ -26,8 +26,8 @@ function connexionScreen({ email, setEmail, password, setPassword }) {
 			/>
 			<Text style={styles.titrelogo}>Bienvenue !</Text>
 			<Text style={styles.titrecontenu}>
-				Retrouvez les meilleurs films, événements et échanges entre passionnés
-				de cinéma. Rejoignez la communauté et vivez votre passion à fond !{"\n"}
+				Retrouve les meilleurs films, événements et échanges entre passionnés
+				de cinéma. Rejoins la communauté et vis ta passion à fond !
 			</Text>
 			<View style={styles.inputContainer}>
 				<View style={{ marginLeft: 20, marginRight: 20 }}>
@@ -35,7 +35,7 @@ function connexionScreen({ email, setEmail, password, setPassword }) {
 					<TextInput
 						onChangeText={setEmail}
 						value={email}
-						placeholder='Enter your email'
+						placeholder='Entre ton email'
 						keyboardType='email-address'
 					></TextInput>
 				</View>
@@ -44,7 +44,7 @@ function connexionScreen({ email, setEmail, password, setPassword }) {
 					<TextInput
 						onChangeText={setPassword}
 						value={password}
-						placeholder='Enter your password'
+						placeholder='Entre ton mot de passe'
 						secureTextEntry={true}
 					></TextInput>
 				</View>

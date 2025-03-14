@@ -148,14 +148,16 @@ export default function ProfilPageEdit({ user, setEdit }) {
 						<MovieGenresEdit list={favGenres} handleSwitch={handleSetGenres} />
 
 						<View>
-							<Field
-								title='Biographie'
-								info={biography}
-								onChangeText={setBiography}
-								multiline={true}
-								maxLength={400}
-								key='Biographie'
-							/>
+							<View style={styles.field}>
+								<Text style={styles.title}>Biographie</Text>
+								<TextInput
+									onChangeText={setBiography}
+									multiline={true}
+									maxLength={400}
+									style={styles.bio}
+									value={biography}
+								/>
+							</View>
 						</View>
 					</View>
 				</ScrollView>
@@ -188,6 +190,12 @@ const styles = StyleSheet.create({
 		paddingLeft: 15,
 		backgroundColor: "#333",
 		height: 45,
+	},
+	bio: {
+		color: "white",
+		fontSize: 16,
+		paddingLeft: 15,
+		backgroundColor: "#333",
 	},
 
 	topSection: {
