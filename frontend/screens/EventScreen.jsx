@@ -245,7 +245,7 @@ export default function EventScreen({ navigation }) {
   									créer le tien ? 😊
   								</Text>
   							) : (
-  								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
+  								(filtreredEvents.length > 0 ? filtreredEvents : events)?.map(
   									(event) => (
   										<Event
   											key={event._id}
