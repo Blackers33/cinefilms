@@ -7,7 +7,8 @@ import {
   Platform,
   ImageBackground,
   Text,
-  StatusBar
+  StatusBar,
+  Keyboard
 } from "react-native";
 import { useState, useEffect } from "react";
 import UserTopSection from "../components/common/UserTopSection";
@@ -68,6 +69,7 @@ export default function EventScreen({ navigation }) {
 
 
   const handleSearchIcon = () => {
+    Keyboard.dismiss();
     const filtered = events.filter(
       (event) =>
         event.location.toLowerCase().trim() === inputreseach.toLowerCase().trim()
@@ -76,9 +78,10 @@ export default function EventScreen({ navigation }) {
     if (filtered.length === 0) {
       setFiltrednonfound(true);
       setFiltreredEvents("");
+      setInputreseach("");
 
     }
-  
+    setInputreseach("");
     setFiltreredEvents(filtered);
   };
 
@@ -242,7 +245,7 @@ export default function EventScreen({ navigation }) {
   							{filtrednonfound ? (
   								<Text style={styles.textnonEventfound}>
   									Aucun événement trouvé pour cette ville. Pourquoi ne pas
-  									ajouter le tient ? 😊
+  									ajouter la vôtre? 😊
   								</Text>
   							) : (
   								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
