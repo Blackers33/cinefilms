@@ -79,7 +79,15 @@ export default function FilmScreen({ navigation, route }) {
     <SafeAreaView style={{backgroundColor: '#1E1C1A', flex:1}}>
       <View style={[styles.containerFilm, Platform.OS !== 'ios' && { marginTop: 30 } ]}>
         <Text style={styles.titleFilm}>{route.params.title}</Text>
-        <Image source={{ uri: `https://image.tmdb.org/t/p/w500/${route.params.backdrop_path}`}} style={styles.imageFilm} />
+        <Image
+  source={
+    route.params.backdrop_path
+      ? { uri: `https://image.tmdb.org/t/p/w500/${route.params.backdrop_path}` }
+      : require("../assets/logo/placeholder/backdrop.png")
+  }
+  style={styles.imageFilm}
+/>
+        
         <View style={styles.containerIconsFilm}>
           <View style={styles.likeContainer}>
             <LikeIcon 
@@ -158,6 +166,7 @@ const styles = StyleSheet.create({
     height: 180,
     resizeMode: "cover",
     borderRadiustop: 10,
+    width: '100%',
   }, 
   containerIconsFilm: {
     flexDirection: 'row',

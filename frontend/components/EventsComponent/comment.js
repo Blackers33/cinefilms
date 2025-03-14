@@ -17,7 +17,7 @@ export default function Comment(props) {
         <Text style={styles.usernametext}>{props.username}</Text>
       </View>
       <View style={styles.contenucomment}>
-      <Text key={props.index} style={styles.commentText}>
+        <Text key={props.index} style={styles.commentText}>
           {props.content}
         </Text>
         <Text style={styles.commentDate}>{props.date}</Text>
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(77, 77, 77, 0.2)',
     opacity: 1,
     marginTop: 5,
-    //backgroundColor: "#444",
     borderRadius: 5,
   },
   userInfos: {
