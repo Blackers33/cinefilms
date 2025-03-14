@@ -12,6 +12,7 @@ export default function reseachsection(props) {
           placeholder="Recherche par ville"
           onChangeText={props.setInputreseach}
           value={props.inputreseach}
+          onSubmitEditing={props.handlePressSearchIcon}
         ></TextInputStyled>
       </View>
       <TouchableOpacity onPress={props.handlePressSearchIcon}>

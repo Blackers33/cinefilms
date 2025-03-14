@@ -66,6 +66,7 @@ export default function EventScreen({ navigation }) {
 
 
   const handleSearchIcon = () => {
+    Keyboard.dismiss();
     const filtered = events.filter(
       (event) =>
         event.location.toLowerCase().trim() === inputreseach.toLowerCase().trim()
@@ -74,9 +75,10 @@ export default function EventScreen({ navigation }) {
     if (filtered.length === 0) {
       setFiltrednonfound(true);
       setFiltreredEvents("");
+      setInputreseach("");
 
     }
-  
+    setInputreseach("");
     setFiltreredEvents(filtered);
   };
 

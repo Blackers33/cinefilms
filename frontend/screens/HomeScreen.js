@@ -4,10 +4,11 @@ import MainSection from "../components/HomeScreen/MainSection";
 import { ImageBackground } from "react-native";
 import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
-
+import { useIsFocused } from "@react-navigation/native";
 
 export default function HomeScreen({ navigation }) {
 	const user = useSelector((state) => state.user.value);
+	const isFocused = useIsFocused();
 	
 
 	return (
@@ -21,7 +22,7 @@ export default function HomeScreen({ navigation }) {
 				}}
 			>
 				<UserTopSection user={user} navigation={navigation} />
-				<MainSection navigation={navigation} user={user} />
+				<MainSection navigation={navigation} user={user} isFocused={isFocused}/>
 			</ImageBackground>
 		</SafeAreaView>
 	);
