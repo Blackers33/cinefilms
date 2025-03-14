@@ -22,23 +22,28 @@ export default function Event(props) {
   const user = useSelector((state) => state.user.value);
 
 
-
   const isCreator = props.creatorUsername === user.username;
 
-  const avatars = props.participants
-    .filter((participant) => participant.username !== user.username) 
-    .map((participant, index) => (
-      <Avatar
-        uri={participant.avatar}
-        key={index}
-        style={{ marginRight: 5 }}
-        size={30}
-      />
-    ));
+  const participantsLessThanThree = props.participants?.map((participant, i) => (
+    <Avatar key={i} size={25} uri={participant.avatar} />
+));
+
 
   const isUserInParticipants = props.participants.some(
     (participant) => participant.username === user.username
   );
+
+  const participants = props.participants.length > 3 ? 
+  <View style={styles.participants}>
+      <Avatar size={25} uri={props.participants[0].avatar}/>
+      <Avatar size={25} uri={props.participants[1].avatar}/>
+      <Avatar size={25} uri={props.participants[2].avatar}/>
+      <Text style={styles.participantsNumber}>{`+ ${props.participants.length - 3}`}</Text>
+  </View> 
+  :
+  <View style={styles.participants}>
+      {participantsLessThanThree}
+  </View>;
 
   const buttonText =
     isUserInParticipants ||!!props.isParticipate ? "Quitter" : "+ Joindre";
@@ -86,9 +91,10 @@ export default function Event(props) {
       <View style={styles.interactionBar}>
         <View style={styles.interactionToEventView}>
           <View style={styles.participants}>
-            {avatars}
+            {participants}
             {avatarjoint}
           </View>
+        
           <TouchableOpacity
             onPress={props.displayComments}
             style={styles.displayCommentsButton}
@@ -252,4 +258,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#a0a0a0", 
     opacity: 0.6, 
   },
+  participantsNumber: {
+    color: 'white',
+    fontSize: 20, 
+    marginLeft: 5
+},
+displayCommentsButton:{
+  marginLeft:20,
+}
 });
