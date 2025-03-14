@@ -5,11 +5,12 @@ const Film = require('../models/films');
 const User = require('../models/users')
 const { checkBody, createFilmIfNotExists, autentification} = require('../modules/utils');
 
+/*
 //Route GET pour recuperer les commentaire d'un evenement 
 router.get("/:eventId/commentaires", async (req, res) => {
 	try {
 	  const { eventId } = req.params;
-	  const display = true;
+
   // Vérifier si l'événement existe
   const event = await Event.findById(eventId)
 	.populate({
@@ -28,6 +29,7 @@ router.get("/:eventId/commentaires", async (req, res) => {
 	  });
 	}
   });
+  */
 
 //Route qui permet de récupérer le film
 router.get("/:tmdbId/:token/film", async (req, res) => {

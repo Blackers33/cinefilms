@@ -1,20 +1,18 @@
+import { useEffect, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   ImageBackground,
+  ScrollView,
+  StyleSheet,
   Text,
+  View
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import Button from "../components/common/Button";
 import UserTopSection from "../components/common/UserTopSection";
 import Event from "../components/EventsComponent/Event";
 import Reseachsection from "../components/EventsComponent/reseachfiltreSection";
-import Button from "../components/common/Button";
-import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function EventScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -215,13 +213,12 @@ export default function EventScreen({ navigation }) {
   
 
   return (
-		<KeyboardAvoidingView behavior={Platform.OS === "padding"}>
-			<SafeAreaView style={styles.container}>
-				<ImageBackground
-					style={styles.backgroundImage}
-					source={require("../assets/backgroundGradient.png")}
-				>
-					<UserTopSection user={user} navigation={navigation} />
+		<SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+			<ImageBackground
+				style={styles.backgroundImage}
+				source={require("../assets/backgroundGradient.png")}
+			>
+				<UserTopSection user={user} navigation={navigation} />
 
 					<View>
 					  <Reseachsection
@@ -241,7 +238,7 @@ export default function EventScreen({ navigation }) {
   							{filtrednonfound ? (
   								<Text style={styles.textnonEventfound}>
   									Aucun événement trouvé pour cette ville. Pourquoi ne pas
-  									créer le tiens ? 😊
+  									créer le tien ? 😊
   								</Text>
   							) : (
   								(filtreredEvents.length > 0 ? filtreredEvents : events).map(
@@ -277,44 +274,19 @@ export default function EventScreen({ navigation }) {
   							)}
   						</View>
   					</ScrollView>
-					</View>
-				</ImageBackground>
-			</SafeAreaView>
-		</KeyboardAvoidingView>
+				</View>
+			</ImageBackground>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#000000",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
+
   backgroundImage: {
     width: "100%",
     height: "100%",
   },
-  userTopContainer: {
-    marginTop: 20,
-    width: "100%",
-  },
-  textInputrseach: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    width: "100%",
-  },
-  reseachcontainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    marginTop: 10,
-    paddingRight: 20,
-  },
-  reseachInput: {
-    width: "80%",
-    height: 40,
-  },
+
 
   buttoncreationEvent: {
     alignItems: "center",
@@ -326,7 +298,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     flexGrow: 1,
-    marginBottom: 100,
+    marginBottom: 280,
   },
   textnonEventfound:{
     color: "white",

@@ -5,7 +5,7 @@ import {
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	View
+	View,
 } from "react-native";
 
 import { useState } from "react";
@@ -20,6 +20,15 @@ import { MoviesDropdown } from "../common/MoviesDropdown";
 import MoviesScrollView from "../common/MoviesScrollView";
 import Button from "./Button";
 import MovieGenresEdit from "./MovieGenresEdit";
+
+const Field = ({ title, info, ...props }) => {
+	return (
+		<View style={styles.field}>
+			<Text style={styles.title}>{title}</Text>
+			<TextInput {...props} style={styles.text} value={String(info)} />
+		</View>
+	);
+};
 
 export default function ProfilPageEdit({ user, setEdit }) {
 	const [modalVisible, setModalVisible] = useState(false);
@@ -57,14 +66,6 @@ export default function ProfilPageEdit({ user, setEdit }) {
 			}
 		});
 	}
-	const Field = ({ title, info, ...props }) => {
-		return (
-			<View style={styles.field}>
-				<Text style={styles.title}>{title}</Text>
-				<TextInput {...props} style={styles.text} value={String(info)} />
-			</View>
-		);
-	};
 
 	async function handleSubmit() {
 		if (age !== "" || username !== "") {
@@ -153,6 +154,7 @@ export default function ProfilPageEdit({ user, setEdit }) {
 								onChangeText={setBiography}
 								multiline={true}
 								maxLength={400}
+								key='Biographie'
 							/>
 						</View>
 					</View>
@@ -185,6 +187,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		paddingLeft: 15,
 		backgroundColor: "#333",
+		height: 45,
 	},
 
 	topSection: {

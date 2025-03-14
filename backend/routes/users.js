@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 require("../models/connection");
 const User = require("../models/users");
 
-const { checkBody } = require("../modules/checkBody");
+const { checkBody } = require('../modules/utils');
 
 //POST new user (inscription)
 router.post("/signup", (req, res) => {

@@ -67,6 +67,7 @@ export default function FilmScreen({ navigation, route }) {
     });
   }
 
+  
   const redirectedToEvents = () => {
     setActiveTab('events');
   }
