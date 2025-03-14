@@ -53,7 +53,7 @@ export default function Events({ filmId, allEvents, refresh }) {
     //Afficher ou masquer les commentaires au clique sur le boutton 'commentaires'
     const toggleComments = (eventId) => {
         if (eventCommentsToShow !== eventId) {
-            fetch(`${BACKEND_ADDRESS}/films/${eventId}/commentaires`)
+            fetch(`${BACKEND_ADDRESS}/events/${eventId}/comments`)
             .then(response => response.json())
             .then(dataComments => {
                 if (dataComments) {

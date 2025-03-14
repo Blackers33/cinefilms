@@ -3,45 +3,7 @@ var router = express.Router();
 const Event = require("../models/events");
 const Film = require("../models/films");
 const User = require("../models/users");
-const { checkBody, autentification } = require("../modules/utils");
-
-// function pour creer film s'il existe pas dans collection Film, renvoi filmId
-const createFilmIfNotExists = async (tmdbId) => {
-  try {
-      const film = await Film.findOne({ tmdbId: tmdbId });
-      if (film) {
-          return film._id;  // Retourne l'_id du film s'il existe
-      }
-      const newFilm = await createFilm(tmdbId);
-      return newFilm ? newFilm._id : null;  // Retourne l'_id du film créé ou null si création échoue
-  } catch(error) {
-      console.error(error);
-      return null;  // Retourne null en cas d'erreur
-  }
-};
-
-//function pour creer un film dans la collection Film
-const createFilm = async (tmdbId) => {
-  try {
-      const newFilm = new Film({
-          tmdbId: tmdbId,
-          likes: [],
-          comments: [],
-      });
-
-      // Sauvegarder le film
-      await newFilm.save();
-
-      // Récupérer le film créé
-      const filmData = await Film.findOne({ tmdbId: tmdbId });
-
-      // Retourner l'ID du film créé ou null si le film n'a pas été trouvé
-      return filmData ? filmData._id : null;  
-  } catch (error) {
-      console.error("Error creating film:", error);
-      return null;  // Retourne null si une erreur se produit
-  }
-};
+const { checkBody, createFilmIfNotExists, autentification} = require('../modules/utils');
 
 router.get("/", async (req, res) => {
   try {
